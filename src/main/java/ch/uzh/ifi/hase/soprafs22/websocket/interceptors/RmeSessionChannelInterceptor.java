@@ -22,8 +22,12 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
         MultiValueMap<String, String> multiValueMap =
                 headers.get(StompHeaderAccessor.NATIVE_HEADERS,MultiValueMap.class);
 
-        String authString = multiValueMap.getFirst("Authentication");
-        log.error(authString);
+        if(multiValueMap != null)
+        {
+            String authString = multiValueMap.getFirst("Authentication");
+            log.error(authString);
+        }
+
 
         return message;
     }

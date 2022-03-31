@@ -5,5 +5,6 @@ public enum UpdateType {
     CARD,
     TURN,
     START,
-    WIN
+    WIN,
+    LOBBY
 }

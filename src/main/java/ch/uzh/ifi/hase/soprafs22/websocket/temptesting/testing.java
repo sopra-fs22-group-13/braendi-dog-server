@@ -16,17 +16,19 @@ public class testing {
 
     public void test()
     {
-
-        try{
-
-            Thread.sleep(5000);
-            log.warn("OK");
-            UpdateDTO updto = new UpdateDTO(UpdateType.BOARD, "some message");
-            updCtrl.sendUpdateToUser("12345", updto);
-        }catch (Exception e)
+        while (true)
         {
-            log.error(e.getMessage());
-            return;
+            try{
+
+                Thread.sleep(5000);
+                log.warn("OK");
+                UpdateDTO updto = new UpdateDTO(UpdateType.BOARD, "some message");
+                updCtrl.sendUpdateToUser("null", updto);
+            }catch (Exception e)
+            {
+                log.error(e.getMessage());
+                return;
+            }
         }
 
     }
