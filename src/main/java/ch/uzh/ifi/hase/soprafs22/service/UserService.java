@@ -39,6 +39,7 @@ public class UserService {
     return this.userRepository.findAll();
   }
 
+
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.OFFLINE);
@@ -54,28 +55,55 @@ public class UserService {
     return newUser;
   }
 
+
+  public User loginUser(User user) {
+
+     checkIfUserIsUnique(user);
+     // need to throw an expection is not register
+
+     User userAlreadyRegister = userRepository.findByUsername(user.getUsername());
+     log.debug("Check Information for User: {}", user);
+     userAlreadyRegister.setStatus(UserStatus.ONLINE);
+     return userAlreadyRegister;
+  }
+
   /**
-   * This is a helper method that will check the uniqueness criteria of the
-   * username and the name
-   * defined in the User entity. The method will do nothing if the input is unique
-   * and throw an error otherwise.
-   *
    * @param userToBeCreated
    * @throws org.springframework.web.server.ResponseStatusException
    * @see User
    */
   private void checkIfUserExists(User userToBeCreated) {
     User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-    User userByName = userRepository.findByName(userToBeCreated.getName());
+    User userByPassword = userRepository.findByPassword(userToBeCreated.getPassword());
 
     String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
-    if (userByUsername != null && userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          String.format(baseErrorMessage, "username and the name", "are"));
+    if (userByUsername != null && userByPassword != null) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT,
+          String.format(baseErrorMessage, "username and the password", "are"));
     } else if (userByUsername != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
-    } else if (userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
+      throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "username", "is"));
+    } else if (userByPassword != null) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "password", "is"));
     }
   }
+
+
+
+    private void checkIfUserIsUnique(User userToLoggedIn ) throws ResponseStatusException {
+        User userByUsername = userRepository.findByUsername(userToLoggedIn.getUsername());
+
+        String baseErrorMessageNotRegister = "The %s provided %s not reigister. Therefore, the user could not login";
+        if (userByUsername == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format(baseErrorMessageNotRegister, "username", "is"));
+        }
+        String baseErrorMessageWrongPassword = "The Password provided is for your %s %s wrong. Therefore, the user could not login";
+        String temp = userByUsername.getPassword();
+        String temp1 = userToLoggedIn.getPassword();
+        if (!temp1.equals(temp)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    String.format(baseErrorMessageWrongPassword, "username", "is"));
+        }
+
+    }
 }
