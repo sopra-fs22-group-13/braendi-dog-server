@@ -22,7 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/websocket-test").setAllowedOrigins("http://localhost:3000").withSockJS();
-        registry.addEndpoint("/gameupdates").setAllowedOrigins("http://localhost:3000", "http://localhost:8000").withSockJS();
+        registry.addEndpoint("/gameupdates").setAllowedOrigins("http://localhost:3000", "http://localhost:8000", "https://braendi-dog-client.herokuapp.com").withSockJS();
 
     }
 
