@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs22.voicechat;
+package ch.uzh.ifi.hase.soprafs22.voicechat.requests;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

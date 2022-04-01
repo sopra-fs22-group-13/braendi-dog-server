@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.voicechat;
 
+import ch.uzh.ifi.hase.soprafs22.voicechat.requests.RequestGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,23 +10,19 @@ public class UserManager {
 
     public String getUser(String id)
     {
-        String resultJson = requestGenerator.getRequest(String.format("/users/%s", id), null);
+        String resultJson = requestGenerator.getRequest(String.format("/users/%s", id), null, false);
         return resultJson;
     }
 
     public String createUser(String userId, String userName)
     {
-        String resultJson =  requestGenerator.postRequest("users", String.format("{\"user_id\":\"%s\", \"nickname\":\"%s\", \"profile_url\":\"s\", \"issue_access_token\":true}", userId, userName));
+        String resultJson =  requestGenerator.postRequest("users", String.format("{\"user_id\":\"%s\", \"nickname\":\"%s\", \"profile_url\":\"s\", \"issue_access_token\":true}", userId, userName), false);
         return resultJson;
     }
 
-    public String deleteUser(String userId)
+    public boolean deleteUser(String userId)
     {
-        boolean result = requestGenerator.deleteRequest(String.format("users/%s", userId));
-        if(result)
-        {
-            return "Success";
-        }
-        return "Failed";
+        boolean result = requestGenerator.deleteRequest(String.format("users/%s", userId), false);
+        return  result;
     }
 }

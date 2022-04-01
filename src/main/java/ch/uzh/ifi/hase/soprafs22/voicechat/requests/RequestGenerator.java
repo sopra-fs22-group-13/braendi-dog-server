@@ -1,17 +1,13 @@
-package ch.uzh.ifi.hase.soprafs22.voicechat;
+package ch.uzh.ifi.hase.soprafs22.voicechat.requests;
 
-import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * This requires the environment to have an api.key and an api.url value!
@@ -49,10 +45,18 @@ public class RequestGenerator {
         }
     }
 
-    String getRequest(String urlpart, Map<String, String> params)
+    public String getRequest(String urlpart, Map<String, String> params, boolean calls)
     {
         try {
-            URL url = new URL(String.format("https://api-%s.sendbird.com/v3/%s", apiUrl, urlpart));
+            URL url;
+            if(calls)
+            {
+                url = new URL(String.format("https://api-%s.calls.sendbird.com/v1/%s", apiUrl, urlpart));
+
+            }else
+            {
+                url = new URL(String.format("https://api-%s.sendbird.com/v3/%s", apiUrl, urlpart));
+            }
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
@@ -91,11 +95,19 @@ public class RequestGenerator {
         }
     }
 
-    String postRequest(String urlpart, String json)
+    public String postRequest(String urlpart, String json, boolean calls)
     {
         try
         {
-            URL url = new URL(String.format("https://api-%s.sendbird.com/v3/%s", apiUrl, urlpart));
+            URL url;
+            if(calls)
+            {
+                url = new URL(String.format("https://api-%s.calls.sendbird.com/v1/%s", apiUrl, urlpart));
+
+            }else
+            {
+                url = new URL(String.format("https://api-%s.sendbird.com/v3/%s", apiUrl, urlpart));
+            }
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
@@ -144,10 +156,18 @@ public class RequestGenerator {
         }
     }
 
-    boolean deleteRequest(String urlpart)
+    public boolean deleteRequest(String urlpart, boolean calls)
     {
         try {
-            URL url = new URL(String.format("https://api-%s.sendbird.com/v3/%s", apiUrl, urlpart));
+            URL url;
+            if(calls)
+            {
+                url = new URL(String.format("https://api-%s.calls.sendbird.com/v1/%s", apiUrl, urlpart));
+
+            }else
+            {
+                url = new URL(String.format("https://api-%s.sendbird.com/v3/%s", apiUrl, urlpart));
+            }
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("DELETE");
 
