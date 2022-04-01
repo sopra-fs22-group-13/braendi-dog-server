@@ -6,7 +6,7 @@ public class ApiAuth {
     {
         String apikey;
         try{
-            apikey = System.getProperty("SendBirdApiKey");
+            apikey = System.getProperty("api.key");
             if(apikey == null)
             {
                 throw new Exception();
@@ -29,7 +29,7 @@ public class ApiAuth {
     {
         String apiUrl;
         try{
-            apiUrl = System.getProperty("SendBirdApiUrl");
+            apiUrl = System.getProperty("api.url");
 
             if(apiUrl == null)
             {
