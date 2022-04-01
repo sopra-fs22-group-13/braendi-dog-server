@@ -9,6 +9,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import java.util.ArrayList;
+
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
@@ -21,8 +23,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/websocket-test").setAllowedOrigins("http://localhost:3000").withSockJS();
-        registry.addEndpoint("/gameupdates").setAllowedOriginPatterns("*").withSockJS();
+
+        registry.addEndpoint("/websocket-test").setAllowedOrigins("https://braendi-dog-client.herokuapp.com", "http://localhost:3000", "http://localhost:5000").withSockJS();
+        registry.addEndpoint("/gameupdates").setAllowedOrigins("https://braendi-dog-client.herokuapp.com").withSockJS();
 
     }
 

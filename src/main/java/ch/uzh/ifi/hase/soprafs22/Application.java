@@ -24,7 +24,7 @@ public class Application {
     SpringApplication.run(Application.class, args);
 
     //testing vc here. comment this try block out if it does not work.
-      try {
+      /*try {
           Thread.sleep(10000);
           VoiceRoom vr =  new VoiceChatCreator().createRoomWithPlayers("hello");
           UpdateController updCtrl = SpringContext.getBean(UpdateController.class);
@@ -41,7 +41,7 @@ public class Application {
       }
       catch (InterruptedException e) {
           e.printStackTrace();
-      }
+      }*/
   }
 
   @GetMapping(value = "/", produces = MediaType.TEXT_PLAIN_VALUE)
