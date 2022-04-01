@@ -10,7 +10,7 @@ public class RoomManager {
 
     public String createRoom()
     {
-        String response = requestGenerator.postRequest("rooms", "{\"type\":\"small_room_for_video\"}", true);
+        String response = requestGenerator.postRequest("rooms", "{\"type\":\"large_room_for_audio_only\"}", true);
         log.info(response);
         return response;
     }

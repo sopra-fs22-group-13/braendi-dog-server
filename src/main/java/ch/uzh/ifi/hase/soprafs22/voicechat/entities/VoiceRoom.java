@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs22.voicechat.entities;
 
 public class VoiceRoom {
     public String roomId;
+    public String appId;
 
     public VoiceUser player1;
     public VoiceUser player2;

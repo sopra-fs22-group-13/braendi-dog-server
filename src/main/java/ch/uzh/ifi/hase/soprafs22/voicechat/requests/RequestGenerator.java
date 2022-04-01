@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.voicechat.requests;
 
+import ch.uzh.ifi.hase.soprafs22.voicechat.ApiAuth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,27 +23,8 @@ public class RequestGenerator {
 
     public RequestGenerator()
     {
-        try{
-            apikey = System.getProperty("SendBirdApiKey");
-            apiUrl = System.getProperty("SendBirdApiUrl");
-
-            if(apiUrl == null || apikey == null)
-            {
-                throw new Exception();
-            }
-
-        }catch(Exception e)
-        {
-            //backup keys that are stored in a dirty java class
-            apikey = System.getenv("api.key");
-            apiUrl = System.getenv("api.url");
-        }
-
-        //failsave
-        if(apikey == null || apiUrl == null) {
-            apikey = "key";
-            apiUrl = "url";
-        }
+        apikey = new ApiAuth().getKey();
+        apiUrl = new ApiAuth().getId();
     }
 
     public String getRequest(String urlpart, Map<String, String> params, boolean calls)

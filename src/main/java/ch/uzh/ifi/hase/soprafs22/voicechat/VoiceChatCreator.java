@@ -31,6 +31,8 @@ public class VoiceChatCreator {
             String room_id = jsonNode.get("room").get("room_id").asText();
             vr.roomId = room_id;
 
+            vr.appId = new ApiAuth().getId();
+
             //create 4 players
             vr.player1 = createRandomUser();
             vr.player2 = createRandomUser();
@@ -88,6 +90,7 @@ public class VoiceChatCreator {
         user.id = player.get("user_id").asText();
         user.name = player.get("nickname").asText();
         user.accessToken = player.get("access_token").asText();
+        user.appId = new ApiAuth().getId();
         return user;
 
     }
