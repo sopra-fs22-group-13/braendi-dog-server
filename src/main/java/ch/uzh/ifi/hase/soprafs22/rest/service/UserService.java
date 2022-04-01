@@ -1,8 +1,8 @@
-package ch.uzh.ifi.hase.soprafs22.service;
+package ch.uzh.ifi.hase.soprafs22.rest.service;
 
-import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs22.entity.User;
-import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs22.rest.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
+import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,9 +1,9 @@
-package ch.uzh.ifi.hase.soprafs22.controller;
+package ch.uzh.ifi.hase.soprafs22.rest.controller;
 
-import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs22.entity.User;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.UserPostDTO;
-import ch.uzh.ifi.hase.soprafs22.service.UserService;
+import ch.uzh.ifi.hase.soprafs22.rest.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

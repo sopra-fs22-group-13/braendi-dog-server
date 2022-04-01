@@ -1,6 +1,6 @@
-package ch.uzh.ifi.hase.soprafs22.rest.dto;
+package ch.uzh.ifi.hase.soprafs22.rest.data.dto;
 
-import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs22.rest.constant.UserStatus;
 
 public class UserGetDTO {
 
