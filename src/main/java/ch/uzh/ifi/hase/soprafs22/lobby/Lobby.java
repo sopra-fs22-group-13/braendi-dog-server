@@ -9,10 +9,6 @@ import java.util.List;
 
 public class Lobby {
 
-    /**
-     * Don't really understand how this works yet. Someone mind explaining it to me?
-     * Signed, Anton
-     */
     @Id
     @GeneratedValue
     private int id;
@@ -23,15 +19,13 @@ public class Lobby {
      * decided to implement the list of users in a lobby as a single list with a fixed length instead of 4 separate entries.
      * owner still has its own entry, but will be added automatically to the list on creation.
      * while this implementation definitely has its own flaws, I still think it's a bit cleaner, makes some methods a bit easier to implement and easier to maintain
-     *
-     * ideally we discuss this matter at our next meeting. blame me (Anton) if I forget about it
      */
     private List<User> players = Arrays.asList(new User[4]);
 
     /**
-     * class diagram says this should be a list of ints. userIDs?
+     * Maybe implement invite class
      */
-    private List<Integer> pendingInvites = new ArrayList<>();
+    private List<User> pendingInvites = new ArrayList<>();
 
 
     public Lobby(User owner) {
@@ -59,7 +53,9 @@ public class Lobby {
         return -1;
     }
 
-
+    public void deleteInvite(User player) {
+        pendingInvites.remove(player);
+    }
 
     /**
      * All getters and setters
@@ -73,11 +69,15 @@ public class Lobby {
         this.id = id;
     }
 
+    public User getOwner() {
+        return this.owner;
+    }
+
     public List<User> getPlayers() {
         return players;
     }
 
-    public List<Integer> getPendingInvites() {
+    public List<User> getPendingInvites() {
         return pendingInvites;
     }
 }
