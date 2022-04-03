@@ -22,9 +22,6 @@ public class Lobby {
      */
     private List<User> players = Arrays.asList(new User[4]);
 
-    /**
-     * Maybe implement invite class
-     */
     private List<User> pendingInvites = new ArrayList<>();
 
 
@@ -51,6 +48,10 @@ public class Lobby {
             }
         }
         return -1;
+    }
+
+    public void addInvitee(User invitee) {
+        pendingInvites.add(invitee);
     }
 
     public void deleteInvite(User player) {
