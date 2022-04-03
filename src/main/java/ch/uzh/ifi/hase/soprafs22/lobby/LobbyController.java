@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs22.lobby;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
+import ch.uzh.ifi.hase.soprafs22.websocket.SpringContext;
 import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
 import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
@@ -17,23 +18,14 @@ import java.util.Objects;
 public class LobbyController {
 
     private final GameCreator gameCreator = new GameCreator();
-    private final UserRepository userRepository;
+    private final UserRepository userRepository = SpringContext.getBean(UserRepository.class);
 
-    /**
-     * I'm not quite sure how things work with spring, e.g. how this class willbe created and how it gets access to the UserRepository. Without that many methods in this controller won't work properly.
-     * Also, the UserRepository will need a method to get a User by its Usertoken. I didn't implement that yet, since it would need some proper testing (and again I don't really know how that Repo works either).
-     * @param userRepository
-     */
-    public LobbyController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     private final List<Lobby> openLobbies = new ArrayList<>();
 
 
-
     /**
-     * needs other implementations
+     * needs other implementation of getByToken in UserRepository (which I have no idea how to test and I dont wanna implement things in other classes without knowing if they work)
      */
 /*
     public boolean openLobby(String usertoken) {
