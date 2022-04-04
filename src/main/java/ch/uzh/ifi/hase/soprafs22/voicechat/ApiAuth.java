@@ -1,7 +1,14 @@
 package ch.uzh.ifi.hase.soprafs22.voicechat;
 
+/**
+ * Helper class that gets the SendBird Api key and Url
+ */
 public class ApiAuth {
 
+    /**
+     * Gets the SendBird API key
+     * @return
+     */
     public String getKey()
     {
         String apikey;
@@ -25,6 +32,10 @@ public class ApiAuth {
         return apikey;
     }
 
+    /**
+     * Gets the SendBird AppId / Url
+     * @return
+     */
     public String getId()
     {
         String apiUrl;

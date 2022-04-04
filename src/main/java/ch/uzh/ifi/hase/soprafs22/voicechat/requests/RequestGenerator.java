@@ -12,6 +12,7 @@ import java.util.Map;
 
 /**
  * This requires the environment to have an api.key and an api.url value!
+ * Various requests are predefined here.
  */
 public class RequestGenerator {
 
@@ -27,6 +28,13 @@ public class RequestGenerator {
         apiUrl = new ApiAuth().getId();
     }
 
+    /**
+     * Make a get request to either the calls or chat SendBird API
+     * @param urlpart the specific resource to get
+     * @param params Get params
+     * @param calls is it the calls API?
+     * @return the response
+     */
     public String getRequest(String urlpart, Map<String, String> params, boolean calls)
     {
         try {
@@ -77,6 +85,13 @@ public class RequestGenerator {
         }
     }
 
+    /**
+     * Make a post request to either the calls or chat SendBird API
+     * @param urlpart the specific resource to post to
+     * @param json post json content
+     * @param calls is it the calls API?
+     * @return the response
+     */
     public String postRequest(String urlpart, String json, boolean calls)
     {
         try
@@ -138,6 +153,12 @@ public class RequestGenerator {
         }
     }
 
+    /**
+     * Make a delete request to either the calls or chat SendBird API
+     * @param urlpart the specific resource to delete
+     * @param calls is it the calls API?
+     * @return boolean: is the response code 204? (success)
+     */
     public boolean deleteRequest(String urlpart, boolean calls)
     {
         try {

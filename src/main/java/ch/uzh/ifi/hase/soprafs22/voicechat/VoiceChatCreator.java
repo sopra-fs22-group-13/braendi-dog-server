@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Class that has common functions for creating and deleting voice chats with 4 members.
+ */
 public class VoiceChatCreator {
     private final UserManager userManager = new UserManager();
     private final RoomManager roomManager = new RoomManager();
@@ -22,6 +25,11 @@ public class VoiceChatCreator {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
+    /**
+     * Creats a room with 4 players
+     * @param gametoken the gameToken to reference later for deletion (if the VoiceRoom object is lost)
+     * @return the created VoiceRoom information
+     */
     public VoiceRoom createRoomWithPlayers(String gametoken)
     {
         VoiceRoom vr =  new VoiceRoom();
@@ -48,6 +56,12 @@ public class VoiceChatCreator {
         return  vr;
     }
 
+    /**
+     * Calls delete requests on the room and all 4 users using this room.
+     * If any of those users are also in another room, they will be disconnected.
+     * @param room
+     * @return boolean if every deletion request succeeded
+     */
     public boolean destroyRoomWithPlayers(VoiceRoom room)
     {
         boolean success = roomManager.deleteRoom(room.roomId);
@@ -71,6 +85,11 @@ public class VoiceChatCreator {
         return success;
     }
 
+    /**
+     * OVERLOAD: Calls delete requests on the room and all 4 users using a room with this gametoken
+     * @param gametoken the gametoken to search a room for
+     * @return boolean if the room was found and deleted successfully.
+     */
     public boolean destroyRoomWithPlayers(String gametoken)
     {
         VoiceRoom room = rooms.get(gametoken);
@@ -83,6 +102,11 @@ public class VoiceChatCreator {
         return destroyRoomWithPlayers(room);
     }
 
+    /**
+     * Creates a random SendBird user with a random name
+     * @return the created Users information
+     * @throws JsonProcessingException if the user could not be created and therefore not parsed correctly.
+     */
     private VoiceUser createRandomUser() throws JsonProcessingException {
         JsonNode player = null;
         player = objectMapper.readTree(userManager.createUser(UUID.randomUUID().toString(), "test"));

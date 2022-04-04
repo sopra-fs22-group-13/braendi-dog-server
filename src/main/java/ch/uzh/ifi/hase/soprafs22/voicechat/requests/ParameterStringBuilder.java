@@ -4,6 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
+/**
+ * Class that encodes the parameters of a GET request into a valid string
+ */
 public class ParameterStringBuilder {
     public static String getParamsString(Map<String, String> params)
             throws UnsupportedEncodingException {
