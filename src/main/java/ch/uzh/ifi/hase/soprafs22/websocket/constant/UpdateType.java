@@ -6,5 +6,6 @@ public enum UpdateType {
     TURN,
     START,
     WIN,
-    LOBBY
+    LOBBY,
+    INVITE
 }

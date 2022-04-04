@@ -1,12 +1,14 @@
 package ch.uzh.ifi.hase.soprafs22.lobby;
 
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Component
 public class Lobby {
 
     @Id
@@ -74,10 +76,18 @@ public class Lobby {
         return this.owner;
     }
 
+    /** TODO
+     *  make this return a copy pls
+     * @return
+     */
     public List<User> getPlayers() {
         return players;
     }
 
+    /** TODO
+     *  make this return a copy pls
+     * @return
+     */
     public List<User> getPendingInvites() {
         return pendingInvites;
     }

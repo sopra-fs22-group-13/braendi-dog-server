@@ -8,54 +8,53 @@ import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
 import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
 public class LobbyController {
 
     private final GameCreator gameCreator = new GameCreator();
     private final UserRepository userRepository = SpringContext.getBean(UserRepository.class);
+    private final UpdateController updateController = SpringContext.getBean(UpdateController.class);
 
 
     private final List<Lobby> openLobbies = new ArrayList<>();
 
 
-    /**
-     * needs other implementation of getByToken in UserRepository (which I have no idea how to test and I dont wanna implement things in other classes without knowing if they work)
-     */
-/*
-    public boolean openLobby(String usertoken) {
+    public Integer openLobby(String usertoken) {
         User owner = userRepository.findByToken(usertoken);
-        if (owner == null) { throw an exception }
+        //if (owner == null) { throw an exception }
 
         Lobby newLobby = new Lobby(owner);
         openLobbies.add(newLobby);
 
-        updatePlayers(lobby, UpdateType.LOBBY);
+        updatePlayers(newLobby, UpdateType.LOBBY);
 
-        return true;
+        return newLobby.getId();
     }
-*/
+
 
     public void invitePlayer(Integer lobbyID, String ownerToken, String playertoken) throws ResponseStatusException{
         Lobby lobby = getLobbyByID(lobbyID);
+
+        /** TODO
+         * test this shit pls
+         * maybe write own exceptions
+         */
         if (lobby == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The lobby you want to join doesn't exist (anymore)");
         if (!Objects.equals(lobby.getOwner().getToken(), ownerToken)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You need to be the lobby owner in order to invite other players");
 
-        /**
-         * needs userRepo and findByToken to be implemented
-         */
-        User invitee = new User();
-        //invitee = userRepository.findByToken(playertoken);
+        User invitee = userRepository.findByToken(playertoken);
         if (invitee == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The player you're trying to invite doesn't exist");
 
         lobby.addInvitee(invitee);
 
-        updatePlayers(lobby, UpdateType.LOBBY);
+        UpdateDTO updateDTO = new UpdateDTO(UpdateType.INVITE, "");
+        updateController.sendUpdateToUser(playertoken, updateDTO);
     }
 
     public void inviteResponse(Integer lobbyID, String playertoken, boolean response) throws ResponseStatusException{
@@ -67,10 +66,9 @@ public class LobbyController {
                 //adds the player who responded to the invite to the lobby if they accepted, removes them from the invites-list either way
                 if (response) {
                     lobby.addPlayer(player);
+                    updatePlayers(lobby, UpdateType.LOBBY);
                 }
                 lobby.deleteInvite(player);
-
-                updatePlayers(lobby, UpdateType.LOBBY);
 
                 return;
             }
@@ -107,11 +105,6 @@ public class LobbyController {
          * Not sure if it would make sense to actually send a message here (given that an empty string works at all)
          */
         UpdateDTO updateDTO = new UpdateDTO(updateType, "");
-
-        /**
-         * Is there a universal UpdateController? How do I get it?
-         */
-        UpdateController updateController = new UpdateController();
 
         for (User player: lobby.getPlayers()) updateController.sendUpdateToUser(player.getToken(), updateDTO);
     }
