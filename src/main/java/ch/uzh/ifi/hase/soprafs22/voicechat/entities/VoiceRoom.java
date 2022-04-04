@@ -1,5 +1,8 @@
 package ch.uzh.ifi.hase.soprafs22.voicechat.entities;
 
+/**
+ * Information about the voiceRoom including its players.
+ */
 public class VoiceRoom {
     public String roomId;
     public String appId;

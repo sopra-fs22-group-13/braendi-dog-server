@@ -8,10 +8,20 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 
+/**
+ * A helper functions that allows us to get the Spring context instances from non-spring instances,
+ * so we do not have to use @autowire
+ */
 @Component
 public class SpringContext implements ApplicationContextAware {
     private static ApplicationContext context;
 
+    /**
+     * Gets the spring instance of a class
+     * @param beanClass the class from which the instance should be retrieved
+     * @param <T>
+     * @return instance of the object where: return instanceof beanClass = true
+     */
     public static <T extends Object> T getBean(Class<T> beanClass)
     {
         return context.getBean(beanClass);

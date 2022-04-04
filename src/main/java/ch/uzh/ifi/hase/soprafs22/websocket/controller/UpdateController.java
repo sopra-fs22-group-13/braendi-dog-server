@@ -23,6 +23,8 @@ public class UpdateController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    //just for testing, This is not used
+    //not removed yet as websocktes are weird and i do not want to read documentation again
     @MessageMapping("/update")
     @SendTo("/topic/update/test")
     public UpdateDTO websocketUpdate() throws Exception{
@@ -31,12 +33,21 @@ public class UpdateController {
         return new UpdateDTO(UpdateType.BOARD, "A test message.");
     }
 
+    //for connecting to /gameupdates. the updates will be sent back to /user/usertoken/queue/specific-user
+    // if the user sends a token in the header. The return here can be ignored by the client, as we expect the credentials to be correct.
     @MessageMapping("/gameupdates")
     public void sendSpecific(@Payload Message msg, Principal user, @Header("simpSessionId") String sessionId) throws Exception {
-        String path = "/user/" + sessionId + "/queue/specific-user";
+        log.warn("HELLO");
+        String path = "/user" + "/queue/specific-user";
         messagingTemplate.convertAndSend(path, "Success");
     }
 
+    /**
+     * Sends an update to the user with a specific usertoken. This does not validate if the client actually listens to this,
+     * it blindly sends data even if there is no receiver
+     * @param usertoken the usertoken of the user to send to
+     * @param updateMessage the content of the update
+     */
     public void sendUpdateToUser(String usertoken, UpdateDTO updateMessage)
     {
         String path = "/user/" + usertoken + "/queue/specific-user";
