@@ -1,18 +1,16 @@
 package ch.uzh.ifi.hase.soprafs22.lobby;
 
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Component
 public class Lobby {
+    private static int lobbyCount = 0;
 
-    @Id
-    @GeneratedValue
+
     private int id;
 
     private final User owner;
@@ -30,6 +28,9 @@ public class Lobby {
     public Lobby(User owner) {
         this.owner = owner;
         addPlayer(owner);
+
+        lobbyCount++;
+        this.id = lobbyCount;
     }
 
     /**
