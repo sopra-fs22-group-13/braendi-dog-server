@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs22.game.exceptions.MoveBlockedByMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import org.jboss.jandex.Index;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.util.ArrayList;
 
@@ -288,6 +289,33 @@ public class Board {
         }
     }
 
+    public BoardData getFormattedBoardState()
+    {
+        ArrayList<String> board = new ArrayList<>();
+        for (MARBLE m : _mainCircle) {
+            board.add(m.toString());
+        }
+
+        ArrayList<String> redGoal = new ArrayList<>();
+        for (MARBLE m : _redGoal) {
+            redGoal.add(m.toString());
+        }
+        ArrayList<String> greenGoal = new ArrayList<>();
+        for (MARBLE m : _greenGoal) {
+            greenGoal.add(m.toString());
+        }
+        ArrayList<String> blueGoal = new ArrayList<>();
+        for (MARBLE m : _blueGoal) {
+            blueGoal.add(m.toString());
+        }
+        ArrayList<String> yellowGoal = new ArrayList<>();
+        for (MARBLE m : _yellowGoal) {
+            yellowGoal.add(m.toString());
+        }
+
+        BoardData boardData = new BoardData(board, redGoal, greenGoal, blueGoal, yellowGoal, _redBase, _greenBase, _blueBase, _yellowBase);
+        return boardData;
+    }
 
 
 }
