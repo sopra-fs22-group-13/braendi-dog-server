@@ -50,15 +50,17 @@ public class UserControllerTest {
     user.setPassword("Firstname Lastname");
     user.setUsername("firstname@lastname");
     user.setStatus(UserStatus.OFFLINE);
+    user.setToken("Token");
 
     List<User> allUsers = Collections.singletonList(user);
 
     // this mocks the UserService -> we define above what the userService should
     // return when getUsers() is called
     given(userService.getUsers()).willReturn(allUsers);
+    given (userService.CheckIfLoggedIn(user.getToken())).willReturn(user);
 
     // when
-    MockHttpServletRequestBuilder getRequest = get("/users").contentType(MediaType.APPLICATION_JSON);
+    MockHttpServletRequestBuilder getRequest = get("/users/"+user.getToken()).contentType(MediaType.APPLICATION_JSON);
 
     // then
     mockMvc.perform(getRequest).andExpect(status().isOk())
@@ -66,6 +68,8 @@ public class UserControllerTest {
         .andExpect(jsonPath("$[0].password", is(user.getPassword())))
         .andExpect(jsonPath("$[0].username", is(user.getUsername())))
         .andExpect(jsonPath("$[0].status", is(user.getStatus().toString())));
+//        .andExpect(jsonPath("$[0].token",is(user.getToken())));
+
   }
 
   @Test
