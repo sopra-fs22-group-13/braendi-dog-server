@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -67,7 +69,23 @@ public class UserService {
      return userAlreadyRegister;
   }
 
-  /**
+    public User getUserByToken(String token){
+      User user = userRepository.findByToken(token);
+      if (user == null){
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The provided Token was not found");
+      }
+      return user;
+    }
+
+    public User getUserById(Long id){
+        User user = userRepository.findById(id.toString());
+        if (user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The provided Id was not found");
+        }
+        return user;
+    }
+
+    /**
    * @param userToBeCreated
    * @throws org.springframework.web.server.ResponseStatusException
    * @see User
@@ -106,4 +124,46 @@ public class UserService {
         }
 
     }
+
+    public User CheckIfLoggedIn(String request) {
+        //if (request.getHeader("Authorization") != null && request.getHeader("Authorization").length() > 6 && Objects.equals(request.getHeader("Authorization").substring(0, 5).toUpperCase(), HttpServletRequest.BASIC_AUTH)) {
+          //  String auth = request.getHeader("Authorization");
+            //auth = auth.substring(6); //get the token part
+            String auth= request;
+            User us = getUserByToken(auth);
+
+            if (us != null && Objects.equals(us.getToken(), auth)) {
+                //logged in.
+                return us;
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, us == null ? "bad token" : "something went wrong");
+            }
+        //}
+        //else {
+          //  throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong Auth method, expected BASIC");
+        //}
+    }
+
+
+    public void CheckIfLoggedInAsUser(String request, Long userId) {
+        //if (request.getHeader("Authorization") != null && request.getHeader("Authorization").length() > 6 && Objects.equals(request.getHeader("Authorization").substring(0, 5).toUpperCase(), HttpServletRequest.BASIC_AUTH)) {
+        //    String auth = request.getHeader("Authorization");
+
+          //  auth = auth.substring(6); //get the token part
+            String auth= request;
+            User us = getUserById(userId);
+
+            if (us != null && Objects.equals(us.getToken(), auth)) {
+                //logged in.
+            }
+            else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, us == null ? "no token" : "bad token");
+            }
+        //}
+        //else {
+          //  throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong Auth method, expected BASIC");
+        //}
+    }
+
 }

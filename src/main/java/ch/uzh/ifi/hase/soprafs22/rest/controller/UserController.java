@@ -6,10 +6,14 @@ import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * User Controller
@@ -27,11 +31,14 @@ public class UserController {
     this.userService = userService;
   }
 
-  @GetMapping("/users")
+  @GetMapping("/users/{token}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<UserGetDTO> getAllUsers() {
-    // fetch all users in the internal representation
+  public List<UserGetDTO> getAllUsers( @PathVariable String token) {
+    if(userService.CheckIfLoggedIn(token) == null){
+        return null;
+    }
+      // fetch all users in the internal representation
     List<User> users = userService.getUsers();
     List<UserGetDTO> userGetDTOs = new ArrayList<>();
 
