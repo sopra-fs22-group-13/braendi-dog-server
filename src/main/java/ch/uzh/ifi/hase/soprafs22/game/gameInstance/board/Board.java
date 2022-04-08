@@ -7,8 +7,6 @@ import ch.uzh.ifi.hase.soprafs22.game.exceptions.MoveBlockedByMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
-import org.jboss.jandex.Index;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.util.ArrayList;
 

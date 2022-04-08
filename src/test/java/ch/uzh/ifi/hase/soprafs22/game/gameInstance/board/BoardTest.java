@@ -140,7 +140,7 @@ class BoardTest {
     }
 
     @Test
-    void makeMoveValid1()
+    void makeMoveValidRed()
     {
         //move red out, so we can do a move
         moveRedOut();
@@ -190,7 +190,172 @@ class BoardTest {
     }
 
     @Test
-    void makeMoveValid2()
+    void makeMoveValidYellow()
+    {
+        //move yellow out, so we can do a move
+        try{
+            _b.makeStartingMove(TURN.YELLOW);
+        }catch (InvalidMoveException e)
+        {
+            fail("Cannot move out YELLOW");
+        }
+
+        //create a simple move
+        ArrayList<Integer> from = new ArrayList<>();
+        ArrayList<Integer> to = new ArrayList<>();
+
+        ArrayList<Boolean> from_base = new ArrayList<>();
+        ArrayList<Boolean> to_base = new ArrayList<>();
+
+        from.add(48);
+        to.add(49);
+        from_base.add(false);
+        to_base.add(false);
+
+        Move move = new Move();
+        move.set_fromPos(from);
+        move.set_toPos(to);
+        move.set_fromPosInGoal(from_base);
+        move.set_toPosInGoal(to_base);
+
+        //make the move
+        try{
+            _b.makeMove(move);
+        }catch (InvalidMoveException e)
+        {
+            if(e instanceof NoMarbleException)
+            {
+                fail("No Marble");
+            }
+            if(e instanceof MoveBlockedByMarbleException)
+            {
+                fail("Blocked");
+            }
+            fail("Invalid Move");
+        }
+
+        //new expected board state
+        ArrayList<String> newBoard = new ArrayList<>(actualBoard);
+        newBoard.set(49, "YELLOW");
+
+        //actual
+        BoardData bd = _b.getFormattedBoardState();
+
+        assertEquals(newBoard, bd.getBoard());
+    }
+
+    @Test
+    void makeMoveValidGreen()
+    {
+        //move green out, so we can do a move
+        try{
+            _b.makeStartingMove(TURN.GREEN);
+        }catch (InvalidMoveException e)
+        {
+            fail("Cannot move out GREEN");
+        }
+
+        //create a simple move
+        ArrayList<Integer> from = new ArrayList<>();
+        ArrayList<Integer> to = new ArrayList<>();
+
+        ArrayList<Boolean> from_base = new ArrayList<>();
+        ArrayList<Boolean> to_base = new ArrayList<>();
+
+        from.add(32);
+        to.add(33);
+        from_base.add(false);
+        to_base.add(false);
+
+        Move move = new Move();
+        move.set_fromPos(from);
+        move.set_toPos(to);
+        move.set_fromPosInGoal(from_base);
+        move.set_toPosInGoal(to_base);
+
+        //make the move
+        try{
+            _b.makeMove(move);
+        }catch (InvalidMoveException e)
+        {
+            if(e instanceof NoMarbleException)
+            {
+                fail("No Marble");
+            }
+            if(e instanceof MoveBlockedByMarbleException)
+            {
+                fail("Blocked");
+            }
+            fail("Invalid Move");
+        }
+
+        //new expected board state
+        ArrayList<String> newBoard = new ArrayList<>(actualBoard);
+        newBoard.set(33, "GREEN");
+
+        //actual
+        BoardData bd = _b.getFormattedBoardState();
+
+        assertEquals(newBoard, bd.getBoard());
+    }
+
+    @Test
+    void makeMoveValidBlue()
+    {
+        //move green out, so we can do a move
+        try{
+            _b.makeStartingMove(TURN.BLUE);
+        }catch (InvalidMoveException e)
+        {
+            fail("Cannot move out BLUE");
+        }
+
+        //create a simple move
+        ArrayList<Integer> from = new ArrayList<>();
+        ArrayList<Integer> to = new ArrayList<>();
+
+        ArrayList<Boolean> from_base = new ArrayList<>();
+        ArrayList<Boolean> to_base = new ArrayList<>();
+
+        from.add(16);
+        to.add(17);
+        from_base.add(false);
+        to_base.add(false);
+
+        Move move = new Move();
+        move.set_fromPos(from);
+        move.set_toPos(to);
+        move.set_fromPosInGoal(from_base);
+        move.set_toPosInGoal(to_base);
+
+        //make the move
+        try{
+            _b.makeMove(move);
+        }catch (InvalidMoveException e)
+        {
+            if(e instanceof NoMarbleException)
+            {
+                fail("No Marble");
+            }
+            if(e instanceof MoveBlockedByMarbleException)
+            {
+                fail("Blocked");
+            }
+            fail("Invalid Move");
+        }
+
+        //new expected board state
+        ArrayList<String> newBoard = new ArrayList<>(actualBoard);
+        newBoard.set(17, "BLUE");
+
+        //actual
+        BoardData bd = _b.getFormattedBoardState();
+
+        assertEquals(newBoard, bd.getBoard());
+    }
+
+    @Test
+    void makeMoveValidToGoalRed()
     {
         //move red out, so we can do a move
         moveRedOut();
@@ -242,7 +407,178 @@ class BoardTest {
     }
 
     @Test
-    void makeMoveInvalid1()
+    void makeMoveValidToGoalYellow()
+    {
+        //move yellow out, so we can do a move
+        try{
+            _b.makeStartingMove(TURN.YELLOW);
+        }catch (InvalidMoveException e)
+        {
+            fail("Cannot move out YELLOW");
+        }
+
+        //create a simple move
+        ArrayList<Integer> from = new ArrayList<>();
+        ArrayList<Integer> to = new ArrayList<>();
+
+        ArrayList<Boolean> from_base = new ArrayList<>();
+        ArrayList<Boolean> to_base = new ArrayList<>();
+
+        from.add(48);
+        to.add(3);
+        from_base.add(false);
+        to_base.add(true); //move it into a goal
+
+        Move move = new Move();
+        move.set_fromPos(from);
+        move.set_toPos(to);
+        move.set_fromPosInGoal(from_base);
+        move.set_toPosInGoal(to_base);
+        move.set_color(TURN.YELLOW); //need to set the color.
+
+        //make the move
+        try{
+            _b.makeMove(move);
+        }catch (InvalidMoveException e)
+        {
+            if(e instanceof NoMarbleException)
+            {
+                fail("No Marble");
+            }
+            if(e instanceof MoveBlockedByMarbleException)
+            {
+                fail("Blocked");
+            }
+            fail("Invalid Move");
+        }
+
+        //new expected board state
+        ArrayList<String> newGoal = new ArrayList<>(actualyellow);
+        newGoal.set(3, "YELLOW");
+
+        //actual
+        BoardData bd = _b.getFormattedBoardState();
+
+        assertEquals(actualBoard, bd.getBoard());
+        assertEquals(newGoal, bd.getYellowGoal());
+    }
+
+    @Test
+    void makeMoveValidToGoalGreen()
+    {
+        //move yellow out, so we can do a move
+        try{
+            _b.makeStartingMove(TURN.GREEN);
+        }catch (InvalidMoveException e)
+        {
+            fail("Cannot move out GREEN");
+        }
+
+        //create a simple move
+        ArrayList<Integer> from = new ArrayList<>();
+        ArrayList<Integer> to = new ArrayList<>();
+
+        ArrayList<Boolean> from_base = new ArrayList<>();
+        ArrayList<Boolean> to_base = new ArrayList<>();
+
+        from.add(32);
+        to.add(3);
+        from_base.add(false);
+        to_base.add(true); //move it into a goal
+
+        Move move = new Move();
+        move.set_fromPos(from);
+        move.set_toPos(to);
+        move.set_fromPosInGoal(from_base);
+        move.set_toPosInGoal(to_base);
+        move.set_color(TURN.GREEN); //need to set the color.
+
+        //make the move
+        try{
+            _b.makeMove(move);
+        }catch (InvalidMoveException e)
+        {
+            if(e instanceof NoMarbleException)
+            {
+                fail("No Marble");
+            }
+            if(e instanceof MoveBlockedByMarbleException)
+            {
+                fail("Blocked");
+            }
+            fail("Invalid Move");
+        }
+
+        //new expected board state
+        ArrayList<String> newGoal = new ArrayList<>(actualgreen);
+        newGoal.set(3, "GREEN");
+
+        //actual
+        BoardData bd = _b.getFormattedBoardState();
+
+        assertEquals(actualBoard, bd.getBoard());
+        assertEquals(newGoal, bd.getGreenGoal());
+    }
+
+    @Test
+    void makeMoveValidToGoalBlue()
+    {
+        //move yellow out, so we can do a move
+        try{
+            _b.makeStartingMove(TURN.BLUE);
+        }catch (InvalidMoveException e)
+        {
+            fail("Cannot move out BLUE");
+        }
+
+        //create a simple move
+        ArrayList<Integer> from = new ArrayList<>();
+        ArrayList<Integer> to = new ArrayList<>();
+
+        ArrayList<Boolean> from_base = new ArrayList<>();
+        ArrayList<Boolean> to_base = new ArrayList<>();
+
+        from.add(16);
+        to.add(3);
+        from_base.add(false);
+        to_base.add(true); //move it into a goal
+
+        Move move = new Move();
+        move.set_fromPos(from);
+        move.set_toPos(to);
+        move.set_fromPosInGoal(from_base);
+        move.set_toPosInGoal(to_base);
+        move.set_color(TURN.BLUE); //need to set the color.
+
+        //make the move
+        try{
+            _b.makeMove(move);
+        }catch (InvalidMoveException e)
+        {
+            if(e instanceof NoMarbleException)
+            {
+                fail("No Marble");
+            }
+            if(e instanceof MoveBlockedByMarbleException)
+            {
+                fail("Blocked");
+            }
+            fail("Invalid Move");
+        }
+
+        //new expected board state
+        ArrayList<String> newGoal = new ArrayList<>(actualblue);
+        newGoal.set(3, "BLUE");
+
+        //actual
+        BoardData bd = _b.getFormattedBoardState();
+
+        assertEquals(actualBoard, bd.getBoard());
+        assertEquals(newGoal, bd.getBlueGoal());
+    }
+
+    @Test
+    void makeMoveInvalid_Composition()
     {
         //invalid move: invalid move composition
         //move red out, so we can do a move
@@ -352,5 +688,185 @@ class BoardTest {
 
         //make the move
         assertThrows(NoMarbleException.class, ()->{_b.makeMove(move);});
+    }
+
+    @Test
+    void makeMoveValidMultiple()
+    {
+        //list has more than 1 entry
+        moveRedOut();
+
+        //create a simple move
+        ArrayList<Integer> from = new ArrayList<>();
+        ArrayList<Integer> to = new ArrayList<>();
+
+        ArrayList<Boolean> from_base = new ArrayList<>();
+        ArrayList<Boolean> to_base = new ArrayList<>();
+
+        from.add(0);
+        to.add(10);
+        from_base.add(false);
+        to_base.add(false);
+
+        Move move = new Move();
+        move.set_fromPos(from);
+        move.set_toPos(to);
+        move.set_fromPosInGoal(from_base);
+        move.set_toPosInGoal(to_base);
+
+        try{
+            _b.makeMove(move);
+        }catch (InvalidMoveException e)
+        {
+            fail(e.getMessage());
+        }
+
+        moveRedOut();
+
+        //now 2 marbles on the field, move bot of them
+
+        from.clear();
+        to.clear();
+
+        from.add(10); //move 10 to 12
+        to.add(12);
+        from.add(0); //move 0 to 5
+        to.add(5);
+
+        from_base.add(false);
+        to_base.add(false);
+
+        try{
+            _b.makeMove(move);
+        }catch (InvalidMoveException e)
+        {
+            fail();
+        }
+
+        //actual
+        BoardData bd = _b.getFormattedBoardState();
+
+        //expected
+        ArrayList<String> newBoard = new ArrayList<>(actualBoard);
+        newBoard.set(12, "RED");
+        newBoard.set(5, "RED");
+
+        assertEquals(newBoard, bd.getBoard());
+        assertEquals(2, bd.getRedBase());
+    }
+
+    @Test
+    void makeMoveValidInGoal()
+    {
+        //initial move, not important
+        moveRedOut();
+
+        //create a simple move
+        //color is necessary
+        ArrayList<Integer> from = new ArrayList<>();
+        ArrayList<Integer> to = new ArrayList<>();
+
+        ArrayList<Boolean> from_base = new ArrayList<>();
+        ArrayList<Boolean> to_base = new ArrayList<>();
+
+        from.add(0);
+        to.add(2);
+        from_base.add(false);
+        to_base.add(true);
+
+        Move move = new Move();
+        move.set_fromPos(from);
+        move.set_toPos(to);
+        move.set_fromPosInGoal(from_base);
+        move.set_toPosInGoal(to_base);
+
+        move.set_color(TURN.RED);
+
+
+        try{
+            _b.makeMove(move);
+        }catch (InvalidMoveException e)
+        {
+            fail(e.getMessage());
+        }
+
+        //now next move: move in the goal to a state in the goal
+        from.clear();
+        from.add(2);
+        to.clear();
+        to.add(3);
+        from_base.clear();
+        from_base.add(true);
+        to_base.clear();
+        to_base.add(true);
+
+        try{
+            _b.makeMove(move);
+        }catch (InvalidMoveException e)
+        {
+            fail(e.getMessage());
+        }
+
+        //expected
+        ArrayList<String> newRed = new ArrayList<>(actualred);
+        newRed.set(3, "RED");
+
+        //actual
+        BoardData bd = _b.getFormattedBoardState();
+
+        assertEquals(newRed, bd.getRedGoal());
+    }
+
+    @Test
+    void makeSwitchValid()
+    {
+
+        //move red out
+        moveRedOut();
+        //move green out
+        try{
+            _b.makeStartingMove(TURN.GREEN);
+        }catch (InvalidMoveException e)
+        {
+            fail("Cannot move out GREEN");
+        }
+
+        //switch these two
+
+        try {
+            _b.makeSwitch(0, 32);
+        }
+        catch (InvalidMoveException e) {
+            fail(e.getMessage());
+        }
+
+        //expected
+        ArrayList<String> newBoard = new ArrayList<>(actualBoard);
+        newBoard.set(0, "GREEN");
+        newBoard.set(32, "RED");
+
+        //actual
+        BoardData bd = _b.getFormattedBoardState();
+
+        assertEquals(newBoard, bd.getBoard());
+    }
+
+    @Test
+    void makeSwitchOOB()
+    {
+
+        //move red out
+        moveRedOut();
+        //move green out
+        try{
+            _b.makeStartingMove(TURN.GREEN);
+        }catch (InvalidMoveException e)
+        {
+            fail("Cannot move out GREEN");
+        }
+
+        //switch these two, but one is out of bounds
+        InvalidMoveException e = assertThrows(InvalidMoveException.class, () -> {_b.makeSwitch(64, 32);});
+        assertEquals("OUT_OF_BOUNDS", e.getCode());
     }
 }
