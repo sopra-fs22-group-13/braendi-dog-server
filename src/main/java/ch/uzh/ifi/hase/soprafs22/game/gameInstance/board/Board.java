@@ -2,9 +2,11 @@ package ch.uzh.ifi.hase.soprafs22.game.gameInstance.board;
 
 import ch.uzh.ifi.hase.soprafs22.game.constants.MARBLE;
 import ch.uzh.ifi.hase.soprafs22.game.constants.TURN;
+import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.MoveBlockedByMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import org.jboss.jandex.Index;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -80,6 +82,12 @@ public class Board {
         return true;
     }
 
+    private boolean isEmptyAt(int position)
+    {
+        MARBLE m = _mainCircle.get(position);
+        return m == MARBLE.NONE;
+    }
+
     /**
      * Get the TurnColor from a marble at a position x on the main circle
      * @throws NoMarbleException if there is no marble at x
@@ -128,7 +136,7 @@ public class Board {
      * @throws MoveBlockedByMarbleException there was already a marble at pos2
      */
     private void movePositions(int pos1, int pos2)
-        throws NoMarbleException, MoveBlockedByMarbleException, IndexOutOfBoundsException
+        throws InvalidMoveException, IndexOutOfBoundsException
     {
         if(pos1 < 0 || pos1 >= 64 || pos2 < 0 || pos2 >= 64) throw new IndexOutOfBoundsException("the positions have to be in range 0-63 (inclusive)");
 
@@ -136,7 +144,7 @@ public class Board {
         MARBLE m2 = _mainCircle.get(pos2);
 
         if(m1 == MARBLE.NONE) throw new NoMarbleException();
-        if(m2 == MARBLE.NONE) throw new MoveBlockedByMarbleException();
+        if(m2 != MARBLE.NONE) throw new MoveBlockedByMarbleException();
 
         //all good, make the move
         setMarbleAtPosition(pos2, m1);
@@ -152,7 +160,7 @@ public class Board {
      * @throws MoveBlockedByMarbleException there was already a marble at pos2
      */
     private void movePositions(int pos1, int pos2, TURN goalColor, boolean startInGoal)
-            throws NoMarbleException, MoveBlockedByMarbleException, IndexOutOfBoundsException
+            throws InvalidMoveException, IndexOutOfBoundsException
     {
         MARBLE m1;
         MARBLE m2;
@@ -315,6 +323,108 @@ public class Board {
 
         BoardData boardData = new BoardData(board, redGoal, greenGoal, blueGoal, yellowGoal, _redBase, _greenBase, _blueBase, _yellowBase);
         return boardData;
+    }
+
+    /**
+     * Makes one or more moves specified by the move object.
+     * IMPORTANT: This does NOT check if the move is allowed depending on the rules (eg: move cost 12, card value: 8)
+     * @param move the move object that holds the move
+     * @throws InvalidMoveException if the move cannot be completed because of the board state
+     */
+    public void makeMove(Move move) throws InvalidMoveException
+    {
+        //expects the move to be valid
+        if(move == null || !move.isWellFormed())
+        {
+            throw new InvalidMoveException("BAD_STRUCTURE", "Bad move structure");
+        }
+
+        //For each move, make it
+        for (int i = 0; i < move.get_fromPos().size(); i++) {
+            int fromPos = move.get_fromPos().get(i);
+            int toPos = move.get_toPos().get(i);
+            boolean startsInGoal = move.get_fromPosInGoal().get(i);
+            boolean endsInGoal = move.get_toPosInGoal().get(i);
+
+            //do the move
+            if(endsInGoal)
+            {
+                movePositions(fromPos, toPos, move.get_color(), startsInGoal);
+            }
+            else
+            {
+                movePositions(fromPos, toPos);
+            }
+
+        }
+    }
+
+    /**
+     * Makes a starting move (from the base to the starting intersect position)
+     * IMPORTANT: This does NOT check if the move is allowed depending on the rules (eg: card is not Ace/Joker/King)
+     * @param color the color we want to move out
+     * @throws InvalidMoveException if the move cannot be completed because of the board state
+     */
+    public void makeStartingMove(TURN color) throws InvalidMoveException
+    {
+        switch (color)
+        {
+            case RED:
+                if(_redBase > 0 && isEmptyAt(REDINTERSECT))
+                {
+                    _redBase = _redBase-1;
+                    setMarbleAtPosition(REDINTERSECT, MARBLE.RED);
+                }else
+                {
+                    throw new InvalidMoveException("BASE_BLOCKED", "the base is blocked or there are no marbles left to start with");
+                }
+                break;
+            case YELLOW:
+                if(_yellowBase > 0 && isEmptyAt(YELLOWINTERSECT))
+                {
+                    _yellowBase = _yellowBase-1;
+                    setMarbleAtPosition(YELLOWINTERSECT, MARBLE.YELLOW);
+                }else
+                {
+                    throw new InvalidMoveException("BASE_BLOCKED", "the base is blocked or there are no marbles left to start with");
+                }
+                break;
+            case GREEN:
+                if(_greenBase > 0 && isEmptyAt(GREENINTERSECT))
+                {
+                    _greenBase = _greenBase-1;
+                    setMarbleAtPosition(GREENINTERSECT, MARBLE.GREEN);
+                }else
+                {
+                    throw new InvalidMoveException("BASE_BLOCKED", "the base is blocked or there are no marbles left to start with");
+                }
+                break;
+            case BLUE:
+                if(_blueBase > 0 && isEmptyAt(BLUEINTERSECT))
+                {
+                    _blueBase = _blueBase-1;
+                    setMarbleAtPosition(BLUEINTERSECT, MARBLE.BLUE);
+                }else
+                {
+                    throw new InvalidMoveException("BASE_BLOCKED", "the base is blocked or there are no marbles left to start with");
+                }
+                break;
+        }
+    }
+
+    /**
+     * Makes a switch specified by the two positions on the board
+     * IMPORTANT: This does NOT check if the move is allowed depending on the rules (eg: card is not a joker/jack)
+     * @throws InvalidMoveException if the move cannot be completed because of the board state
+     */
+    public void makeSwitch(int start, int end) throws InvalidMoveException
+    {
+        try{
+            changePositions(start, end);
+        }catch (IndexOutOfBoundsException e)
+        {
+            throw new InvalidMoveException("OUT_OF_BOUNDS", "one of the positions was out of bounds (0-63)");
+        }
     }
 
 
