@@ -26,17 +26,29 @@ public class UserManager {
 
 
     private ArrayList<Player> _players = new ArrayList<>();
-    private List<User> _correspondingUsers;
+    private ArrayList<User> _correspondingUsers = new ArrayList<>();
     private String _gameToken;
     private Game _game;
 
     private Hashtable<User, Player> _userToPlayer = new Hashtable<User, Player>();
     private Hashtable<Player, User> _playerToUser = new Hashtable<Player, User>();
+/*
 
-    public UserManager(String gameToken, Lobby lobby){ //players instead of Lobby?
+    public UserManager(String gameToken, Lobby lobby){
         this._gameToken = gameToken;
-        this._correspondingUsers = lobby.getPlayers();
-        //this._players = _game.getPlayers(gameToken);
+        this._correspondingUsers = lobby.getPlayers(); //needs to be arraylist in lobby
+        this._players = _game.getPlayers(gameToken);
+
+        for (int i = 0; i < 4; i++) {
+            _userToPlayer.put(_correspondingUsers.get(i), _players.get(i));
+            _playerToUser.put(_players.get(i), _correspondingUsers.get(i));
+        }
+    }
+*/
+
+    public UserManager(ArrayList<Player> players, ArrayList<User> users){
+        this._correspondingUsers = users;
+        this._players = players;
 
         for (int i = 0; i<4; i++) {
             _userToPlayer.put(_correspondingUsers.get(i), _players.get(i));
@@ -59,9 +71,13 @@ public class UserManager {
     public Player getPlayerFromUserToken(String usertoken){
 
         User user = userRepository.findByToken(usertoken);
-        return _userToPlayer.get(user);
+        System.out.println("User: " + user);
+        Player player = _userToPlayer.get(user);
+        System.out.println("Dict:" + _userToPlayer);
+        return player;
     }
 
+    //ch.uzh.ifi.hase.soprafs22.rest.entity.User@564b1f43
     public Player getPlayerFromUser(User user){
         return _userToPlayer.get(user);
     }
