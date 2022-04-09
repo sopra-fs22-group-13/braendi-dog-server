@@ -2,13 +2,12 @@ package ch.uzh.ifi.hase.soprafs22.lobby;
 
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
-import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
-import ch.uzh.ifi.hase.soprafs22.websocket.SpringContext;
+import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
+import ch.uzh.ifi.hase.soprafs22.websocket.controller.IUpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class LobbyController {
 
     private final GameCreator gameCreator = new GameCreator();
     private final UserRepository userRepository = SpringContext.getBean(UserRepository.class);
-    private final UpdateController updateController = SpringContext.getBean(UpdateController.class);
+    private final IUpdateController updateController = SpringContext.getBean(UpdateController.class);
 
 
     private final List<Lobby> openLobbies = new ArrayList<>();

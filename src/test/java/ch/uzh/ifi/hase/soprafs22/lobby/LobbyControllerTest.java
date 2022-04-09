@@ -3,12 +3,10 @@ package ch.uzh.ifi.hase.soprafs22.lobby;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
-import ch.uzh.ifi.hase.soprafs22.websocket.SpringContext;
-import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
+import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
