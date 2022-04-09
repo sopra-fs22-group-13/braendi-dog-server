@@ -77,19 +77,15 @@ public class Lobby {
         return this.owner;
     }
 
-    /** TODO
-     *  make this return a copy pls
-     * @return
-     */
     public List<User> getPlayers() {
-        return players;
+        List<User> playersCopy = new ArrayList<User>();
+        for (User player: players) if (player != null) playersCopy.add(player);
+        return playersCopy;
     }
 
-    /** TODO
-     *  make this return a copy pls
-     * @return
-     */
     public List<User> getPendingInvites() {
-        return pendingInvites;
+        List<User> inviteesCopy = new ArrayList<User>();
+        for (User invitee: pendingInvites) if (invitee != null) inviteesCopy.add(invitee);
+        return inviteesCopy;
     }
 }
