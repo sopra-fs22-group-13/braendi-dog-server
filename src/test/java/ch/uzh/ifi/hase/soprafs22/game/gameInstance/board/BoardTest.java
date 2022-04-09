@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.game.gameInstance.board;
 
-import ch.uzh.ifi.hase.soprafs22.game.constants.MARBLE;
-import ch.uzh.ifi.hase.soprafs22.game.constants.TURN;
+import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.MoveBlockedByMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
@@ -47,7 +46,7 @@ class BoardTest {
     void moveRedOut()
     {
         try{
-            _b.makeStartingMove(TURN.RED);
+            _b.makeStartingMove(COLOR.RED);
         }catch (InvalidMoveException e)
         {
             fail("Cannot move out RED");
@@ -82,7 +81,7 @@ class BoardTest {
     {
         try
         {
-            _b.makeStartingMove(TURN.RED);
+            _b.makeStartingMove(COLOR.RED);
         }catch (InvalidMoveException e)
         {
             fail(e.getMessage());
@@ -101,7 +100,7 @@ class BoardTest {
     {
         try
         {
-            _b.makeStartingMove(TURN.YELLOW);
+            _b.makeStartingMove(COLOR.YELLOW);
         }catch (InvalidMoveException e)
         {
             fail(e.getMessage());
@@ -109,7 +108,7 @@ class BoardTest {
 
         try
         {
-            _b.makeStartingMove(TURN.RED);
+            _b.makeStartingMove(COLOR.RED);
         }catch (InvalidMoveException e)
         {
             fail(e.getMessage());
@@ -130,13 +129,13 @@ class BoardTest {
     {
         try
         {
-            _b.makeStartingMove(TURN.RED);
+            _b.makeStartingMove(COLOR.RED);
         }catch (InvalidMoveException e)
         {
             fail(e.getMessage());
         }
 
-        assertThrows(InvalidMoveException.class, () -> {_b.makeStartingMove(TURN.RED);}, "InvalidMove expected");
+        assertThrows(InvalidMoveException.class, () -> {_b.makeStartingMove(COLOR.RED);}, "InvalidMove expected");
     }
 
     @Test
@@ -194,7 +193,7 @@ class BoardTest {
     {
         //move yellow out, so we can do a move
         try{
-            _b.makeStartingMove(TURN.YELLOW);
+            _b.makeStartingMove(COLOR.YELLOW);
         }catch (InvalidMoveException e)
         {
             fail("Cannot move out YELLOW");
@@ -249,7 +248,7 @@ class BoardTest {
     {
         //move green out, so we can do a move
         try{
-            _b.makeStartingMove(TURN.GREEN);
+            _b.makeStartingMove(COLOR.GREEN);
         }catch (InvalidMoveException e)
         {
             fail("Cannot move out GREEN");
@@ -304,7 +303,7 @@ class BoardTest {
     {
         //move green out, so we can do a move
         try{
-            _b.makeStartingMove(TURN.BLUE);
+            _b.makeStartingMove(COLOR.BLUE);
         }catch (InvalidMoveException e)
         {
             fail("Cannot move out BLUE");
@@ -377,7 +376,7 @@ class BoardTest {
         move.set_toPos(to);
         move.set_fromPosInGoal(from_base);
         move.set_toPosInGoal(to_base);
-        move.set_color(TURN.RED); //need to set the color.
+        move.set_color(COLOR.RED); //need to set the color.
 
         //make the move
         try{
@@ -411,7 +410,7 @@ class BoardTest {
     {
         //move yellow out, so we can do a move
         try{
-            _b.makeStartingMove(TURN.YELLOW);
+            _b.makeStartingMove(COLOR.YELLOW);
         }catch (InvalidMoveException e)
         {
             fail("Cannot move out YELLOW");
@@ -434,7 +433,7 @@ class BoardTest {
         move.set_toPos(to);
         move.set_fromPosInGoal(from_base);
         move.set_toPosInGoal(to_base);
-        move.set_color(TURN.YELLOW); //need to set the color.
+        move.set_color(COLOR.YELLOW); //need to set the color.
 
         //make the move
         try{
@@ -468,7 +467,7 @@ class BoardTest {
     {
         //move yellow out, so we can do a move
         try{
-            _b.makeStartingMove(TURN.GREEN);
+            _b.makeStartingMove(COLOR.GREEN);
         }catch (InvalidMoveException e)
         {
             fail("Cannot move out GREEN");
@@ -491,7 +490,7 @@ class BoardTest {
         move.set_toPos(to);
         move.set_fromPosInGoal(from_base);
         move.set_toPosInGoal(to_base);
-        move.set_color(TURN.GREEN); //need to set the color.
+        move.set_color(COLOR.GREEN); //need to set the color.
 
         //make the move
         try{
@@ -525,7 +524,7 @@ class BoardTest {
     {
         //move yellow out, so we can do a move
         try{
-            _b.makeStartingMove(TURN.BLUE);
+            _b.makeStartingMove(COLOR.BLUE);
         }catch (InvalidMoveException e)
         {
             fail("Cannot move out BLUE");
@@ -548,7 +547,7 @@ class BoardTest {
         move.set_toPos(to);
         move.set_fromPosInGoal(from_base);
         move.set_toPosInGoal(to_base);
-        move.set_color(TURN.BLUE); //need to set the color.
+        move.set_color(COLOR.BLUE); //need to set the color.
 
         //make the move
         try{
@@ -780,7 +779,7 @@ class BoardTest {
         move.set_fromPosInGoal(from_base);
         move.set_toPosInGoal(to_base);
 
-        move.set_color(TURN.RED);
+        move.set_color(COLOR.RED);
 
 
         try{
@@ -825,7 +824,7 @@ class BoardTest {
         moveRedOut();
         //move green out
         try{
-            _b.makeStartingMove(TURN.GREEN);
+            _b.makeStartingMove(COLOR.GREEN);
         }catch (InvalidMoveException e)
         {
             fail("Cannot move out GREEN");
@@ -859,7 +858,7 @@ class BoardTest {
         moveRedOut();
         //move green out
         try{
-            _b.makeStartingMove(TURN.GREEN);
+            _b.makeStartingMove(COLOR.GREEN);
         }catch (InvalidMoveException e)
         {
             fail("Cannot move out GREEN");

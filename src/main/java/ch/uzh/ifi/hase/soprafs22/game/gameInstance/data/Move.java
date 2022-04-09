@@ -1,9 +1,14 @@
 package ch.uzh.ifi.hase.soprafs22.game.gameInstance.data;
 
-import ch.uzh.ifi.hase.soprafs22.game.constants.TURN;
+import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 
 import java.util.ArrayList;
+
+    /*
+    * Move
+    * This class contains all information of a move
+    * */
 
 public class Move {
     private ArrayList<Integer> _fromPos = new ArrayList<>();
@@ -13,8 +18,18 @@ public class Move {
     private ArrayList<Boolean> _toPosInGoal = new ArrayList<>();
 
     private Card _card;
-    private TURN _color;
+    private COLOR _color;
 
+    public Move(ArrayList<Integer> fromPos, ArrayList<Integer> toPos, ArrayList<Boolean> fromPosInGoal, ArrayList<Boolean> toPosInGoal, Card c){
+        this._fromPos = fromPos;
+        this._toPos = toPos;
+        this._fromPosInGoal = fromPosInGoal;
+        this._toPosInGoal = toPosInGoal;
+        this._card = c;
+    }
+
+    // for testing purposes
+    public Move(){}
 
     public ArrayList<Integer> get_fromPos() {
         return _fromPos;
@@ -56,12 +71,12 @@ public class Move {
         this._card = _card;
     }
 
-    public TURN get_color()
+    public COLOR get_color()
     {
         return _color;
     }
 
-    public void set_color(TURN color)
+    public void set_color(COLOR color)
     {
         this._color = color;
     }
@@ -69,5 +84,12 @@ public class Move {
     public boolean isWellFormed()
     {
         return _fromPos.size() == _toPos.size() && _toPos.size() == _fromPosInGoal.size() && _fromPosInGoal.size() == _toPosInGoal.size();
+    }
+
+    public boolean checkIfComplete(){
+        if (isWellFormed()){
+            return _fromPos.isEmpty() && _toPos.isEmpty() && _fromPosInGoal.isEmpty() && _toPosInGoal.isEmpty() && _card != null && _color != null;
+        }
+        return false;
     }
 }

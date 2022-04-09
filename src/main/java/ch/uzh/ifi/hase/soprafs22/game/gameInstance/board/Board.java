@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs22.game.gameInstance.board;
 
 import ch.uzh.ifi.hase.soprafs22.game.constants.MARBLE;
-import ch.uzh.ifi.hase.soprafs22.game.constants.TURN;
+import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.MoveBlockedByMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
@@ -54,7 +54,7 @@ public class Board {
         return true;
     }
 
-    private boolean setMarbleAtPosition(int position, MARBLE marble, TURN goalColor)
+    private boolean setMarbleAtPosition(int position, MARBLE marble, COLOR goalColor)
     {
         switch (goalColor)
         {
@@ -90,7 +90,7 @@ public class Board {
      * Get the TurnColor from a marble at a position x on the main circle
      * @throws NoMarbleException if there is no marble at x
      */
-    private TURN getColorFromPosition(int pos) throws NoMarbleException
+    private COLOR getColorFromPosition(int pos) throws NoMarbleException
     {
         if(pos < 0 || pos >= 64) throw new IndexOutOfBoundsException("the position has to be in range 0-63 (inclusive)");
         MARBLE m = _mainCircle.get(pos);
@@ -98,13 +98,13 @@ public class Board {
         switch (m)
         {
             case GREEN:
-                return TURN.GREEN;
+                return COLOR.GREEN;
             case BLUE:
-                return TURN.BLUE;
+                return COLOR.BLUE;
             case RED:
-                return TURN.RED;
+                return COLOR.RED;
             case YELLOW:
-                return TURN.YELLOW;
+                return COLOR.YELLOW;
             default:
                 throw new NoMarbleException();
         }
@@ -157,7 +157,7 @@ public class Board {
      * @throws NoMarbleException no marble was at pos1
      * @throws MoveBlockedByMarbleException there was already a marble at pos2
      */
-    private void movePositions(int pos1, int pos2, TURN goalColor, boolean startInGoal)
+    private void movePositions(int pos1, int pos2, COLOR goalColor, boolean startInGoal)
             throws InvalidMoveException, IndexOutOfBoundsException
     {
         MARBLE m1;
@@ -256,7 +256,7 @@ public class Board {
      * @param goalColor the color of the goal we are considering for moving into
      * @param startInGoal if the marble already starts in its respective goal (eg: moving 1 forward in the goal)
      */
-    private int getDistanceInBetween(int startPosition, int endPosition, TURN goalColor, boolean startInGoal) throws IndexOutOfBoundsException
+    private int getDistanceInBetween(int startPosition, int endPosition, COLOR goalColor, boolean startInGoal) throws IndexOutOfBoundsException
     {
         if(!startInGoal) //normal move into a goal from outside
         {
@@ -363,7 +363,7 @@ public class Board {
      * @param color the color we want to move out
      * @throws InvalidMoveException if the move cannot be completed because of the board state
      */
-    public void makeStartingMove(TURN color) throws InvalidMoveException
+    public void makeStartingMove(COLOR color) throws InvalidMoveException
     {
         switch (color)
         {
