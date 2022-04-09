@@ -20,11 +20,11 @@ class LobbyTest {
     @Test
     public void createLobbyTest() {
         assertEquals(Arrays.asList(owner), lobby.getPlayers());
-        assertEquals(1, lobby.getId());
+        int startId = lobby.getId();
 
         User newOwner = new User();
         Lobby newLobby = new Lobby(newOwner);
-        assertEquals(2, newLobby.getId());
+        assertEquals(startId + 1, newLobby.getId());
     }
 
     @Test
