@@ -19,7 +19,7 @@ class LobbyTest {
 
     @Test
     public void createLobbyTest() {
-        assertEquals(Arrays.asList(owner, null, null, null), lobby.getPlayers());
+        assertEquals(Arrays.asList(owner), lobby.getPlayers());
         assertEquals(1, lobby.getId());
 
         User newOwner = new User();
@@ -31,7 +31,7 @@ class LobbyTest {
     public void addPlayerTest() {
         User newPlayer = new User();
         lobby.addPlayer(newPlayer);
-        assertEquals(Arrays.asList(owner, newPlayer, null, null), lobby.getPlayers());
+        assertEquals(Arrays.asList(owner, newPlayer), lobby.getPlayers());
 
         User anotherPlayer = new User();
         assertEquals(3, lobby.addPlayer(anotherPlayer));
