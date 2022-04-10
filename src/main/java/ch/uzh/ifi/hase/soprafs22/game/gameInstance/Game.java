@@ -29,7 +29,7 @@ public class Game {
     private Board _board;
     private UserManager _userManager;
 
-    public Game(ArrayList<User> users, GameManager manager){
+    public Game(ArrayList<User> users){
 
         /* Inizialize Game with already one player has first*/
         Random rand = new Random();
@@ -37,7 +37,7 @@ public class Game {
         this._playerHasValidTurns= new ArrayList();
         this._cardStack= new CardStack();
         this._gameToken= UUID.randomUUID().toString();
-        this._manager= manager;
+        this._manager= GameManager.getInstance();
         this._board= new Board();
         this._userManager= new UserManager(_players,users);
 
@@ -45,9 +45,12 @@ public class Game {
 
 
     private boolean checkValidTurns(Move move, Player playerWantToMove){
-        if (!move.isWellFormed()|| move== null ) {
-            if (playerWantToMove == _playerWithCurrentTurn){
-                return true;
+
+        if ( move!= null ) {
+            if (move.checkIfComplete()){
+                if (playerWantToMove == _playerWithCurrentTurn){
+                    return true;
+                }
             }
         }
         return false;
@@ -165,6 +168,10 @@ public class Game {
     public ArrayList<Player> getPlayers(){
         // I don't think that game should do it like that
         return _players;
+    }
+
+    public Player getPlayerByToken(String token){
+        return _userManager.getPlayerFromUserToken(token);
     }
 
 }

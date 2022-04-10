@@ -95,7 +95,7 @@ public class LobbyController {
 
         updatePlayers(lobby, UpdateType.START);
 
-        return gameCreator.CreateGame();
+        return gameCreator.createGame(lobby);
     }
 
     private void updatePlayers(Lobby lobby, UpdateType updateType) {
