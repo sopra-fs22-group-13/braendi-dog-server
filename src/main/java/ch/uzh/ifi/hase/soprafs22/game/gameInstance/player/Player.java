@@ -2,30 +2,58 @@ package ch.uzh.ifi.hase.soprafs22.game.gameInstance.player;
 
 import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
+import com.sun.istack.NotNull;
 
 import java.util.ArrayList;
 
 public class Player {
 
-    private ArrayList<Card> _hand = new ArrayList<Card>();
-    private COLOR _turn;
     private String _token;
+    private final ArrayList<Card> _hand = new ArrayList<Card>();
+    private final COLOR _turn;
 
-    public Player(){
-        this._token= null;
+    public Player(COLOR playerColor) throws IllegalArgumentException{
+        this._token = null;
+        this._turn = playerColor;
     }
 
-    public String get_token() {
-        return _token;
+    public void removeCard(Card reqCard) {
+        for (Card card: _hand) {
+            if (reqCard.equalsContent(card)) {
+                _hand.remove(card);
+                return;
+            }
+        }
     }
 
-    public ArrayList<String> getFormattedCards()
-    {
+    public boolean isCardAvailable(Card reqCard) {
+        for (Card card: _hand) {
+            if (reqCard.equalsContent(card)) return true;
+        }
+
+        return false;
+    }
+
+    public void addCard(Card card) {
+        _hand.add(card);
+    }
+
+    public int getCardCount() {
+        return _hand.size();
+    }
+
+    /**
+     * TODO
+     */
+    public ArrayList<String> getFormattedCards() {
         return null;
     }
 
-    public int getCardCount()
-    {
-        return 0;
+    public String get_token() {
+        return this._token;
+    }
+
+    public COLOR getTurn() {
+        return this._turn;
     }
 }

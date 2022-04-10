@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs22.game.gameInstance.board;
 
 import ch.uzh.ifi.hase.soprafs22.game.GameManager;
+import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.Game;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,10 +25,10 @@ class GameTest {
     void setupGame()
     {
         GameManager manager= new GameManager();
-        owner = new Player(/*token*/);
-        player2 = new Player(/*token*/);
-        player3 = new Player(/*token*/);
-        player4 = new Player(/*token*/);
+        owner = new Player(COLOR.YELLOW/*token*/);
+        player2 = new Player(COLOR.RED/*token*/);
+        player3 = new Player(COLOR.GREEN/*token*/);
+        player4 = new Player(COLOR.BLUE/*token*/);
         List<Player> players =  new ArrayList<>();
         players.add(owner);
         players.add(player2);

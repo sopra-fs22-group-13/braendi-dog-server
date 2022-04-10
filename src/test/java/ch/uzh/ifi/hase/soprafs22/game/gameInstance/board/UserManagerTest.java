@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.game.gameInstance.board;
 
+import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.UserManager;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
@@ -37,7 +38,7 @@ class UserManagerTest {
             user = userService.createUser(user);
             System.out.println("Token in setUp: " + i + user.getToken());
 
-            Player player = new Player();
+            Player player = new Player(COLOR.YELLOW);
 
             players.add(player);
             users.add(user);
