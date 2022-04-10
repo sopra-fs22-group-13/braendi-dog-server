@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,11 +32,12 @@ public class UserController {
     this.userService = userService;
   }
 
-  @GetMapping("/users/{token}")
+  @GetMapping("/users")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<UserGetDTO> getAllUsers( @PathVariable String token) {
-    if(userService.CheckIfLoggedIn(token) == null){
+  public List<UserGetDTO> getAllUsers( HttpServletRequest response) {
+
+    if(userService.CheckIfLoggedIn(response) == null){
         return null;
     }
       // fetch all users in the internal representation
@@ -52,7 +54,7 @@ public class UserController {
   @PostMapping("/login")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
-  public UserGetDTO createUser(@RequestBody UserPostDTO userPostDTO) {
+  public UserGetDTO createUser(HttpServletResponse response, @RequestBody UserPostDTO userPostDTO) {
     // convert API user to internal representation
     User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
@@ -60,20 +62,21 @@ public class UserController {
     User createdUser = userService.createUser(userInput);
 
     // convert internal representation of user back to API
+    response.addHeader("Authorization", "Basic " + createdUser.getToken());
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
 
     @PostMapping("/login/users")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public UserGetDTO loginUser(@RequestBody UserPostDTO userPostDTO) {
+    public UserGetDTO loginUser(HttpServletResponse response, @RequestBody UserPostDTO userPostDTO) {
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
         // create user
-        User createdUser = userService.loginUser(userInput);
-
+        User loginUser = userService.loginUser(userInput);
+        response.addHeader("Authorization", "Basic " + loginUser.getToken());
         // convert internal representation of user back to API
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loginUser);
     }
 }
