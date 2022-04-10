@@ -31,12 +31,6 @@ public class Game {
 
     public Game(ArrayList<User> users, GameManager manager){
 
-
-
-        /*
-        * From how do I get the Users?? Lobby, UserManager, Manager Or God?
-        * */
-
         /* Inizialize Game with already one player has first*/
         Random rand = new Random();
         this._playerWithCurrentTurn= _players.get(rand.nextInt(_players.size()));
@@ -45,7 +39,6 @@ public class Game {
         this._gameToken= UUID.randomUUID().toString();
         this._manager= manager;
         this._board= new Board();
-
         this._userManager= new UserManager(_players,users);
 
     }
@@ -57,8 +50,8 @@ public class Game {
          return true;
     }
 
-    public boolean playerMove(String token, Move move) throws InvalidMoveException {
-        Player playerWantToMove=getPlayerByToken(token);
+    public boolean playerMove(Move move) throws InvalidMoveException {
+        Player playerWantToMove=_userManager.getPlayerFromUserToken(move.getToken());
         if (!checkValidTurns(move, playerWantToMove)) {
             throw new InvalidMoveException("Move Not allowed", "Bad move logic");
         }
@@ -142,25 +135,10 @@ public class Game {
         return _playerWithCurrentTurn;
     }
 
-    public Player getPlayerByToken(String token){
-        Player player =null;
-        for (int i = 0; i<4; i++){
-            if (token== _players.get(i).get_token()){
-                player= _players.get(i);
-            }
-        }
-        return player;
-    }
-
-    public int getPlayerPositionInList(Player player){
-        int position= _players.indexOf(player);
-        return position;
-    }
-
-    public Boolean getPlayerValidTurn(String token){
+    public Boolean getPlayerValidTurn(int i){
 
         // if a player has a valid turn must be checked in UpdateValidTurn()
-        boolean valid = _playerHasValidTurns.get(getPlayerPositionInList(getPlayerByToken(token)));
+        boolean valid = _playerHasValidTurns.get(i);
         return valid;
     }
 
@@ -181,13 +159,6 @@ public class Game {
         return this._gameToken;
     }
 
-    public List<String> getUsersToken(){
-        List<String> usersToken=null;
-        for (int i =0; i<4; i++){
-            usersToken.add(_players.get(i).get_token());
-        }
-        return usersToken;
-    }
 
 
 }
