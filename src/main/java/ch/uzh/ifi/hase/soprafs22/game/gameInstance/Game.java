@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.Board;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.CardStack;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
+import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 
 
 import java.util.*;
@@ -18,9 +19,9 @@ public class Game {
     private GameManager _manager;
     private Board _board;
 
-    public Game(/*Lobby users,*/ GameManager manager){
+    public Game(List<Player> players, GameManager manager){
 
-        this._players= Arrays.asList(new Player[4]);;
+        this._players= players;;
 
         /*
         * From how do I get the Users?? Lobby, UserManager, Manager Or God?
@@ -69,12 +70,13 @@ public class Game {
         return _currentTurn;
     }
 
-    private int getPlayerPositionInList(Player player){
+    public int getPlayerPositionInList(Player player){
         int position= _players.indexOf(player);
         return position;
     }
 
     public Boolean getPlayerValidTurn(Player player){
+        // if a player has a valid turn must be checked in UpdateValidTurn()
         boolean valid = _playerHasValidTurns.get(getPlayerPositionInList(player));
         return valid;
     }
