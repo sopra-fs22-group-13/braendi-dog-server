@@ -1,4 +1,6 @@
-package ch.uzh.ifi.hase.soprafs22.game.gameInstance.board;
+package ch.uzh.ifi.hase.soprafs22.game.gameInstance.data;
+
+import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -16,7 +18,7 @@ public class BoardData {
     private int blueBase;
     private int yellowBase;
 
-    private Map<Integer, String> colorMapping;
+    private Map<Long, COLOR> colorMapping;
 
     private String lastPlayedCard;
 
@@ -32,7 +34,7 @@ public class BoardData {
         this.yellowBase = yellowBase;
     }
 
-    public void setColorMapping(Map<Integer, String> colorMapping) {
+    public void setColorMapping(Map<Long, COLOR> colorMapping) {
         this.colorMapping = colorMapping;
     }
 
@@ -76,7 +78,7 @@ public class BoardData {
         return yellowBase;
     }
 
-    public Map<Integer, String> getColorMapping() {
+    public Map<Long, COLOR> getColorMapping() {
         return colorMapping;
     }
 

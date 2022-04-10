@@ -18,4 +18,14 @@ public class Player {
     public String get_token() {
         return _token;
     }
+
+    public ArrayList<String> getFormattedCards()
+    {
+        return null;
+    }
+
+    public int getCardCount()
+    {
+        return 0;
+    }
 }

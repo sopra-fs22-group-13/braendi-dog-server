@@ -1,9 +1,12 @@
 package ch.uzh.ifi.hase.soprafs22.game.gameInstance;
 
 import ch.uzh.ifi.hase.soprafs22.game.GameManager;
+import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.Board;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.CardStack;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 
@@ -18,6 +21,7 @@ public class Game {
     private String _gameToken;
     private GameManager _manager;
     private Board _board;
+    private UserManager _userManager;
 
     public Game(List<Player> players, GameManager manager){
 
@@ -35,6 +39,7 @@ public class Game {
         this._gameToken= UUID.randomUUID().toString();
         this._manager= manager;
         this._board= new Board();
+        this._userManager = new UserManager(new ArrayList<>(players), null); //this makes no sense, the game somehow does not have any list of users.... how? IDK
     }
 
     
@@ -46,12 +51,61 @@ public class Game {
         return false;
     }
 
-    public String gameState(){
-        return null;
+    /**
+     * Gets the games board state.
+     */
+    public BoardData gameState(){
+        BoardData bd =  _board.getFormattedBoardState();
+
+        //the color mapping of the users
+        Map<Long, COLOR> cMap = new HashMap<>();
+        ArrayList<COLOR> cols = new ArrayList<>(Arrays.asList(COLOR.RED, COLOR.BLUE, COLOR.GREEN, COLOR.YELLOW));
+
+        for (Player p: _players) {
+            User u = _userManager.getUserFromPlayer(p);
+            cMap.put(u.getId(), cols.remove(0));
+        }
+        bd.setColorMapping(cMap);
+
+        return bd;
     }
 
-    public String getPlayerStates(String pointOFViey){
-        return null;
+    public PlayerData getPlayerStates(String pointOfView){
+
+        PlayerData pd = new PlayerData();
+
+        ArrayList<Integer> hiddenCards = new ArrayList<>();
+
+        boolean validPOV = false;
+
+        for (Player p : _players) {
+
+            User u = _userManager.getUserFromPlayer(p);
+
+            if(Objects.equals(u.getToken(), pointOfView))
+            {
+                //we can see our own cards
+                ArrayList<String> cards = p.getFormattedCards();
+                pd.setVisibleCards(cards);
+                validPOV = true;
+
+            }else
+            {
+                int count = p.getCardCount();
+                hiddenCards.add(count);
+            }
+
+        }
+
+        pd.setHiddenCardCount(hiddenCards);
+
+        if(!validPOV)
+        {
+            //the pointOfView token was not valid for any of the players.
+            return null;
+        }
+
+        return pd;
     }
 
     public void dealNewCards(){
