@@ -3,7 +3,8 @@ package ch.uzh.ifi.hase.soprafs22.game.gameInstance;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
-import ch.uzh.ifi.hase.soprafs22.websocket.SpringContext;
+import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
+import ch.uzh.ifi.hase.soprafs22.websocket.controller.IUpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
 
@@ -19,7 +20,7 @@ import java.util.Hashtable;
 
 public class UserManager {
 
-    private final UpdateController updateController = SpringContext.getBean(UpdateController.class);
+    private final IUpdateController updateController = SpringContext.getBean(UpdateController.class);
     private final UserRepository userRepository = SpringContext.getBean(UserRepository.class);
 
 

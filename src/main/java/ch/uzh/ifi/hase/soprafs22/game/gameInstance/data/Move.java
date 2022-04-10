@@ -20,12 +20,15 @@ public class Move {
     private Card _card;
     private COLOR _color;
 
-    public Move(ArrayList<Integer> fromPos, ArrayList<Integer> toPos, ArrayList<Boolean> fromPosInGoal, ArrayList<Boolean> toPosInGoal, Card c){
+    private String _token;
+
+    public Move(ArrayList<Integer> fromPos, ArrayList<Integer> toPos, ArrayList<Boolean> fromPosInGoal, ArrayList<Boolean> toPosInGoal, Card c, String token ){
         this._fromPos = fromPos;
         this._toPos = toPos;
         this._fromPosInGoal = fromPosInGoal;
         this._toPosInGoal = toPosInGoal;
         this._card = c;
+        this._token = token;
     }
 
     // for testing purposes
@@ -92,4 +95,7 @@ public class Move {
         }
         return false;
     }
+
+    public String getToken() {return _token;}
+
 }

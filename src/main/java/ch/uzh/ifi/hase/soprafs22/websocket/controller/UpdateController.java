@@ -16,7 +16,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import java.security.Principal;
 
 @Component
-public class UpdateController {
+public class UpdateController implements IUpdateController {
 
     private final Logger log = LoggerFactory.getLogger(UpdateController.class);
 

@@ -1,13 +1,10 @@
 package ch.uzh.ifi.hase.soprafs22.websocket;
 
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-
-import javax.swing.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

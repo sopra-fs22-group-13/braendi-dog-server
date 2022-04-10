@@ -1,12 +1,5 @@
 package ch.uzh.ifi.hase.soprafs22;
 
-import ch.uzh.ifi.hase.soprafs22.voicechat.VoiceChatCreator;
-import ch.uzh.ifi.hase.soprafs22.voicechat.entities.VoiceRoom;
-import ch.uzh.ifi.hase.soprafs22.websocket.SpringContext;
-import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
-import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
-import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
-import org.hibernate.sql.Update;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +20,7 @@ public class Application {
       /*try {
           Thread.sleep(10000);
           VoiceRoom vr =  new VoiceChatCreator().createRoomWithPlayers("hello");
-          UpdateController updCtrl = SpringContext.getBean(UpdateController.class);
+          IUpdateController updCtrl = SpringContext.getBean(UpdateController.class);
           UpdateDTO updto = new UpdateDTO(UpdateType.START, String.format("{\"app_id\": \"%s\", \"user_id\": \"%s\", \"user_auth\": \"%s\", \"room_id\": \"%s\"}", vr.appId, vr.player1.id, vr.player1.accessToken, vr.roomId));
           UpdateDTO updto1 = new UpdateDTO(UpdateType.START, String.format("{\"app_id\": \"%s\", \"user_id\": \"%s\", \"user_auth\": \"%s\", \"room_id\": \"%s\"}", vr.appId, vr.player2.id, vr.player2.accessToken, vr.roomId));
 
