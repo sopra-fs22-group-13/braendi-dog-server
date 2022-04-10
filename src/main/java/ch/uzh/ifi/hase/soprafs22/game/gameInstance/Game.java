@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.*;
 
+
 public class Game {
     private Player _playerWithCurrentTurn;
     private ArrayList<Boolean> _playerHasValidTurns;
@@ -57,17 +58,6 @@ public class Game {
          return true;
     }
 
-    public boolean playerMove(String token, Move move) throws InvalidMoveException {
-        Player playerWantToMove=getPlayerByToken(token);
-        if (!checkValidTurns(move, playerWantToMove)) {
-            throw new InvalidMoveException("Move Not allowed", "Bad move logic");
-        }
-        _board.makeMove(move);
-
-
-        // check for winning condition
-        return true;
-    }
 
     /**
      * Gets the games board state.
@@ -142,27 +132,13 @@ public class Game {
         return _playerWithCurrentTurn;
     }
 
-    public Player getPlayerByToken(String token){
-        Player player =null;
-        for (int i = 0; i<4; i++){
-            if (token== _players.get(i).get_token()){
-                player= _players.get(i);
-            }
-        }
-        return player;
-    }
 
     public int getPlayerPositionInList(Player player){
         int position= _players.indexOf(player);
         return position;
     }
 
-    public Boolean getPlayerValidTurn(String token){
 
-        // if a player has a valid turn must be checked in UpdateValidTurn()
-        boolean valid = _playerHasValidTurns.get(getPlayerPositionInList(getPlayerByToken(token)));
-        return valid;
-    }
 
     public Boolean getIfSomeoneValidTurn(){
         boolean valid = false;
@@ -181,13 +157,7 @@ public class Game {
         return this._gameToken;
     }
 
-    public List<String> getUsersToken(){
-        List<String> usersToken=null;
-        for (int i =0; i<4; i++){
-            usersToken.add(_players.get(i).get_token());
-        }
-        return usersToken;
-    }
+
 
 
 }

@@ -43,20 +43,20 @@ public class Card {
         return value == CARDVALUE.ACE || value == CARDVALUE.KING || value == CARDVALUE.JOKER;
     }
 
-    public CARDSUITE getSuite() {
+    private CARDSUITE getSuite() {
         return this.suite;
     }
 
-    public CARDVALUE getValue() {
+    private CARDVALUE getValue() {
         return this.value;
     }
 
-    public CARDTYPE getType() {
+    private CARDTYPE getType() {
         return this.type;
     }
 
     /**
-     * compares crads not by their reference, but by apparent equality
+     * compares cards not by their reference, but by apparent equality
      * @return true if both cards are equal ignoring their references
      */
     public boolean equalsContent(Card card) {
