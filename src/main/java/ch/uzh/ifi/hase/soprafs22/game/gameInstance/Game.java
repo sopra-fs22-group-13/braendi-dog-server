@@ -87,13 +87,21 @@ public class Game {
         return valid;
     }
 
-    public CardStack get_cardStack(){
+    public CardStack getCardStack(){
         // id don't know if it is usefull
         return null;
     }
 
-    public String get_gameToken(){
+    public String getGameToken(){
         return this._gameToken;
+    }
+
+    public List<String> getUsersToken(){
+        List<String> usersToken=null;
+        for (int i =0; i<4; i++){
+            usersToken.add(_players.get(i).get_token());
+        }
+        return usersToken;
     }
 
 }

@@ -9,8 +9,13 @@ public class Player {
 
     private ArrayList<Card> _hand = new ArrayList<Card>();
     private COLOR _turn;
+    private String _token;
 
     public Player(){
+        this._token= null;
+    }
 
+    public String get_token() {
+        return _token;
     }
 }
