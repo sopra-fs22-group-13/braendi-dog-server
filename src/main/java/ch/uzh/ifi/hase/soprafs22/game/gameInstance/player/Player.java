@@ -11,7 +11,7 @@ public class Player {
     private COLOR _turn;
     private String _token;
 
-    public Player(){
+    public Player(String token){
         this._token= null;
     }
 

@@ -1,7 +1,10 @@
 package ch.uzh.ifi.hase.soprafs22.game.gameInstance;
 
 import ch.uzh.ifi.hase.soprafs22.game.GameManager;
+
 import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
+
+import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.Board;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.CardStack;
@@ -9,23 +12,30 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
+import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
+import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
+import org.springframework.http.HttpStatus;
 
 
 import java.util.*;
 
 public class Game {
-    private Player _currentTurn;
-    private List<Boolean> _playerHasValidTurns;
-    private List<Player> _players;
+    private Player _playerWithCurrentTurn;
+    private ArrayList<Boolean> _playerHasValidTurns;
+    private ArrayList<Player> _players;
     private CardStack _cardStack;
     private String _gameToken;
     private GameManager _manager;
     private Board _board;
     private UserManager _userManager;
 
-    public Game(List<Player> players, GameManager manager){
+    public Game(ArrayList<User> users, GameManager manager){
 
-        this._players= players;;
+        for (int i =3;i>=0;i++){
+            String token= users.get(i).getToken();
+            this._players.add(new Player(token));
+        }
+
 
         /*
         * From how do I get the Users?? Lobby, UserManager, Manager Or God?
@@ -33,22 +43,34 @@ public class Game {
 
         /* Inizialize Game with already one player has first*/
         Random rand = new Random();
-        this._currentTurn= _players.get(rand.nextInt(_players.size()));
-        this._playerHasValidTurns= Arrays.asList(new Boolean[4]);;
+        this._playerWithCurrentTurn= _players.get(rand.nextInt(_players.size()));
+        this._playerHasValidTurns= new ArrayList();
         this._cardStack= new CardStack();
         this._gameToken= UUID.randomUUID().toString();
         this._manager= manager;
         this._board= new Board();
-        this._userManager = new UserManager(new ArrayList<>(players), null); //this makes no sense, the game somehow does not have any list of users.... how? IDK
+
+        this._userManager= new UserManager(_players,users);
+
     }
 
-    
-    private void checkValidTurns(){
-        // checks if every player has a valid turn with the cards
+
+    private boolean checkValidTurns(Move move, Player player){
+        //!move.isWellFormed() or if null
+        // checks if the card is the right to do the move asked
+         return true;
     }
 
-    public boolean playerMove(String player, Move move){
-        return false;
+    public boolean playerMove(String token, Move move) throws InvalidMoveException {
+        Player playerWantToMove=getPlayerByToken(token);
+        if (!checkValidTurns(move, playerWantToMove)) {
+            throw new InvalidMoveException("Move Not allowed", "Bad move logic");
+        }
+        _board.makeMove(move);
+
+
+        // check for winning condition
+        return true;
     }
 
     /**
@@ -121,7 +143,17 @@ public class Game {
     }
 
     public Player getCurrentTurn(){
-        return _currentTurn;
+        return _playerWithCurrentTurn;
+    }
+
+    public Player getPlayerByToken(String token){
+        Player player =null;
+        for (int i = 0; i<4; i++){
+            if (token== _players.get(i).get_token()){
+                player= _players.get(i);
+            }
+        }
+        return player;
     }
 
     public int getPlayerPositionInList(Player player){
@@ -129,9 +161,10 @@ public class Game {
         return position;
     }
 
-    public Boolean getPlayerValidTurn(Player player){
+    public Boolean getPlayerValidTurn(String token){
+
         // if a player has a valid turn must be checked in UpdateValidTurn()
-        boolean valid = _playerHasValidTurns.get(getPlayerPositionInList(player));
+        boolean valid = _playerHasValidTurns.get(getPlayerPositionInList(getPlayerByToken(token)));
         return valid;
     }
 
@@ -159,5 +192,6 @@ public class Game {
         }
         return usersToken;
     }
+
 
 }
