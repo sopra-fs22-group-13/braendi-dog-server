@@ -8,12 +8,10 @@ import java.util.ArrayList;
 
 public class Player {
 
-    private String _token;
     private final ArrayList<Card> _hand = new ArrayList<Card>();
     private final COLOR _turn;
 
     public Player(COLOR playerColor) throws IllegalArgumentException{
-        this._token = null;
         this._turn = playerColor;
     }
 
@@ -47,10 +45,6 @@ public class Player {
      */
     public ArrayList<String> getFormattedCards() {
         return null;
-    }
-
-    public String get_token() {
-        return this._token;
     }
 
     public COLOR getTurn() {

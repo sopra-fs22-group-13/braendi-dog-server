@@ -38,7 +38,7 @@ class UserManagerTest {
             user = userService.createUser(user);
             System.out.println("Token in setUp: " + i + user.getToken());
 
-            Player player = new Player(COLOR.YELLOW);
+            Player player = new Player(COLOR.BLUE);
 
             players.add(player);
             users.add(user);

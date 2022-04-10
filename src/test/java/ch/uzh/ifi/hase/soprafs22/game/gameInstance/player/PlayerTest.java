@@ -19,7 +19,7 @@ class PlayerTest {
 
     @BeforeEach
     public void setup() {
-        player = new Player(COLOR.GREEN);
+        player = new Player(COLOR.RED);
     }
 
     /**
@@ -27,7 +27,7 @@ class PlayerTest {
      */
     @Test
     public void creationTest() {
-        List<Player> players = List.of(player, new Player(COLOR.BLUE), new Player(COLOR.RED), new Player(COLOR.YELLOW));
+        List<Player> players = List.of(player, new Player(COLOR.GREEN), new Player(COLOR.BLUE), new Player(COLOR.YELLOW));
         for (int i=0; i<4; i++) assertEquals(COLOR.values()[i], players.get(i).getTurn());
     }
 
