@@ -44,10 +44,13 @@ public class Game {
     }
 
 
-    private boolean checkValidTurns(Move move, Player player){
-        //!move.isWellFormed() or if null
-        // checks if the card is the right to do the move asked
-         return true;
+    private boolean checkValidTurns(Move move, Player playerWantToMove){
+        if (!move.isWellFormed()|| move== null ) {
+            if (playerWantToMove == _playerWithCurrentTurn){
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean playerMove(Move move) throws InvalidMoveException {
@@ -159,6 +162,9 @@ public class Game {
         return this._gameToken;
     }
 
-
+    public ArrayList<Player> getPlayers(){
+        // I don't think that game should do it like that
+        return _players;
+    }
 
 }
