@@ -31,8 +31,13 @@ public class Game {
 
     public Game(ArrayList<User> users){
 
-        /* Inizialize Game with already one player has first*/
         Random rand = new Random();
+        this._players= new ArrayList<>();
+        this._players.add(new Player(COLOR.RED));
+        this._players.add(new Player(COLOR.YELLOW));
+        this._players.add(new Player(COLOR.GREEN));
+        this._players.add(new Player(COLOR.BLUE));
+
         this._playerWithCurrentTurn= _players.get(rand.nextInt(_players.size()));
         this._playerHasValidTurns= new ArrayList();
         this._cardStack= new CardStack();
