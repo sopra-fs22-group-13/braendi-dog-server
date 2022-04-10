@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.*;
 
-
 public class Game {
     private Player _playerWithCurrentTurn;
     private ArrayList<Boolean> _playerHasValidTurns;
@@ -32,12 +31,6 @@ public class Game {
 
     public Game(ArrayList<User> users, GameManager manager){
 
-
-
-        /*
-        * From how do I get the Users?? Lobby, UserManager, Manager Or God?
-        * */
-
         /* Inizialize Game with already one player has first*/
         Random rand = new Random();
         this._playerWithCurrentTurn= _players.get(rand.nextInt(_players.size()));
@@ -46,18 +39,31 @@ public class Game {
         this._gameToken= UUID.randomUUID().toString();
         this._manager= manager;
         this._board= new Board();
-
         this._userManager= new UserManager(_players,users);
 
     }
 
 
-    private boolean checkValidTurns(Move move, Player player){
-        //!move.isWellFormed() or if null
-        // checks if the card is the right to do the move asked
-         return true;
+    private boolean checkValidTurns(Move move, Player playerWantToMove){
+        if (!move.isWellFormed()|| move== null ) {
+            if (playerWantToMove == _playerWithCurrentTurn){
+                return true;
+            }
+        }
+        return false;
     }
 
+    public boolean playerMove(Move move) throws InvalidMoveException {
+        Player playerWantToMove=_userManager.getPlayerFromUserToken(move.getToken());
+        if (!checkValidTurns(move, playerWantToMove)) {
+            throw new InvalidMoveException("Move Not allowed", "Bad move logic");
+        }
+        _board.makeMove(move);
+
+
+        // check for winning condition
+        return true;
+    }
 
     /**
      * Gets the games board state.
@@ -132,13 +138,12 @@ public class Game {
         return _playerWithCurrentTurn;
     }
 
+    public Boolean getPlayerValidTurn(int i){
 
-    public int getPlayerPositionInList(Player player){
-        int position= _players.indexOf(player);
-        return position;
+        // if a player has a valid turn must be checked in UpdateValidTurn()
+        boolean valid = _playerHasValidTurns.get(i);
+        return valid;
     }
-
-
 
     public Boolean getIfSomeoneValidTurn(){
         boolean valid = false;
@@ -157,7 +162,9 @@ public class Game {
         return this._gameToken;
     }
 
-
-
+    public ArrayList<Player> getPlayers(){
+        // I don't think that game should do it like that
+        return _players;
+    }
 
 }
