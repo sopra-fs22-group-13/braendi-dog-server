@@ -339,7 +339,7 @@ public class Board {
             else //we loop over the edge
             {
                 int rest = 63 - startPosition;
-                return endPosition + rest;
+                return endPosition + rest + 1;
             }
         }else //we move backwards
         {
@@ -350,7 +350,7 @@ public class Board {
             else //we loop over the edge
             {
                 int rest = 63 - endPosition;
-                return startPosition + rest;
+                return startPosition + rest + 1;
             }
         }
     }
@@ -809,7 +809,6 @@ public class Board {
         switch(moveCard.getValue()) {
             case TWO: return moveDist == 2;
             case THREE: return moveDist == 3;
-            case FOUR: return moveDist == 4;
             case FIVE: return moveDist == 5;
             case SIX: return moveDist == 6;
             case EIGHT: return moveDist == 8;
