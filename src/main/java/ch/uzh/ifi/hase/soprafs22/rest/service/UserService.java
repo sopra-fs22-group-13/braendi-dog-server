@@ -159,5 +159,4 @@ public class UserService {
           //  throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong Auth method, expected BASIC");
         //}
     }
-
 }

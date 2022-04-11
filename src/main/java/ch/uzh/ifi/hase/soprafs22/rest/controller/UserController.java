@@ -31,14 +31,15 @@ public class UserController {
     this.userService = userService;
   }
 
-  @GetMapping("/users/{token}")
+  @GetMapping("/users")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<UserGetDTO> getAllUsers( @PathVariable String token) {
-    if(userService.CheckIfLoggedIn(token) == null){
+  public List<UserGetDTO> getAllUsers(HttpServletRequest request) {
+    if(userService.CheckIfLoggedIn("request") == null){
         return null;
     }
-      // fetch all users in the internal representation
+
+    // fetch all users in the internal representation
     List<User> users = userService.getUsers();
     List<UserGetDTO> userGetDTOs = new ArrayList<>();
 
