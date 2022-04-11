@@ -119,11 +119,10 @@ public class UserService {
 
     }
 
-    public User CheckIfLoggedIn(String request) {
-        //if (request.getHeader("Authorization") != null && request.getHeader("Authorization").length() > 6 && Objects.equals(request.getHeader("Authorization").substring(0, 5).toUpperCase(), HttpServletRequest.BASIC_AUTH)) {
-          //  String auth = request.getHeader("Authorization");
-            //auth = auth.substring(6); //get the token part
-            String auth= request;
+    public User CheckIfLoggedIn(HttpServletRequest request) {
+        if (request.getHeader("Authorization") != null && request.getHeader("Authorization").length() > 6 && Objects.equals(request.getHeader("Authorization").substring(0, 5).toUpperCase(), HttpServletRequest.BASIC_AUTH)) {
+            String auth = request.getHeader("Authorization");
+            auth = auth.substring(6); //get the token part
             User us = getUserByToken(auth);
 
             if (us != null && Objects.equals(us.getToken(), auth)) {
@@ -133,19 +132,19 @@ public class UserService {
             else {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, us == null ? "bad token" : "something went wrong");
             }
-        //}
-        //else {
-          //  throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong Auth method, expected BASIC");
-        //}
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong Auth method, expected BASIC");
+        }
     }
 
 
-    public void CheckIfLoggedInAsUser(String request, Long userId) {
-        //if (request.getHeader("Authorization") != null && request.getHeader("Authorization").length() > 6 && Objects.equals(request.getHeader("Authorization").substring(0, 5).toUpperCase(), HttpServletRequest.BASIC_AUTH)) {
-        //    String auth = request.getHeader("Authorization");
+    public void CheckIfLoggedInAsUser(HttpServletRequest request, Long userId) {
+        if (request.getHeader("Authorization") != null && request.getHeader("Authorization").length() > 6 && Objects.equals(request.getHeader("Authorization").substring(0, 5).toUpperCase(), HttpServletRequest.BASIC_AUTH)) {
+            String auth = request.getHeader("Authorization");
 
-          //  auth = auth.substring(6); //get the token part
-            String auth= request;
+            auth = auth.substring(6); //get the token part
+
             User us = getUserById(userId);
 
             if (us != null && Objects.equals(us.getToken(), auth)) {
@@ -154,9 +153,9 @@ public class UserService {
             else {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, us == null ? "no token" : "bad token");
             }
-        //}
-        //else {
-          //  throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong Auth method, expected BASIC");
-        //}
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong Auth method, expected BASIC");
+        }
     }
 }

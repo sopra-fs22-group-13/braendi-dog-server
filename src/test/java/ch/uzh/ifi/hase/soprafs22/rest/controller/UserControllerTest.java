@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -45,31 +46,30 @@ public class UserControllerTest {
 
   @Test
   public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
-    // given
+    String token=UUID.randomUUID().toString();
     User user = new User();
     user.setPassword("Firstname Lastname");
     user.setUsername("firstname@lastname");
     user.setStatus(UserStatus.OFFLINE);
-    user.setToken("Token");
+
 
     List<User> allUsers = Collections.singletonList(user);
 
     // this mocks the UserService -> we define above what the userService should
     // return when getUsers() is called
     given(userService.getUsers()).willReturn(allUsers);
-    given (userService.CheckIfLoggedIn(user.getToken())).willReturn(user);
+    given (userService.CheckIfLoggedIn(Mockito.any())).willReturn(user);
 
     // when
-    MockHttpServletRequestBuilder getRequest = get("/users/"+user.getToken()).contentType(MediaType.APPLICATION_JSON);
-
+    MockHttpServletRequestBuilder getRequest = get("/users")
+                    .header("Authorization", token)
+                    .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
     // then
     mockMvc.perform(getRequest).andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)))
         .andExpect(jsonPath("$[0].password", is(user.getPassword())))
         .andExpect(jsonPath("$[0].username", is(user.getUsername())))
         .andExpect(jsonPath("$[0].status", is(user.getStatus().toString())));
-//        .andExpect(jsonPath("$[0].token",is(user.getToken())));
-
   }
 
   @Test

@@ -43,15 +43,15 @@ public class Card {
         return value == CARDVALUE.ACE || value == CARDVALUE.KING || value == CARDVALUE.JOKER;
     }
 
-    private CARDSUITE getSuite() {
+    public CARDSUITE getSuite() {
         return this.suite;
     }
 
-    private CARDVALUE getValue() {
+    public CARDVALUE getValue() {
         return this.value;
     }
 
-    private CARDTYPE getType() {
+    public CARDTYPE getType() {
         return this.type;
     }
 

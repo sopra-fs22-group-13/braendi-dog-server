@@ -11,8 +11,12 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.CardStack;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
+import ch.uzh.ifi.hase.soprafs22.lobby.Lobby;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
+import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
+import ch.uzh.ifi.hase.soprafs22.websocket.controller.IUpdateController;
+import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
 import org.springframework.http.HttpStatus;
 
@@ -20,7 +24,7 @@ import org.springframework.http.HttpStatus;
 import java.util.*;
 
 public class Game {
-    private Player _playerWithCurrentTurn;
+    private int _indexWithCurrentTurn;
     private ArrayList<Boolean> _playerHasValidTurns;
     private ArrayList<Player> _players;
     private CardStack _cardStack;
@@ -28,41 +32,76 @@ public class Game {
     private GameManager _manager;
     private Board _board;
     private UserManager _userManager;
+    private final IUpdateController updateController = SpringContext.getBean(UpdateController.class);
 
-    public Game(ArrayList<User> users, GameManager manager){
+    public Game(ArrayList<User> users){
 
-        /* Inizialize Game with already one player has first*/
         Random rand = new Random();
-        this._playerWithCurrentTurn= _players.get(rand.nextInt(_players.size()));
+        this._players= new ArrayList<>();
+        this._players.add(new Player(COLOR.RED));
+        this._players.add(new Player(COLOR.YELLOW));
+        this._players.add(new Player(COLOR.GREEN));
+        this._players.add(new Player(COLOR.BLUE));
+
+        this._indexWithCurrentTurn= rand.nextInt(4);
         this._playerHasValidTurns= new ArrayList();
         this._cardStack= new CardStack();
         this._gameToken= UUID.randomUUID().toString();
-        this._manager= manager;
+        this._manager= GameManager.getInstance();
         this._board= new Board();
         this._userManager= new UserManager(_players,users);
 
     }
 
+    public Player entireGame() throws InvalidMoveException {
+        int[] numberOfCardsInTurns = {7,6,5,4,3};
+        int howManyCardToDeal = 0;
+        do{
+            //if someone has a valid turn it continues, if not it ridistribuits the cards
+            if(someoneValidTurn()){
+                if  (_playerHasValidTurns.get(_indexWithCurrentTurn)) {
+                    _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn),new UpdateDTO(UpdateType.TURN,"Your move"));
+                    Move move = null;//TODO
+                    playerMove(move);
+                }
+                else{nextTurns();}
+            }
+            else {
+                removeAndDealNewCards(numberOfCardsInTurns[howManyCardToDeal]);
+                // refreshing of the cards
+            }
+
+        }while( true/*!board.winningCondition()*/);
+        //if someone winns it stops the game
+        //return board.winner();
+    }
 
     private boolean checkValidTurns(Move move, Player playerWantToMove){
-        if (!move.isWellFormed()|| move== null ) {
-            if (playerWantToMove == _playerWithCurrentTurn){
-                return true;
+
+        if ( move!= null ) {
+            if (move.checkIfComplete()){
+                if (playerWantToMove == _players.get(_indexWithCurrentTurn)){
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    public boolean playerMove(Move move) throws InvalidMoveException {
+    /**
+     * sequenz were the player does his move
+     * @param move witch move wants do to the player
+     * @return  if succesed true
+     * @throws InvalidMoveException  if move isn't correct in the form
+     */
+    public void playerMove(Move move) throws InvalidMoveException {
         Player playerWantToMove=_userManager.getPlayerFromUserToken(move.getToken());
         if (!checkValidTurns(move, playerWantToMove)) {
             throw new InvalidMoveException("Move Not allowed", "Bad move logic");
         }
         _board.makeMove(move);
-
-
-        // check for winning condition
-        return true;
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,"new turn"));
+        ifMoveIsPossible();
     }
 
     /**
@@ -122,20 +161,33 @@ public class Game {
         return pd;
     }
 
-    public void dealNewCards(){
+    public boolean ifMoveIsPossible(){
+        //TODO
+        for (int i =1; i<4;i++){
+            //_playerHasValidTurns=_board.ifMoveIsPossible(_players.get(i));
+        }
+        return false;
+    }
 
+    public void removeAndDealNewCards(int howMany){
+        for (Player player: _players){
+            player.removeAllCard();
+            for (int i = 0; i>howMany;i++) {
+                player.addCard(_cardStack.getNextCard());
+            }
+        }
     }
 
     private void nextTurns(){
-
-    }
-
-    private void updateValidTurns(){
-
+        _indexWithCurrentTurn++;
+        if (_indexWithCurrentTurn==4){
+            _indexWithCurrentTurn=0;
+        };
     }
 
     public Player getCurrentTurn(){
-        return _playerWithCurrentTurn;
+
+        return _players.get(_indexWithCurrentTurn);
     }
 
     public Boolean getPlayerValidTurn(int i){
@@ -145,7 +197,7 @@ public class Game {
         return valid;
     }
 
-    public Boolean getIfSomeoneValidTurn(){
+    public Boolean someoneValidTurn(){
         boolean valid = false;
         for (int i = 0; i<4; i++){
             valid = valid || _playerHasValidTurns.get(i);
@@ -165,6 +217,10 @@ public class Game {
     public ArrayList<Player> getPlayers(){
         // I don't think that game should do it like that
         return _players;
+    }
+
+    public Player getPlayerByToken(String token){
+        return _userManager.getPlayerFromUserToken(token);
     }
 
 }
