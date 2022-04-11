@@ -45,4 +45,8 @@ public class Card {
             return false;
         }
     }
+
+    public CARDVALUE getValue() {
+        return value;
+    }
 }

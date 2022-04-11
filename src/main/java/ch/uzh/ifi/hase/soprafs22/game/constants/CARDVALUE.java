@@ -10,6 +10,7 @@ public enum CARDVALUE {
     EIGHT,
     NINE,
     TEN,
+    JACK,
     ACE,
     QUEEN,
     KING,

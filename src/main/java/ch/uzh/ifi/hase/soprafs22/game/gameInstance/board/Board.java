@@ -414,7 +414,7 @@ public class Board {
     /**
      * Makes a switch specified by the two positions on the board
      * IMPORTANT: This does NOT check if the move is allowed depending on the rules (eg: card is not a joker/jack)
-     * @throws InvalidMoveException if the move cannot be completed because of the board state
+     * @throws InvalidMoveException if the move cannot be completed because of the board state or if the card does not allow the move
      */
     public void makeSwitch(int start, int end) throws InvalidMoveException
     {
@@ -426,5 +426,257 @@ public class Board {
         }
     }
 
+    /**
+     * makes move based on the card of the move object
+     * @param move
+     * @throws InvalidMoveException
+     */
+    public void makeCardMove(Move move) throws InvalidMoveException {
+        if(isValidMove(move)){  
+            Card moveCard = move.get_card();
+            switch(moveCard.getValue()){
+                case ACE:
+                case KING:
+                case JACK:
+                case JOKER:
+                default:
+            }
+        }else{
+            throw new InvalidMoveException();
+        }
+    }
 
+    /**
+     * returns true if the move is valid (ie: the move is allowed) based on the card and the rules
+     * @param move the move object that contains all the information
+     * @throws InvalidMoveException if the move object has any missing params or is not well-formed
+     */
+    public boolean isValidMove(Move move) throws InvalidMoveException
+    {
+        //throwing exceptions
+        if(move.checkIfComplete()) {
+            throw new InvalidMoveException("BAD_MOVE", "move is not complete");
+        }
+        
+        // checking if the move is valid based on the card
+        switch(move.get_card().getValue()) {
+            case ACE:
+                return isValidAceMove(move);
+            case KING:
+                return isValidKingMove(move);
+            case JOKER:
+                return isValidJokerMove(move);
+            case JACK:
+                return isValidJackMove(move);
+            case SEVEN:
+                return isValidSevenMove(move);
+            default:
+                return isValidRegularMove(move);
+        }
+    }
+
+    // check if the move is valid for an ace card
+    /**
+     * checks if the move is valid for an ace card
+     * @param move the move object that contains all the information
+     * @throws NoMarbleException if there are no marbles at the position
+     * @return true if the move is valid
+     */
+    private boolean isValidAceMove(Move move) throws NoMarbleException {
+        int startPos = move.get_fromPos().get(0);
+        int endPos = move.get_toPos().get(0);
+        COLOR marbleColor;
+        MARBLE curMarble;
+        try{
+            marbleColor = this.getColorFromPosition(startPos);
+            curMarble = this._mainCircle.get(startPos);
+        } catch(Exception e) {
+            throw new NoMarbleException();
+        }
+        // check if marble color is the same as move color
+        if(marbleColor != move.get_color()) {
+            return false;
+        }
+        // validate for starting move
+        if(startPos == -1){
+            switch(marbleColor){
+                case RED:
+                    return endPos == REDINTERSECT;
+                case YELLOW:
+                    return endPos == YELLOWINTERSECT;
+                case GREEN:
+                    return endPos == GREENINTERSECT;
+                case BLUE:
+                    return endPos == BLUEINTERSECT;
+                default:
+                    return false;
+            }
+        }
+        int moveDist = getDistanceInBetween(startPos, endPos);
+        if(moveDist != 1 || moveDist != 11) {
+            return false;
+        }
+        return true;
+    }
+
+    // check if the move is valid for a jack card
+    private boolean isValidJackMove(Move move) throws NoMarbleException {
+        int startPos = move.get_fromPos().get(0);
+        int endPos = move.get_toPos().get(0);
+        COLOR marbleColor;
+        MARBLE curMarble;
+        try{
+            marbleColor = this.getColorFromPosition(startPos);
+            curMarble = this._mainCircle.get(startPos);
+        } catch(Exception e) {
+            throw new NoMarbleException();
+        }
+        // check if marble color is the same as move color
+        if(marbleColor != move.get_color()) {
+            return false;
+        }
+        // validate for starting move
+        if(startPos == -1){
+            return false;
+        }else{
+            // TODO jack behaviour unclear yet: unclear on how front-end passes the move
+        }
+        return true;
+    }
+
+    // check if the move is valid for a joker card
+    private boolean isValidJokerMove(Move move) throws NoMarbleException {
+        int startPos = move.get_fromPos().get(0);
+        int endPos = move.get_toPos().get(0);
+        COLOR marbleColor;
+        MARBLE curMarble;
+        try{
+            marbleColor = this.getColorFromPosition(startPos);
+            curMarble = this._mainCircle.get(startPos);
+        } catch(Exception e) {
+            throw new NoMarbleException();
+        }
+        // check if marble color is the same as move color
+        if(marbleColor != move.get_color()) {
+            return false;
+        }
+        // validate for starting move
+        if(startPos == -1){
+            switch(marbleColor){
+                case RED:
+                    return endPos == REDINTERSECT;
+                case YELLOW:
+                    return endPos == YELLOWINTERSECT;
+                case GREEN:
+                    return endPos == GREENINTERSECT;
+                case BLUE:
+                    return endPos == BLUEINTERSECT;
+                default:
+                    return false;
+            }
+        }
+        int moveDist = getDistanceInBetween(startPos, endPos);
+        //TODO joker behaviour unclear yet, can be any card: need to define behaviour in front-end
+        return true;
+    }
+
+    // check if the move is valid for a king card
+    private boolean isValidKingMove(Move move) throws NoMarbleException {
+        int startPos = move.get_fromPos().get(0);
+        int endPos = move.get_toPos().get(0);
+        COLOR marbleColor;
+        MARBLE curMarble;
+        try{
+            marbleColor = this.getColorFromPosition(startPos);
+            curMarble = this._mainCircle.get(startPos);
+        } catch(Exception e) {
+            throw new NoMarbleException();
+        }
+        // check if marble color is the same as move color
+        if(marbleColor != move.get_color()) {
+            return false;
+        }
+        // validate for starting move
+        if(startPos == -1){
+            switch(marbleColor){
+                case RED:
+                    return endPos == REDINTERSECT;
+                case YELLOW:
+                    return endPos == YELLOWINTERSECT;
+                case GREEN:
+                    return endPos == GREENINTERSECT;
+                case BLUE:
+                    return endPos == BLUEINTERSECT;
+                default:
+                    return false;
+            }
+        }
+        int moveDist = getDistanceInBetween(startPos, endPos);
+        if(moveDist != 13) {
+            return false;
+        }
+        return true;
+    }
+
+    // check if the move is valid for a 7 card
+    private boolean isValidSevenMove(Move move) throws NoMarbleException {
+        ArrayList<Integer> startPos = move.get_fromPos();
+        ArrayList<Integer> endPos = move.get_toPos();
+        ArrayList<COLOR> marbleColor = new ArrayList<>();
+        ArrayList<MARBLE> curMarble = new ArrayList<>();
+        try{
+            for (int i = 0; i < startPos.size(); i++) {
+                marbleColor.add(this.getColorFromPosition(startPos.get(i)));
+                curMarble.add(this._mainCircle.get(startPos.get(i)));
+            }
+        } catch(Exception e) {
+            throw new NoMarbleException();
+        }
+        // check if marble color is the same as move color
+        for (int i = 0; i < marbleColor.size(); i++) {
+            if (marbleColor.get(i) != move.get_color()) {
+                return false;
+            }
+        }
+        int moveDist = 0;
+        for(int i = 0; i < startPos.size(); i++) {
+            moveDist += getDistanceInBetween(startPos.get(i), endPos.get(i));
+        }
+        if(moveDist != 7) {
+            return false;
+        }
+        return true;
+    }
+
+    // check if the move is valid for a regular card
+    private boolean isValidRegularMove(Move move) throws NoMarbleException {
+        int startPos = move.get_fromPos().get(0);
+        int endPos = move.get_toPos().get(0);
+        Card moveCard = move.get_card();
+        COLOR marbleColor;
+        MARBLE curMarble;
+        try{
+            marbleColor = this.getColorFromPosition(startPos);
+            curMarble = this._mainCircle.get(startPos);
+        } catch(Exception e) {
+            throw new NoMarbleException();
+        }
+        // check if marble color is the same as move color
+        if(marbleColor != move.get_color()) {
+            return false;
+        }
+        int moveDist = getDistanceInBetween(startPos, endPos);
+        switch(moveCard.getValue()) {
+            case TWO: return moveDist == 2;
+            case THREE: return moveDist == 3;
+            case FOUR: return moveDist == 4;
+            case FIVE: return moveDist == 5;
+            case SIX: return moveDist == 6;
+            case EIGHT: return moveDist == 8;
+            case NINE: return moveDist == 9;
+            case TEN: return moveDist == 10;
+            case QUEEN: return moveDist == 12;
+            default: return false;
+        }
+    }
 }
