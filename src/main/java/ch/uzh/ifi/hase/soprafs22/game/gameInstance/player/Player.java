@@ -54,4 +54,8 @@ public class Player {
      public void removeAllCard(){
         _hand.remove(_hand);
      }
+
+     public COLOR getColor(){
+        return _turn;
+     }
 }
