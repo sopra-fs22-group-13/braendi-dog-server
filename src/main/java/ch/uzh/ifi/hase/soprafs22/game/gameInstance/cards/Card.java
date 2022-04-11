@@ -62,8 +62,4 @@ public class Card {
     public boolean equalsContent(Card card) {
         return this.suite == card.getSuite() && this.type == card.getType() && this.value == card.getValue();
     }
-
-    public CARDVALUE getValue() {
-        return value;
-    }
 }

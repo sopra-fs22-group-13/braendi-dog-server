@@ -761,6 +761,26 @@ public class Board {
         return true;
     }
 
+    // check if the move is valid for a 4 card
+    private boolean isValidFourMove(Move move) throws NoMarbleException {
+        int startPos = move.get_fromPos().get(0);
+        int endPos = move.get_toPos().get(0);
+        COLOR marbleColor;
+        MARBLE curMarble;
+        try{
+            marbleColor = this.getColorFromPosition(startPos);
+            curMarble = this._mainCircle.get(startPos);
+        } catch(Exception e) {
+            throw new NoMarbleException();
+        }
+        // check if marble color is the same as move color
+        if(marbleColor != move.get_color()) {
+            return false;
+        }
+        //TODO check for the behavior of 4
+        return true;
+    }
+
     // check if the move is valid for a regular card
     private boolean isValidRegularMove(Move move) throws NoMarbleException {
         int startPos = move.get_fromPos().get(0);
