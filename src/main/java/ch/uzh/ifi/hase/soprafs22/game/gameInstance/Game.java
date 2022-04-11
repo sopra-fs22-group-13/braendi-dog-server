@@ -182,8 +182,8 @@ public class Game {
         for (int i =0; i<4;i++){
             boolean possibleTurn= false;
             for (String card: _players.get(i).getFormattedCards()) {
-                //possibleTurn = _board.makePossibleMove(card);
-                //TODO
+                //possibleTurn = _board.makePossibleMove(card,_players.get(i).getColor());
+                //TODO @luca makePossibleMove(Card,Color)
             }
             _playersWithValidTurns.set(i,possibleTurn);
         }
