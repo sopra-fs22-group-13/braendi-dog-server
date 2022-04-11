@@ -540,26 +540,6 @@ public class Board {
     }
 
     /**
-     * makes move based on the card of the move object
-     * @param move
-     * @throws InvalidMoveException
-     */
-    public void makeCardMove(Move move) throws InvalidMoveException {
-        if(isValidMove(move)){  
-            Card moveCard = move.get_card();
-            switch(moveCard.getValue()){
-                case ACE:
-                case KING:
-                case JACK:
-                case JOKER:
-                default:
-            }
-        }else{
-            throw new InvalidMoveException();
-        }
-    }
-
-    /**
      * returns true if the move is valid (ie: the move is allowed) based on the card and the rules
      * @param move the move object that contains all the information
      * @throws InvalidMoveException if the move object has any missing params or is not well-formed
@@ -627,7 +607,11 @@ public class Board {
                     return false;
             }
         }
-        //TODO validate for goal move
+        //validate for goal move
+        if(!move.get_fromPosInGoal().isEmpty() || !move.get_toPosInGoal().isEmpty()) {
+            boolean startInGoal = !move.get_fromPosInGoal().isEmpty();
+            return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
+        }
         int moveDist = getDistanceInBetween(startPos, endPos);
         if(moveDist != 1 || moveDist != 11) {
             return false;
@@ -655,9 +639,10 @@ public class Board {
         if(startPos == -1){
             return false;
         }
-        //TODO validate for goal move
         //TODO jack behaviour unclear yet: unclear on how front-end passes the move
-        
+        if(this._mainCircle.get(startPos) == MARBLE.NONE || this._mainCircle.get(endPos) == MARBLE.NONE || marbleColor == this.getColorFromPosition(endPos)) {
+            return false;
+        }
         return true;
     }
 
@@ -692,8 +677,11 @@ public class Board {
                     return false;
             }
         }
-        //TODO validate for goal move
-        int moveDist = getDistanceInBetween(startPos, endPos);
+        //validate for goal move
+        if(!move.get_fromPosInGoal().isEmpty() || !move.get_toPosInGoal().isEmpty()) {
+            boolean startInGoal = !move.get_fromPosInGoal().isEmpty();
+            return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
+        }
         //TODO joker behaviour unclear yet, can be any card: need to define behaviour in front-end
         return true;
     }
@@ -729,7 +717,11 @@ public class Board {
                     return false;
             }
         }
-        //TODO validate for goal move
+        //validate for goal move
+        if(!move.get_fromPosInGoal().isEmpty() || !move.get_toPosInGoal().isEmpty()) {
+            boolean startInGoal = !move.get_fromPosInGoal().isEmpty();
+            return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
+        }
         //check if distance is valid for the card
         int moveDist = getDistanceInBetween(startPos, endPos);
         if(moveDist != 13) {
@@ -739,6 +731,12 @@ public class Board {
     }
 
     // check if the move is valid for a 7 card
+    /**
+     * checks if the move is valid for a 7 card
+     * @param move
+     * @return true if all moves are valid, a single invalid move will return false
+     * @throws NoMarbleException
+     */
     private boolean isValidSevenMove(Move move) throws NoMarbleException {
         ArrayList<Integer> startPos = move.get_fromPos();
         ArrayList<Integer> endPos = move.get_toPos();
@@ -766,6 +764,16 @@ public class Board {
             return false;
         }
         //TODO validate for goal move
+        if(!move.get_fromPosInGoal().isEmpty() || !move.get_toPosInGoal().isEmpty()) {
+            for(int i = 0; i < startPos.size(); i++) {
+                if(move.get_toPosInGoal().get(i)){
+                    if(!isValidGoalMove(startPos.get(i), endPos.get(i), move.get_fromPosInGoal().get(i), marbleColor.get(i))){
+                        return false;
+                    }
+                    
+                }
+            }
+        }
         return true;
     }
 
@@ -785,11 +793,15 @@ public class Board {
         if(marbleColor != move.get_color()) {
             return false;
         }
-        //TODO validate for goal move
         int moveDistForward = getDistanceInBetween(startPos, endPos, true);
         int moveDistBackward = getDistanceInBetween(startPos, endPos, false);
         if(moveDistForward != 4 || moveDistBackward != 4) {
             return false;
+        }
+        //validate for goal move
+        if(!move.get_fromPosInGoal().isEmpty() || !move.get_toPosInGoal().isEmpty()) {
+            boolean startInGoal = !move.get_fromPosInGoal().isEmpty();
+            return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
         return true;
     }
@@ -800,10 +812,8 @@ public class Board {
         int endPos = move.get_toPos().get(0);
         Card moveCard = move.get_card();
         COLOR marbleColor;
-        MARBLE curMarble;
         try{
             marbleColor = this.getColorFromPosition(startPos);
-            curMarble = this._mainCircle.get(startPos);
         } catch(Exception e) {
             throw new NoMarbleException();
         }
@@ -821,10 +831,13 @@ public class Board {
             case NINE: return moveDist == 9;
             case TEN: return moveDist == 10;
             case QUEEN: return moveDist == 12;
-            default: return false;
         }
-        //TODO validate for goal move
-
+        //validate for goal move
+        if(!move.get_fromPosInGoal().isEmpty() || !move.get_toPosInGoal().isEmpty()) {
+            boolean startInGoal = !move.get_fromPosInGoal().isEmpty();
+            return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
+        }
+        return true;
     }
 
     /**
