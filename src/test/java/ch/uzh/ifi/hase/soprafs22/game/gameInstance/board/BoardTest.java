@@ -1,9 +1,10 @@
 package ch.uzh.ifi.hase.soprafs22.game.gameInstance.board;
 
-import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
+import ch.uzh.ifi.hase.soprafs22.game.constants.*;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.MoveBlockedByMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import org.junit.jupiter.api.BeforeEach;
@@ -131,11 +132,40 @@ class BoardTest {
         try
         {
             _b.makeStartingMove(COLOR.RED);
+            _b.makeSwitch(0, 12);
+        }catch (InvalidMoveException e)
+        {
+            fail(e.getMessage());
+        }
+        try
+        {
+            _b.makeStartingMove(COLOR.RED);
+            _b.makeSwitch(0, 14);
+
+        }catch (InvalidMoveException e)
+        {
+            fail(e.getMessage());
+        }
+        try
+        {
+            _b.makeStartingMove(COLOR.RED);
+            _b.makeSwitch(0, 15);
+
+        }catch (InvalidMoveException e)
+        {
+            fail(e.getMessage());
+        }
+        try
+        {
+            _b.makeStartingMove(COLOR.RED);
+            _b.makeSwitch(0, 16);
+
         }catch (InvalidMoveException e)
         {
             fail(e.getMessage());
         }
 
+        //no marbles left, should not be able to move out
         assertThrows(InvalidMoveException.class, () -> {_b.makeStartingMove(COLOR.RED);}, "InvalidMove expected");
     }
 
@@ -624,7 +654,7 @@ class BoardTest {
     }
 
     @Test
-    void makeMoveInvalid_Blocked()
+    void makeMoveValid_Blocked()
     {
         //move red out, so we can do a move
         moveRedOut();
@@ -659,8 +689,77 @@ class BoardTest {
         moveRedOut();
 
         //make the second move, to the same position
-        //this should fail
-        assertThrows(MoveBlockedByMarbleException.class, () -> {_b.makeMove(move);});
+        //this should reset the first marble
+        try {
+            _b.makeMove(move);
+        }
+        catch (InvalidMoveException e) {
+            fail(e.getMessage());
+        }
+
+        BoardData bd = _b.getFormattedBoardState();
+        ArrayList<String> newBoard = new ArrayList<>(actualBoard);
+        newBoard.set(1, "RED");
+
+        assertEquals(newBoard, bd.getBoard());
+        assertEquals(3, bd.getRedBase());
+
+    }
+
+    @Test
+    void makeMoveValidSkipSeven()
+    {
+        //move red out, so we can do a move
+        moveRedOut();
+
+        //create a simple move
+        ArrayList<Integer> from = new ArrayList<>();
+        ArrayList<Integer> to = new ArrayList<>();
+
+        ArrayList<Boolean> from_base = new ArrayList<>();
+        ArrayList<Boolean> to_base = new ArrayList<>();
+
+        from.add(0);
+        to.add(5);
+        from_base.add(false);
+        to_base.add(false);
+
+        Move move = new Move();
+        move.set_fromPos(from);
+        move.set_toPos(to);
+        move.set_fromPosInGoal(from_base);
+        move.set_toPosInGoal(to_base);
+
+        //make the first move
+        try{
+            _b.makeMove(move);
+        }catch (InvalidMoveException e)
+        {
+            fail("Invalid Move");
+        }
+
+        //move out one more marble
+        moveRedOut();
+
+        move.set_card(new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS)); //with a 7!!!
+        to.clear();
+        to.add(7); //move to 7
+
+        //make the second move, skip the 5, this should reset the first marble
+        //this should reset the first marble
+        try {
+            _b.makeMove(move);
+        }
+        catch (InvalidMoveException e) {
+            fail(e.getMessage());
+        }
+
+        BoardData bd = _b.getFormattedBoardState();
+        ArrayList<String> newBoard = new ArrayList<>(actualBoard);
+        newBoard.set(7, "RED");
+
+        assertEquals(newBoard, bd.getBoard());
+        assertEquals(3, bd.getRedBase());
     }
 
     @Test

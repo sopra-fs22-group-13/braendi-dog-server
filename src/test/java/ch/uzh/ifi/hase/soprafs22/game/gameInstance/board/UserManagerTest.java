@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.game.gameInstance.board;
 
+import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.UserManager;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
@@ -35,16 +36,14 @@ class UserManagerTest {
             user.setUsername(RandomString.make(6));
             user.setPassword(RandomString.make(10));
             user = userService.createUser(user);
-            System.out.println("Token in setUp: " + i + user.getToken());
 
-            Player player = new Player(user.getToken());
+            Player player = new Player(COLOR.BLUE);
 
             players.add(player);
             users.add(user);
         }
         userManager = new UserManager(players, users);
     }
-/*
 
     @Test
     void testGetPlayerFromUsertoken(){
@@ -54,7 +53,6 @@ class UserManagerTest {
         assertEquals(players.get(2), userManager.getPlayerFromUserToken(users.get(2).getToken()));
         assertEquals(players.get(3), userManager.getPlayerFromUserToken(users.get(3).getToken()));
     }
-*/
 
     @Test
     void testGetPlayerFromUser(){
@@ -71,12 +69,11 @@ class UserManagerTest {
         assertEquals(users.get(2), userManager.getUserFromPlayer(players.get(2)));
         assertEquals(users.get(3), userManager.getUserFromPlayer(players.get(3)));
     }
-/*
     @Test
-    void testGetUsersFromUsertoken(){
-        assertEquals(users.get(0), userManager.getUserFromUsertoken("0"));
-        assertEquals(users.get(1), userManager.getUserFromUsertoken("1"));
-        assertEquals(users.get(2), userManager.getUserFromUsertoken("2"));
-        assertEquals(users.get(3), userManager.getUserFromUsertoken("3"));
-    }*/
+    void testGetUserFromUsertoken(){
+        assertEquals(users.get(0).getId(), userManager.getUserFromUsertoken(users.get(0).getToken()).getId());
+        assertEquals(users.get(1).getId(), userManager.getUserFromUsertoken(users.get(1).getToken()).getId());
+        assertEquals(users.get(2).getId(), userManager.getUserFromUsertoken(users.get(2).getToken()).getId());
+        assertEquals(users.get(3).getId(), userManager.getUserFromUsertoken(users.get(3).getToken()).getId());
+    }
 }

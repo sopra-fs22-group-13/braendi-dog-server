@@ -24,7 +24,7 @@ class GameTest {
     @BeforeEach
     void setupGame()
     {
-        GameManager manager= new GameManager();
+        GameManager manager= GameManager.getInstance();
         owner = new User();
         user2 = new User();
         user3 = new User();
@@ -34,7 +34,7 @@ class GameTest {
         users.add(user2);
         users.add(user3);
         users.add(user4);
-        _g = new Game(users,manager);
+        _g = new Game(users);
     }
 
 /*
