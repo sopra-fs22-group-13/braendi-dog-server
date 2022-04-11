@@ -583,6 +583,8 @@ public class Board {
                 return isValidJackMove(move);
             case SEVEN:
                 return isValidSevenMove(move);
+            case FOUR:
+                return isValidFourMove(move);
             default:
                 return isValidRegularMove(move);
         }
@@ -728,6 +730,7 @@ public class Board {
             }
         }
         //TODO validate for goal move
+        //check if distance is valid for the card
         int moveDist = getDistanceInBetween(startPos, endPos);
         if(moveDist != 13) {
             return false;
@@ -783,8 +786,11 @@ public class Board {
             return false;
         }
         //TODO validate for goal move
-        //TODO validate for backwards move
-        //TODO check for the behavior of 4
+        int moveDistForward = getDistanceInBetween(startPos, endPos, true);
+        int moveDistBackward = getDistanceInBetween(startPos, endPos, false);
+        if(moveDistForward != 4 || moveDistBackward != 4) {
+            return false;
+        }
         return true;
     }
 
@@ -818,5 +824,65 @@ public class Board {
             default: return false;
         }
         //TODO validate for goal move
+
     }
-}
+
+    /**
+     * checks if the move is valid to enter goal
+     * assumes that endPos will end in goal, otherwise this methos is not called
+     * @param move
+     * @return true if the move can enter the goal
+     */
+    private boolean isValidGoalMove(int startPos, int endPos, boolean startPosInGoal, COLOR color) {
+        int moveDist = getDistanceInBetween(startPos, endPos);
+        //get intersect and goal depending on marble color
+        int intersect = -1;
+        ArrayList<MARBLE> goal = new ArrayList<>();
+        switch(color){
+            case RED:
+                intersect = REDINTERSECT;
+                goal = _redGoal;
+                break;
+            case YELLOW:
+                intersect = YELLOWINTERSECT;
+                goal = _yellowGoal;
+                break;
+            case GREEN:
+                intersect = GREENINTERSECT;
+                goal = _greenGoal;
+                break;
+            case BLUE:
+                intersect = BLUEINTERSECT;
+                goal = _blueGoal;
+                break;
+        }
+        //check if intersect can be reached or startPos is in goal
+        if(moveDist < getDistanceInBetween(startPos, intersect) && !startPosInGoal) {
+            return false;
+        }
+        if(startPosInGoal) {
+            //check if goal can be reached from inside goal
+            if(moveDist < getDistanceInBetween(startPos, endPos, color, true)) {
+                return false;
+            }
+            //check if there is a marble between startPos and endPos in goal
+            for(int i = startPos; i <= endPos; i++){
+                if(goal.get(i) != MARBLE.NONE) {
+                    return false;
+                }
+            }
+        }else{
+            //check if goal can be reached from outside goal
+            if(moveDist < getDistanceInBetween(startPos, endPos, color, false)) {
+                return false;
+            }
+            //check if there is a marble between intersect and endPos in goal
+            for(int i = 0; i <= endPos; i++){
+                if(goal.get(i) != MARBLE.NONE) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}   
