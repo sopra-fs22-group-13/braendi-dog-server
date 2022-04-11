@@ -625,6 +625,7 @@ public class Board {
                     return false;
             }
         }
+        //TODO validate for goal move
         int moveDist = getDistanceInBetween(startPos, endPos);
         if(moveDist != 1 || moveDist != 11) {
             return false;
@@ -651,9 +652,10 @@ public class Board {
         // validate for starting move
         if(startPos == -1){
             return false;
-        }else{
-            // TODO jack behaviour unclear yet: unclear on how front-end passes the move
         }
+        //TODO validate for goal move
+        //TODO jack behaviour unclear yet: unclear on how front-end passes the move
+        
         return true;
     }
 
@@ -688,6 +690,7 @@ public class Board {
                     return false;
             }
         }
+        //TODO validate for goal move
         int moveDist = getDistanceInBetween(startPos, endPos);
         //TODO joker behaviour unclear yet, can be any card: need to define behaviour in front-end
         return true;
@@ -724,6 +727,7 @@ public class Board {
                     return false;
             }
         }
+        //TODO validate for goal move
         int moveDist = getDistanceInBetween(startPos, endPos);
         if(moveDist != 13) {
             return false;
@@ -758,6 +762,7 @@ public class Board {
         if(moveDist != 7) {
             return false;
         }
+        //TODO validate for goal move
         return true;
     }
 
@@ -777,6 +782,8 @@ public class Board {
         if(marbleColor != move.get_color()) {
             return false;
         }
+        //TODO validate for goal move
+        //TODO validate for backwards move
         //TODO check for the behavior of 4
         return true;
     }
@@ -811,5 +818,6 @@ public class Board {
             case QUEEN: return moveDist == 12;
             default: return false;
         }
+        //TODO validate for goal move
     }
 }
