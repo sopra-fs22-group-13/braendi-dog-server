@@ -2,11 +2,14 @@ package ch.uzh.ifi.hase.soprafs22.game.gameInstance;
 
 import ch.uzh.ifi.hase.soprafs22.game.GameManager;
 
+import ch.uzh.ifi.hase.soprafs22.game.constants.CARDSUITE;
+import ch.uzh.ifi.hase.soprafs22.game.constants.CARDTYPE;
 import ch.uzh.ifi.hase.soprafs22.game.constants.CARDVALUE;
 import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.Board;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.CardStack;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
@@ -183,7 +186,8 @@ public class Game {
             boolean possibleTurn= false;
             for (String card: _players.get(i).getFormattedCards()) {
                 //possibleTurn = _board.makePossibleMove(card,_players.get(i).getColor());
-                //TODO @luca makePossibleMove(Card,Color)
+                Card c = new Card(CARDVALUE.NINE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS); //todo @shitao: card constructor with string
+                _board.isAnyMovePossible(c, _players.get(i).getColor());
             }
             _playersWithValidTurns.set(i,possibleTurn);
         }
