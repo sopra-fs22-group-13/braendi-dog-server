@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class LobbyController {
+public class LobbyManager {
 
     private final GameCreator gameCreator = new GameCreator();
     private final UserRepository userRepository = SpringContext.getBean(UserRepository.class);
@@ -89,13 +89,13 @@ public class LobbyController {
         return null;
     }
 
-    public boolean startGame(Integer lobbyID, String ownerToken) {
+    public void startGame(Integer lobbyID, String ownerToken) {
         Lobby lobby = getLobbyByID(lobbyID);
         if (!Objects.equals(lobby.getOwner().getToken(), ownerToken)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You need to be the owner of the lobby in order to start the game");
 
-        updatePlayers(lobby, UpdateType.START);
+        gameCreator.createGame(lobby);
 
-        return gameCreator.createGame(lobby);
+        updatePlayers(lobby, UpdateType.START);
     }
 
     private void updatePlayers(Lobby lobby, UpdateType updateType) {

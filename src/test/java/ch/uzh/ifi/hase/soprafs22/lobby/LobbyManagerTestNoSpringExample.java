@@ -5,20 +5,15 @@ import ch.uzh.ifi.hase.soprafs22.mocks.MockUpdateController;
 import ch.uzh.ifi.hase.soprafs22.mocks.MockUserRepo;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
-import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
-import org.assertj.core.internal.bytebuddy.utility.RandomString;
-import org.hibernate.sql.Update;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LobbyControllerTestNoSpringExample {
+public class LobbyManagerTestNoSpringExample {
 
     @Test
     public void someTest()
@@ -60,7 +55,7 @@ public class LobbyControllerTestNoSpringExample {
         SpringContext.setSpringContextObject(mockSpringContext);
 
         //NOW create the lobby controller (not before, as it gets the userRepository on creation)
-        LobbyController lobbyController = new LobbyController();
+        LobbyManager lobbyController = new LobbyManager();
 
         //test as usual
         Lobby newLobby = lobbyController.getLobbyByID(lobbyController.openLobby(finalOwner.getToken()));

@@ -40,7 +40,8 @@ public class UserController {
     if(userService.CheckIfLoggedIn(response) == null){
         return null;
     }
-      // fetch all users in the internal representation
+
+    // fetch all users in the internal representation
     List<User> users = userService.getUsers();
     List<UserGetDTO> userGetDTOs = new ArrayList<>();
 
@@ -51,7 +52,7 @@ public class UserController {
     return userGetDTOs;
   }
 
-  @PostMapping("/login")
+  @PostMapping("/users")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
   public UserGetDTO createUser(HttpServletResponse response, @RequestBody UserPostDTO userPostDTO) {

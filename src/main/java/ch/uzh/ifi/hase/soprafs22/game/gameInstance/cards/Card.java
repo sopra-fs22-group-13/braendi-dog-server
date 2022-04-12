@@ -56,7 +56,7 @@ public class Card {
     }
 
     /**
-     * compares crads not by their reference, but by apparent equality
+     * compares cards not by their reference, but by apparent equality
      * @return true if both cards are equal ignoring their references
      */
     public boolean equalsContent(Card card) {

@@ -18,9 +18,6 @@ public class CardStack {
                 deck.add(new Card(value, CARDTYPE.DEFAULT, suite));
             }
         }
-        for (int i=0; i<3; i++) {
-            deck.add(new Card(null, CARDTYPE.JOKER, null));
-        }
 
         shuffle();
     }

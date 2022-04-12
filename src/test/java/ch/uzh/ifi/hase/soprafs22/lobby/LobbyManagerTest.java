@@ -1,25 +1,20 @@
 package ch.uzh.ifi.hase.soprafs22.lobby;
 
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
-import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
-import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class LobbyControllerTest {
-    LobbyController lobbyController;
+class LobbyManagerTest {
+    LobbyManager lobbyController;
     User owner;
     User invitee;
 
@@ -28,7 +23,7 @@ class LobbyControllerTest {
 
     @BeforeEach
     public void setup() {
-        lobbyController = new LobbyController();
+        lobbyController = new LobbyManager();
         owner = new User();
         owner.setUsername(RandomString.make(6));
         owner.setPassword(RandomString.make(10));
