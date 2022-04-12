@@ -761,13 +761,14 @@ public class Board {
         //try joker move
         if(card.getValue() == CARDVALUE.JOKER)
         {
-            //try any move
+
             ArrayList<CARDVALUE> allValues = new ArrayList<>(Arrays.asList(CARDVALUE.values()));
             allValues.remove(CARDVALUE.JOKER);
 
             for (CARDVALUE value : allValues) {
                 Card c = new Card(value, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
                 if(isAnyMovePossible(c, col)) return true; //THIS IS RECURSIVE: MAKE SURE THERE IS NO JOKER IN THE LIST!!!
+                //oh great, O(5n^6) just turned into O(scary)
             }
         }
 
@@ -786,10 +787,12 @@ public class Board {
         ArrayList<Integer[]> allPossibilites = new ArrayList<>();
 
         //DONT EVEN SAY A WORD.
+
+        //pyramid of dooooooooom.
         for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 6; j++) {
-                for (int k = 0; k < 5; k++) {
-                    for (int l = 0; l < 4; l++) {
+            for (int j = 0; j < 7; j++) {
+                for (int k = 0; k < 7; k++) {
+                    for (int l = 0; l < 7; l++) {
                         if(i + j + k + l == 7)
                         {
                             //theoretically valid, so add
@@ -931,6 +934,8 @@ public class Board {
         {
             for (Integer[] movecombo : allPossibilites) {
 
+                //permutations of what 2 marbles should go in a goal state
+                //yes, you see correctly. more for loops
                 for (int maincount = 0; maincount < marblesOnMain.size(); maincount++) {
                     for (int offcount = maincount + 1; offcount < marblesInGoal.size(); offcount++) {
 
