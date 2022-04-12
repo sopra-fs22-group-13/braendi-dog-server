@@ -15,7 +15,7 @@ class CardStackTest {
 
     @Test
     public void creationTest() {
-        assertEquals(55, cardStack.getDeck().size());
+        assertEquals(56, cardStack.getDeck().size());
     }
 
     /**
@@ -24,7 +24,7 @@ class CardStackTest {
     @Test
     public void drawCardTest() {
         Card drawnCard = cardStack.getNextCard();
-        assertEquals(54, cardStack.getDeck().size());
+        assertEquals(55, cardStack.getDeck().size());
         for (Card card: cardStack.getDeck()) {
             assertFalse(drawnCard.equalsContent(card));
         }
