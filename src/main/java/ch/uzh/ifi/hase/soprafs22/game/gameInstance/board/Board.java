@@ -505,8 +505,30 @@ public class Board {
         }
     }
 
-    public boolean checkWinningCondition(){
-        return (_redGoal.size() == 4 || _blueGoal.size() == 4 || _greenGoal.size() == 4 || _yellowGoal.size() == 4);
+    public boolean checkWinningCondition(COLOR color){
+        switch (color){
+            case RED:
+                for (MARBLE m: _redGoal){
+                    if (m == MARBLE.NONE){return false;}
+                }
+                break;
+            case BLUE:
+                for (MARBLE m: _blueGoal){
+                    if (m == MARBLE.NONE){return false;}
+                }
+                break;
+            case GREEN:
+                for (MARBLE m: _greenGoal){
+                    if (m == MARBLE.NONE){return false;}
+                }
+                break;
+            case YELLOW:
+                for (MARBLE m: _yellowGoal){
+                    if (m == MARBLE.NONE){return false;}
+                }
+                break;
+        }
+        return true;
     }
 
     /**
