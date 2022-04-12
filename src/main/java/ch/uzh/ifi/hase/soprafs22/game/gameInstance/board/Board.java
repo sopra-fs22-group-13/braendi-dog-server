@@ -609,7 +609,7 @@ public class Board {
                 allMoveValues.add(6);
                 break;
             case EIGHT:
-                allMoveValues.add(7);
+                allMoveValues.add(8);
                 break;
             case NINE:
                 allMoveValues.add(9);
@@ -655,12 +655,18 @@ public class Board {
 
                 //try a goal move
                 m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
-                m.set_toPos(new ArrayList<>(Arrays.asList(getIndexInGoalAfterDistance(marblesOnMain.get(i), allMoveValues.get(j), col))));
+                try{
+                    m.set_toPos(new ArrayList<>(Arrays.asList(getIndexInGoalAfterDistance(marblesOnMain.get(i), allMoveValues.get(j), col))));
+                }catch (IndexOutOfBoundsException e)
+                {
+                    //a four cannot move in a goal backwards.
+                    m.set_toPos(new ArrayList<>());
+                }
                 m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
                 m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
 
                 // goal reachable:
-                if(m.get_toPos().get(0) != -1)
+                if(m.get_toPos().size() > 0 && m.get_toPos().get(0) != -1)
                 {
                     //always early return, saves this O(scary) algorithm to terminate a lot earlier most of the time
                     try {

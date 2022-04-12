@@ -91,7 +91,7 @@ public class Move {
 
     public boolean checkIfComplete(){
         if (isWellFormed()){
-            return _fromPos.isEmpty() && _toPos.isEmpty() && _fromPosInGoal.isEmpty() && _toPosInGoal.isEmpty() && _card != null && _color != null;
+            return !_fromPos.isEmpty() && !_toPos.isEmpty() && !_fromPosInGoal.isEmpty() && !_toPosInGoal.isEmpty() && _card != null && _color != null;
         }
         return false;
     }
