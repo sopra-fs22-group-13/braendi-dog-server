@@ -505,6 +505,10 @@ public class Board {
         }
     }
 
+    public boolean checkWinningCondition(){
+        return (_redGoal.size() == 4 || _blueGoal.size() == 4 || _greenGoal.size() == 4 || _yellowGoal.size() == 4);
+    }
+
     /**
      * Makes a switch specified by the two positions on the board
      * IMPORTANT: This does NOT check if the move is allowed depending on the rules (eg: card is not a joker/jack)
