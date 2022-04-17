@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.game.gameInstance.player;
 
+import ch.uzh.ifi.hase.soprafs22.game.constants.CARDVALUE;
 import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import com.sun.istack.NotNull;
@@ -47,12 +48,17 @@ public class Player {
         return null;
     }
 
+
+    public Card getCartValueInIndexHand(int i){
+        return _hand.get(i);
+    }
+
     public COLOR getTurn() {
         return this._turn;
     }
 
      public void removeAllCard(){
-        _hand.remove(_hand);
+        _hand.clear();
      }
 
      public COLOR getColor(){

@@ -54,7 +54,7 @@ public class UserManager {
     }
 
     public Player getPlayerFromUserToken(String usertoken){
-
+        // Wass wenn der Token nòd existiert wer muss es fangen.  comment from Sandro
         Long id = userRepository.findByToken(usertoken).getId();
         Player player = _userIdToPlayer.get(id);
         System.out.println("Dict:" + _userIdToPlayer);

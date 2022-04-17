@@ -16,11 +16,10 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
-import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
+import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
-import ch.uzh.ifi.hase.soprafs22.websocket.controller.IUpdateController;
-import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.util.*;
@@ -34,9 +33,11 @@ public class Game {
     private GameManager _manager;
     private Board _board;
     private UserManager _userManager;
-    private final IUpdateController updateController = SpringContext.getBean(UpdateController.class);
-    private int[] numberOfCardsInTurns = {7,6,5,4,3};
-    private int _howManyCardToDeal;
+    private int[] _numberOfCardsInTurns = {7,6,5,4,3};
+    private int _indexOfHowManyCardToDeal;
+
+    @Autowired
+    private UserService _user;
 
     public Game(ArrayList<User> users){
 
@@ -46,29 +47,31 @@ public class Game {
         this._players.add(new Player(COLOR.YELLOW));
         this._players.add(new Player(COLOR.GREEN));
         this._players.add(new Player(COLOR.BLUE));
-
+        this._cardStack= new CardStack();
+        this._indexOfHowManyCardToDeal =0;
+        removeAndDealNewCards();
         this._indexWithCurrentTurn= rand.nextInt(4);
         this._playersWithValidTurns = new ArrayList();
-        this._cardStack= new CardStack();
+        for (int i = 0; i < 4; i++) {
+            _playersWithValidTurns.add(false);
+        }
+
         this._gameToken= UUID.randomUUID().toString();
         this._manager= GameManager.getInstance();
         this._board= new Board();
         this._userManager= new UserManager(_players,users);
-        this._howManyCardToDeal=0;
+
 
     }
 
 
 
     private boolean checkValidTurns(Move move, Player playerWantToMove) {
-
-        if (move != null) {
-            if (move.checkIfComplete()) {
-                if (playerWantToMove == _players.get(_indexWithCurrentTurn)) {
-                    return true;
-                }
-
+        if (move.checkIfComplete()) {
+            if (playerWantToMove == _players.get(_indexWithCurrentTurn)) {
+                return true;
             }
+
         }
         return false;
     }
@@ -80,9 +83,19 @@ public class Game {
      * @throws InvalidMoveException  if move isn't correct in the form
      */
     public void playerMove(Move move) throws InvalidMoveException {
-        // checks for valid move
-        Player playerWantToMove = _userManager.getPlayerFromUserToken(move.getToken());
-        if (!checkValidTurns(move, playerWantToMove)||move.get_color()==playerWantToMove.getColor()) {
+        // checks if token exist if not entire check of correctness of move failes
+        if (move.getToken()== null){
+            throw new InvalidMoveException("Move Not allowed", "Move has no token");
+        }
+        Player playerWantToMove;
+        // catch if token is not null but also not of a user
+        try{
+            playerWantToMove = _userManager.getPlayerFromUserToken(move.getToken());
+        }
+        catch (NullPointerException e){
+            throw new InvalidMoveException("Move Not allowed", "Bad token");}
+
+        if (!checkValidTurns(move, playerWantToMove)||move.get_color()!=playerWantToMove.getColor()) {
             throw new InvalidMoveException("Move Not allowed", "Bad move logic");
         }
         // check if someone has a valid turn
@@ -113,7 +126,7 @@ public class Game {
             }
             //if in here the request is from the wrong user
         }
-        removeAndDealNewCards(numberOfCardsInTurns[_howManyCardToDeal]);
+        removeAndDealNewCards();
         _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, "New Cards" ));
 /*
         if (_board.winninCondition()) {
@@ -180,7 +193,7 @@ public class Game {
         return pd;
     }
 
-    public boolean ifMoveIsPossible(Move move) throws InvalidMoveException {
+    private boolean ifMoveIsPossible(Move move) throws InvalidMoveException {
 
         for (int i =0; i<4;i++){
             boolean possibleTurn= false;
@@ -194,16 +207,16 @@ public class Game {
         return false;
     }
 
-    public void removeAndDealNewCards(int howMany){
+    private void removeAndDealNewCards(){
         for (Player player: _players){
             player.removeAllCard();
-            for (int i = 0; i>howMany;i++) {
+            for (int i = 0; i< _numberOfCardsInTurns[_indexOfHowManyCardToDeal]; i++) {
                 player.addCard(_cardStack.getNextCard());
             }
         }
-        _howManyCardToDeal++;
-        if (_howManyCardToDeal==4){
-            _howManyCardToDeal=0;
+        _indexOfHowManyCardToDeal++;
+        if (_indexOfHowManyCardToDeal ==4){
+            _indexOfHowManyCardToDeal =0;
         }
     }
 
@@ -220,18 +233,29 @@ public class Game {
     }
 
     public Boolean getPlayerValidTurn(int i){
-
-        // if a player has a valid turn must be checked in UpdateValidTurn()
+        updateValidTurn(i);
         boolean valid = _playersWithValidTurns.get(i);
         return valid;
     }
 
-    public Boolean someoneValidTurn(){
+    private Boolean someoneValidTurn(){
+
         boolean valid = false;
         for (int i = 0; i<4; i++){
+            updateValidTurn(i);
             valid = valid || _playersWithValidTurns.get(i);
         }
         return valid;
+    }
+
+    private void updateValidTurn(int indexPlayer){
+        Player player = _players.get(indexPlayer);
+
+        boolean possibleMove= false;
+        for (int i = 0; i < player.getCardCount(); i++){
+            possibleMove= possibleMove || _board.isAnyMovePossible(player.getCartValueInIndexHand(i),player.getColor());
+        }
+        _playersWithValidTurns.set(indexPlayer,possibleMove);
     }
 
     public CardStack getCardStack(){
