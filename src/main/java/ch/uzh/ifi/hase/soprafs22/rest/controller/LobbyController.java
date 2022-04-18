@@ -5,7 +5,6 @@ import ch.uzh.ifi.hase.soprafs22.rest.data.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +30,7 @@ public class LobbyController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public LobbyGetDTO createLobby(HttpServletRequest response) {
-        User user = userService.CheckIfLoggedIn(response);
+        User user = userService.checkIfLoggedIn(response);
         if (user==null) return null;
 
         int lobbyID = lobbyManager.openLobby(user.getToken());

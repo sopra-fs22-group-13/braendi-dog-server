@@ -119,7 +119,7 @@ public class UserService {
 
     }
 
-    public User CheckIfLoggedIn(HttpServletRequest request) {
+    public User checkIfLoggedIn(HttpServletRequest request) {
         if (request.getHeader("Authorization") != null && request.getHeader("Authorization").length() > 6 && Objects.equals(request.getHeader("Authorization").substring(0, 5).toUpperCase(), HttpServletRequest.BASIC_AUTH)) {
             String auth = request.getHeader("Authorization");
             auth = auth.substring(6); //get the token part

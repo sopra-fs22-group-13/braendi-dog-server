@@ -64,6 +64,10 @@ public class Game {
 
     }
 
+    public Game(){
+        // for test porpuse
+    }
+
 
 
     private boolean checkValidTurns(Move move, Player playerWantToMove) {
@@ -126,7 +130,7 @@ public class Game {
             }
             //if in here the request is from the wrong user
         }
-        removeAndDealNewCards();
+            removeAndDealNewCards();
         _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, "New Cards" ));
 /*
         if (_board.winninCondition()) {

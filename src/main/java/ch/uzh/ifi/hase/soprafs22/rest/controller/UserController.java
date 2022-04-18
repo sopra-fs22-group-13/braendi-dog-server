@@ -6,15 +6,12 @@ import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * User Controller
@@ -37,7 +34,7 @@ public class UserController {
   @ResponseBody
   public List<UserGetDTO> getAllUsers( HttpServletRequest response) {
 
-    if(userService.CheckIfLoggedIn(response) == null){
+    if(userService.checkIfLoggedIn(response) == null){
         return null;
     }
 
