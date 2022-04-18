@@ -99,4 +99,15 @@ public class Move {
 
     public String getToken() {return _token;}
 
+    public boolean isGoalMove() {
+        boolean isGoalMove = false;
+        for(int i = 0; i < _fromPosInGoal.size(); i++) {
+            isGoalMove = isGoalMove || _fromPosInGoal.get(i);
+        }
+        for(int i = 0; i < _toPosInGoal.size(); i++) {
+            isGoalMove = isGoalMove || _toPosInGoal.get(i);
+        }
+        return isGoalMove;
+    }
+
 }
