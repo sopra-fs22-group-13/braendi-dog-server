@@ -35,6 +35,7 @@ public class LobbyController {
     public LobbyGetDTO createLobby(HttpServletRequest response) {
         User user = userService.checkIfLoggedIn(response);
         if (user==null) return null;
+        if (user.isInLobby()) throw new ResponseStatusException(HttpStatus.CONFLICT, "You are already in a lobby.");
 
         int lobbyID = lobbyManager.openLobby(user.getToken());
 
