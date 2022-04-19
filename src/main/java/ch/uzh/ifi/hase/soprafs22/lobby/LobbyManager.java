@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.lobby;
 
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
@@ -34,6 +35,21 @@ public class LobbyManager {
         updatePlayers(newLobby, UpdateType.LOBBY);
 
         return newLobby.getId();
+    }
+
+    public void closeLobby(Integer lobbyID) {
+        Lobby lobbyToBeDeleted = getLobbyByID(lobbyID);
+        List<User> players = lobbyToBeDeleted.getPlayers();
+
+        openLobbies.remove(lobbyToBeDeleted);
+
+        /** TODO
+         * Not sure how this works in this case. Needs to be done before this method is actually usable.
+         */
+        /*
+        UpdateDTO updateDTO = new UpdateDTO(updateType, "");
+        for (User player: players) updateController.sendUpdateToUser(player.getToken(), updateDTO);
+         */
     }
 
 
