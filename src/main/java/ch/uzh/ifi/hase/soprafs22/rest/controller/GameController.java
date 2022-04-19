@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs22.game.GameManager;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.Game;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
+import ch.uzh.ifi.hase.soprafs22.lobby.Lobby;
 import ch.uzh.ifi.hase.soprafs22.lobby.LobbyManager;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
@@ -28,7 +29,7 @@ public class GameController {
     GameController(UserService userService) {this.userService = userService;}
 
     @EventListener(ApplicationReadyEvent.class)
-    public void schlau() { gameManager = GameManager.getInstance();
+    public void start() { gameManager = GameManager.getInstance();
     }
 
     @GetMapping("/game/board/{gametoken}")

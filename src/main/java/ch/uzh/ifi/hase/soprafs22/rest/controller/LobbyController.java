@@ -55,4 +55,17 @@ public class LobbyController {
 
         lobbyManager.closeLobby(lobbyID);
     }
+
+
+    @PostMapping("/game")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public void createGame(HttpServletRequest response, Integer lobbyID) {
+        User client = userService.checkIfLoggedIn(response);
+        Lobby gameLobby = lobbyManager.getLobbyByID(lobbyID);
+        if (gameLobby == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This lobby doesn't exist.");
+        if (!Objects.equals(gameLobby.getOwner().getToken(), client.getToken())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must be the owner to start the game.");
+
+        lobbyManager.startGame(lobbyID, client.getToken());
+    }
 }

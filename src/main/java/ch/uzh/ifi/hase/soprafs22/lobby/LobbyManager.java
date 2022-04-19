@@ -108,6 +108,7 @@ public class LobbyManager {
     public void startGame(Integer lobbyID, String ownerToken) {
         Lobby lobby = getLobbyByID(lobbyID);
         if (!Objects.equals(lobby.getOwner().getToken(), ownerToken)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You need to be the owner of the lobby in order to start the game");
+        if (lobby.getPlayers().size() < 4) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The lobby needs to be full. You can't start the game right now.");
 
         gameCreator.createGame(lobby);
 
