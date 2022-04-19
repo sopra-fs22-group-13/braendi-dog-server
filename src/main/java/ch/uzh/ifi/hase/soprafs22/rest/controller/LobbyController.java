@@ -22,7 +22,7 @@ public class LobbyController {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void schlau() {
+    public void start() {
         lobbyManager = new LobbyManager();
     }
 
