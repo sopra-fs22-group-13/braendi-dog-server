@@ -69,4 +69,15 @@ public class LobbyController {
 
         lobbyManager.startGame(lobbyID, client.getToken());
     }
+
+    @PutMapping("/lobby/{lobbyID}/invitations")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void invitePlayer(HttpServletRequest response, @PathVariable Integer lobbyID, Long playerID) {
+        User client = userService.checkIfLoggedIn(response);
+        User invitee = userService.getUserById(playerID);
+        if (invitee == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The player you're trying to invite doesn't exist");
+
+        lobbyManager.invitePlayer(lobbyID, client.getToken(), invitee.getToken());
+    }
 }

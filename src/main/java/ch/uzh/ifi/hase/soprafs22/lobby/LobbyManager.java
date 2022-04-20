@@ -66,7 +66,7 @@ public class LobbyManager {
         User invitee = userRepository.findByToken(playertoken);
         if (invitee == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The player you're trying to invite doesn't exist");
 
-        lobby.addInvitee(invitee);
+        if (!lobby.getPendingInvites().contains(invitee)) lobby.addInvitee(invitee);
 
         UpdateDTO updateDTO = new UpdateDTO(UpdateType.INVITE, "");
         updateController.sendUpdateToUser(playertoken, updateDTO);
