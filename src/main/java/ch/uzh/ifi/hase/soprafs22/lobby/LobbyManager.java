@@ -90,7 +90,7 @@ public class LobbyManager {
         }
 
         //only reachable if the player is not in the list of invites
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The player with this token has not been invited to this lobby");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You have not been invited to this lobby");
     }
 
     /**

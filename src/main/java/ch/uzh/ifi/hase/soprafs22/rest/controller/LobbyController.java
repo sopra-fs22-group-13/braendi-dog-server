@@ -80,4 +80,13 @@ public class LobbyController {
 
         lobbyManager.invitePlayer(lobbyID, client.getToken(), invitee.getToken());
     }
+
+    @PutMapping("/invitations")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void respondToInvitation(HttpServletRequest response, Integer lobbyID, boolean invResponse) {
+        User client = userService.checkIfLoggedIn(response);
+
+        lobbyManager.inviteResponse(lobbyID, client.getToken(), invResponse);
+    }
 }
