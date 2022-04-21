@@ -1199,7 +1199,7 @@ public class Board {
         if(startPos == -1){
             return false;
         }
-        //TODO jack behaviour unclear yet: unclear on how front-end passes the move
+        // jack behaviour unclear yet: unclear on how front-end passes the move
         if(this._mainCircle.get(startPos) == MARBLE.NONE || this._mainCircle.get(endPos) == MARBLE.NONE || marbleColor == this.getColorFromPosition(endPos)) {
             return false;
         }
