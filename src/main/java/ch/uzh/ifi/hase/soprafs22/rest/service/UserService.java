@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -78,11 +79,12 @@ public class UserService {
     }
 
     public User getUserById(Long id){
-        User user = userRepository.findById(id.toString());
-        if (user == null){
+        Optional<User> user = userRepository.findById(id);
+        User newUser = user.isPresent()? user.get() : null;
+        if (newUser == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The provided Id was not found");
         }
-        return user;
+        return newUser;
     }
 
     /**
