@@ -243,8 +243,8 @@ class GameTest {
         assertEquals("Bad move logic", exception.getMessage());
     }
 
-    @Test
-    void playerMoveNobodyValidMove() {
+    //@Test
+    void playerCallingMoveHasNotAValidMove() {
         //  setting up for a correct move if not for the token
         ArrayList<Integer> _fromPos = new ArrayList<>();
         ArrayList<Integer> _toPos = new ArrayList<>();
@@ -274,19 +274,39 @@ class GameTest {
 
 
         Move  _move= new Move(_fromPos,_toPos,_fromPosInGoal,_toPosInGoal,_card,_token,colorOfCurrentPlayerTurn);
-        for (Player player: _g.getPlayers()){
-            player.removeAllCard();
-            assertEquals(0,player.getCardCount());
-            //checks number of cards are 0
-        }
+        Player playerNotAbleToMove = _g.getCurrentTurn();
+        _g.getCurrentTurn().removeAllCard();
+        //gets 1 player without cards so he can't move
+
         try{_g.playerMove(_move);}
         catch (InvalidMoveException e){
         };
         for (Player player: _g.getPlayers()){
-            assertEquals(6,player.getCardCount());
-            //checks number of cards are 6 after the first redistribution
+            assertNotEquals(playerNotAbleToMove,_g.getCurrentTurn());
+            // most of the time it is a new player that has to move because the
         }
     }
+
+    void   playerMoveIsNotValidForThisUSer(){
+
+    }
+
+
+    void   playerMoveMakeStartingMove(){
+
+    }
+
+
+    void   playerMoveMakeSwitchMove(){
+
+    }
+
+    void   playerMoveMakeNormalMove(){
+
+    }
+
+
+
 
 
 }
