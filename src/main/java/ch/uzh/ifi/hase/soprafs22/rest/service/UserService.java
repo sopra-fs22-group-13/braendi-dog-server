@@ -61,7 +61,7 @@ public class UserService {
 
   public User loginUser(User user) {
 
-     checkIfUserIsUnique(user);
+     checkIfPasswordIsCorrect(user);
      // need to throw an expection is not register
 
      User userAlreadyRegister = userRepository.findByUsername(user.getUsername());
@@ -103,7 +103,7 @@ public class UserService {
 
 
 
-    private void checkIfUserIsUnique(User userToLoggedIn ) throws ResponseStatusException {
+    private void checkIfPasswordIsCorrect(User userToLoggedIn ) throws ResponseStatusException {
         User userByUsername = userRepository.findByUsername(userToLoggedIn.getUsername());
 
         String baseErrorMessageNotRegister = "The %s provided %s not reigister. Therefore, the user could not login";
