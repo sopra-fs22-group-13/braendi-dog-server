@@ -39,6 +39,7 @@ class LobbyManagerTest {
     @Test
     public void creationTest() {
         Lobby newLobby = lobbyController.getLobbyByID(lobbyController.openLobby(owner.getToken()));
+        owner.setInLobby(true);
 
         assertThat(owner).usingRecursiveComparison().isEqualTo(newLobby.getOwner());
         assertEquals(newLobby, lobbyController.getLobbyByID(newLobby.getId()));
@@ -59,6 +60,8 @@ class LobbyManagerTest {
         Lobby newLobby = lobbyController.getLobbyByID(lobbyID);
         lobbyController.invitePlayer(lobbyID, owner.getToken(), invitee.getToken());
         lobbyController.inviteResponse(lobbyID, invitee.getToken(), true);
+        invitee.setInLobby(true);
+        owner.setInLobby(true);
 
         assertEquals(2, newLobby.getPlayers().size());
 

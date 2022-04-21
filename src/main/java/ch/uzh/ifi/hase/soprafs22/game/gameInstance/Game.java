@@ -48,17 +48,18 @@ public class Game {
         this._players.add(new Player(COLOR.GREEN));
         this._players.add(new Player(COLOR.BLUE));
         this._cardStack= new CardStack();
+        this._board= new Board();
         this._indexOfHowManyCardToDeal =0;
-        removeAndDealNewCards();
+        this.removeAndDealNewCards();
         this._indexWithCurrentTurn= rand.nextInt(4);
         this._playersWithValidTurns = new ArrayList();
         for (int i = 0; i < 4; i++) {
             _playersWithValidTurns.add(false);
         }
-
+        this.updateValidTurnAllPlayers();
         this._gameToken= UUID.randomUUID().toString();
         this._manager= GameManager.getInstance();
-        this._board= new Board();
+
         this._userManager= new UserManager(_players,users);
 
 
@@ -67,8 +68,6 @@ public class Game {
     public Game(){
         // for test porpuse
     }
-
-
 
     private boolean checkValidTurns(Move move, Player playerWantToMove) {
         if (move.checkIfComplete()) {
@@ -87,11 +86,13 @@ public class Game {
      * @throws InvalidMoveException  if move isn't correct in the form
      */
     public void playerMove(Move move) throws InvalidMoveException {
+        Player playerWantToMove;
+
         // checks if token exist if not entire check of correctness of move failes
         if (move.getToken()== null){
             throw new InvalidMoveException("Move Not allowed", "Move has no token");
         }
-        Player playerWantToMove;
+
         // catch if token is not null but also not of a user
         try{
             playerWantToMove = _userManager.getPlayerFromUserToken(move.getToken());
@@ -102,42 +103,67 @@ public class Game {
         if (!checkValidTurns(move, playerWantToMove)||move.get_color()!=playerWantToMove.getColor()) {
             throw new InvalidMoveException("Move Not allowed", "Bad move logic");
         }
+
         // check if someone has a valid turn
-        if(someoneValidTurn()){
-            // checks if the right player is playing
-            if  (_playersWithValidTurns.get(_indexWithCurrentTurn)) {
-                //checks if move is logical right
-                if (_board.isValidMove(move)) {
-                    // for every special move it's called an other function move
-                    if (move.get_fromPos().get(0) == -1) {
-                        _board.makeStartingMove(move.get_color());
-                    }
-                    else if (move.get_card().getValue() == CARDVALUE.JACK) {
-                        _board.makeSwitch(move.get_fromPos().get(0), move.get_toPos().get(0));
-                    }
-                    else {
-                        _board.makeMove(move);
-                    }
-                    //remove card from player hand
-                    _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
-                    nextTurns();
+        updateValidTurnAllPlayers();
+
+        // checks if the player can do something
+        if  (_playersWithValidTurns.get(_indexWithCurrentTurn)) {
+            //checks if move is logical right
+            if (_board.isValidMove(move)) {
+                // for every special move it's called an other function move
+                if (move.get_fromPos().get(0) == -1) {
+                    _board.makeStartingMove(move.get_color());
+                }
+                else if (move.get_card().getValue() == CARDVALUE.JACK) {
+                    _board.makeSwitch(move.get_fromPos().get(0), move.get_toPos().get(0));
                 }
                 else {
-                    _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn),new UpdateDTO(UpdateType.TURN, "wrong Turn logic"));
+                    _board.makeMove(move);
                 }
-
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, "New Turn"));
+                //remove card from player hand
+                _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
+                nextTurns();
             }
-            //if in here the request is from the wrong user
-        }
-            removeAndDealNewCards();
-        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, "New Cards" ));
-/*
-        if (_board.winninCondition()) {
-            _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, "new turn"));
-        }
-*/
+            else {
+                _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn),new UpdateDTO(UpdateType.TURN, "wrong Turn logic"));
+            }
 
+            _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, "New Turn"));
+        }
+
+        // check if somebody won
+        for (Player player:_players){
+            if (_board.checkWinningCondition(player.getColor())) {
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, player.getColor()+" Won"));
+                return;
+            }
+        }
+
+        // deal new cards until someone has a possible move
+        do {
+            removeAndDealNewCards();
+            updateValidTurnAllPlayers();
+        }while(someoneValidTurn());
+
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, "New Cards"));
+        //wait for a moment
+
+        //because the next player with the ability to do something is not strictly the next player it is necessary to loop it through
+        int indexNextPlayerTurn=-1;
+        int i=_indexWithCurrentTurn;
+        do{
+            if(_playersWithValidTurns.get(i)==true){
+                indexNextPlayerTurn=0;
+            }
+            else {
+                i++;
+                if (i == 4) {
+                    i = 0;
+                }
+            }
+        }while(indexNextPlayerTurn!=-1);
+        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, "Your Turn"));
     }
 
     /**
@@ -237,7 +263,6 @@ public class Game {
     }
 
     public Boolean getPlayerValidTurn(int i){
-        updateValidTurn(i);
         boolean valid = _playersWithValidTurns.get(i);
         return valid;
     }
@@ -246,20 +271,20 @@ public class Game {
 
         boolean valid = false;
         for (int i = 0; i<4; i++){
-            updateValidTurn(i);
             valid = valid || _playersWithValidTurns.get(i);
         }
         return valid;
     }
 
-    private void updateValidTurn(int indexPlayer){
-        Player player = _players.get(indexPlayer);
-
-        boolean possibleMove= false;
-        for (int i = 0; i < player.getCardCount(); i++){
-            possibleMove= possibleMove || _board.isAnyMovePossible(player.getCartValueInIndexHand(i),player.getColor());
+    private void updateValidTurnAllPlayers(){
+        for (int i = 0; i < 4; i++) {
+            Player player= _players.get(i);
+            boolean possibleMove = false;
+            for (int j = 0; j < player.getCardCount(); j++) {
+                possibleMove = possibleMove || _board.isAnyMovePossible(player.getCartValueInIndexHand(j), player.getColor());
+            }
+            _playersWithValidTurns.set(i, possibleMove);
         }
-        _playersWithValidTurns.set(indexPlayer,possibleMove);
     }
 
     public CardStack getCardStack(){

@@ -66,7 +66,7 @@ public class LobbyManager {
         User invitee = userRepository.findByToken(playertoken);
         if (invitee == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The player you're trying to invite doesn't exist");
 
-        lobby.addInvitee(invitee);
+        if (!lobby.getPendingInvites().contains(invitee)) lobby.addInvitee(invitee);
 
         UpdateDTO updateDTO = new UpdateDTO(UpdateType.INVITE, "");
         updateController.sendUpdateToUser(playertoken, updateDTO);
@@ -90,7 +90,7 @@ public class LobbyManager {
         }
 
         //only reachable if the player is not in the list of invites
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The player with this token has not been invited to this lobby");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You have not been invited to this lobby");
     }
 
     /**
@@ -108,6 +108,7 @@ public class LobbyManager {
     public void startGame(Integer lobbyID, String ownerToken) {
         Lobby lobby = getLobbyByID(lobbyID);
         if (!Objects.equals(lobby.getOwner().getToken(), ownerToken)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You need to be the owner of the lobby in order to start the game");
+        if (lobby.getPlayers().size() < 4) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The lobby needs to be full. You can't start the game right now.");
 
         gameCreator.createGame(lobby);
 

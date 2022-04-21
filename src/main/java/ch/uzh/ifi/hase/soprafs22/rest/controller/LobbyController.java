@@ -35,6 +35,7 @@ public class LobbyController {
     public LobbyGetDTO createLobby(HttpServletRequest response) {
         User user = userService.checkIfLoggedIn(response);
         if (user==null) return null;
+        if (user.isInLobby()) throw new ResponseStatusException(HttpStatus.CONFLICT, "You are already in a lobby.");
 
         int lobbyID = lobbyManager.openLobby(user.getToken());
 
@@ -54,5 +55,38 @@ public class LobbyController {
         if (!Objects.equals(lobbyToBeDeleted.getOwner().getToken(), client.getToken())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must be the owner to delete a lobby.");
 
         lobbyManager.closeLobby(lobbyID);
+    }
+
+
+    @PostMapping("/game")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public void createGame(HttpServletRequest response, Integer lobbyID) {
+        User client = userService.checkIfLoggedIn(response);
+        Lobby gameLobby = lobbyManager.getLobbyByID(lobbyID);
+        if (gameLobby == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This lobby doesn't exist.");
+        if (!Objects.equals(gameLobby.getOwner().getToken(), client.getToken())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must be the owner to start the game.");
+
+        lobbyManager.startGame(lobbyID, client.getToken());
+    }
+
+    @PutMapping("/lobby/{lobbyID}/invitations")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void invitePlayer(HttpServletRequest response, @PathVariable Integer lobbyID, Long playerID) {
+        User client = userService.checkIfLoggedIn(response);
+        User invitee = userService.getUserById(playerID);
+        if (invitee == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The player you're trying to invite doesn't exist");
+
+        lobbyManager.invitePlayer(lobbyID, client.getToken(), invitee.getToken());
+    }
+
+    @PutMapping("/invitations")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void respondToInvitation(HttpServletRequest response, Integer lobbyID, boolean invResponse) {
+        User client = userService.checkIfLoggedIn(response);
+
+        lobbyManager.inviteResponse(lobbyID, client.getToken(), invResponse);
     }
 }
