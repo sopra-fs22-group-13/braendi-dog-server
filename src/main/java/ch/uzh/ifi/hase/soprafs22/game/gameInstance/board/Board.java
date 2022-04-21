@@ -1094,7 +1094,7 @@ public class Board {
     public boolean isValidMove(Move move) throws InvalidMoveException
     {
         //throwing exceptions
-        if(move.checkIfComplete()) {
+        if(!move.checkIfComplete()) {
             throw new InvalidMoveException("BAD_MOVE", "move is not complete");
         }
         
@@ -1128,14 +1128,12 @@ public class Board {
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor;
-        MARBLE curMarble;
         try{
             if(startPos != -1){
                 marbleColor = this.getColorFromPosition(startPos);
             }else{
                 marbleColor = move.get_color();
             }
-            curMarble = this._mainCircle.get(startPos);
         } catch(Exception e) {
             throw new NoMarbleException();
         }
@@ -1187,11 +1185,9 @@ public class Board {
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor;
-        MARBLE curMarble;
         try{
             if(startPos == -1) {return false;}
             marbleColor = this.getColorFromPosition(startPos);
-            curMarble = this._mainCircle.get(startPos);
         } catch(Exception e) {
             throw new NoMarbleException();
         }
@@ -1215,14 +1211,12 @@ public class Board {
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor;
-        MARBLE curMarble;
         try{
             if(startPos != -1){
                 marbleColor = this.getColorFromPosition(startPos);
             }else{
                 marbleColor = move.get_color();
             }
-            curMarble = this._mainCircle.get(startPos);
         } catch(Exception e) {
             throw new NoMarbleException();
         }
@@ -1272,14 +1266,12 @@ public class Board {
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor;
-        MARBLE curMarble;
         try{
             if(startPos != -1){
                 marbleColor = this.getColorFromPosition(startPos);
             }else{
                 marbleColor = move.get_color();
             }
-            curMarble = this._mainCircle.get(startPos);
         } catch(Exception e) {
             throw new NoMarbleException();
         }
@@ -1380,11 +1372,9 @@ public class Board {
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor;
-        MARBLE curMarble;
         try{
             if(startPos == -1){return false;}
             marbleColor = this.getColorFromPosition(startPos);
-            curMarble = this._mainCircle.get(startPos);
         } catch(Exception e) {
             throw new NoMarbleException();
         }
