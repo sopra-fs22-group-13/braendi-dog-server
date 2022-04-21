@@ -126,9 +126,12 @@ public class Game {
                 nextTurns();
             }
             else {
+                //TODO This should probably be a return value rather than a user update... (eg: return 12;, where 12 is some error code)
+                //TODO FOR ALL _userManager calls: make sure the message is valid JSON and not just text
                 _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn),new UpdateDTO(UpdateType.TURN, "wrong Turn logic"));
             }
 
+            //TODO no? if the move failed, there is no new turn (should this belong on line 126?)
             _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, "New Turn"));
         }
 
@@ -140,12 +143,14 @@ public class Game {
             }
         }
 
+        // TODO maybe I don't get it, but why do we deal new cards after only one move? we should only deal new cards if noone can move anymore
         // deal new cards until someone has a possible move
         do {
             removeAndDealNewCards();
             updateValidTurnAllPlayers();
         }while(someoneValidTurn());
 
+        //TODO this should be of updateType CARD
         _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, "New Cards"));
         //wait for a moment
 
