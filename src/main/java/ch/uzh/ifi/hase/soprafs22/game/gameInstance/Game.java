@@ -138,7 +138,7 @@ public class Game {
         for (Player player:_players){
             if (_board.checkWinningCondition(player.getColor())) {
 
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, player.getColor()+"|WON"));
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, "WON :"+player.getColor()));
                 return;
             }
         }
@@ -158,7 +158,7 @@ public class Game {
 
         _indexWithCurrentTurn= findNextPlayer(_indexWithCurrentTurn);
 
-        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, _players.get(_indexWithCurrentTurn).getColor()+"|NEXT_TURN"));
+        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, "NEXT_TURN :"+_players.get(_indexWithCurrentTurn).getColor()));
     }
 
     /**
