@@ -15,11 +15,6 @@ import java.util.Optional;
  */
 public abstract class MockUserRepo implements UserRepository {
     @Override
-    public User findById(String id) {
-        return null;
-    }
-
-    @Override
     public User findByPassword(String password) {
         return null;
     }
