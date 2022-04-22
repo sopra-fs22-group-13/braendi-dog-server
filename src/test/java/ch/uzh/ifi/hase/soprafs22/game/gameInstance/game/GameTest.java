@@ -56,6 +56,27 @@ class GameTest {
     }
 
 
+    private Move generateMove(String token, Boolean missingToPos, COLOR moveColor){
+        ArrayList<Integer> _fromPos = new ArrayList<>();
+        ArrayList<Integer> _toPos = new ArrayList<>();
+        ArrayList<Boolean> _fromPosInGoal = new ArrayList<>();
+        ArrayList<Boolean> _toPosInGoal = new ArrayList<>();
+
+        _fromPos.add(2);
+        if (!missingToPos){
+            _toPos.add(3);
+        }
+
+        _fromPosInGoal.add(false);
+        _toPosInGoal.add(false);
+
+
+        Card _card= new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
+
+
+        return new Move(_fromPos,_toPos,_fromPosInGoal,_toPosInGoal,_card, token,moveColor);
+    }
+
     @Test
     void getGameTokenTest(){
         assertNotNull(_g.getGameToken());
@@ -87,48 +108,19 @@ class GameTest {
     @Test
     void playerMoveNullTokenTest() {
         //  setting up for a correct move if not for the token
-        ArrayList<Integer> _fromPos = new ArrayList<>();
-        ArrayList<Integer> _toPos = new ArrayList<>();
-        ArrayList<Boolean> _fromPosInGoal = new ArrayList<>();
-        ArrayList<Boolean> _toPosInGoal = new ArrayList<>();
 
-        _fromPos.add(2);
-        _toPos.add(3);
-        _fromPosInGoal.add(false);
-        _toPosInGoal.add(false);
-        COLOR movecolor= COLOR.GREEN;
-
-        Card _card= new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
-
-        String _token=null ;
-        //
-
-        Move  _move= new Move(_fromPos,_toPos,_fromPosInGoal,_toPosInGoal,_card,_token,movecolor);
-
+        Move _move = generateMove(null, false,COLOR.BLUE);
         Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
+
         assertEquals("Move has no token", exception.getMessage());
     }
 
     @Test
     void playerMoveBadTokenTest() {
-        //  setting up for a correct move if not for the token
-        ArrayList<Integer> _fromPos = new ArrayList<>();
-        ArrayList<Integer> _toPos = new ArrayList<>();
-        ArrayList<Boolean> _fromPosInGoal = new ArrayList<>();
-        ArrayList<Boolean> _toPosInGoal = new ArrayList<>();
-        _fromPos.add(2);
-        _toPos.add(3);
-        _fromPosInGoal.add(false);
-        _toPosInGoal.add(false);
-        COLOR movecolor= COLOR.GREEN;
 
-        Card _card= new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
-        String _token=UUID.randomUUID().toString();
-
-
-        Move  _move= new Move(_fromPos,_toPos,_fromPosInGoal,_toPosInGoal,_card,_token,movecolor);
-
+        Move  _move= generateMove(UUID.randomUUID().toString(), false,COLOR.BLUE);
         Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
+
         assertEquals("Bad token", exception.getMessage());
     }
 
@@ -136,17 +128,7 @@ class GameTest {
     void playerMoveMoveNotCompleteTest() {
         //  setting up for a correct move if not for _toPos
 
-        ArrayList<Integer> _fromPos = new ArrayList<>();
-        ArrayList<Integer> _toPos = new ArrayList<>();
-        ArrayList<Boolean> _fromPosInGoal = new ArrayList<>();
-        ArrayList<Boolean> _toPosInGoal = new ArrayList<>();
-        _fromPos.add(2);
-        _fromPosInGoal.add(false);
-        _toPosInGoal.add(false);
-        COLOR movecolor= COLOR.GREEN;
 
-        //gets _token from user that is using
-        Card _card= new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
         COLOR colorOfCurrentPlayerTurn= _g.getCurrentTurn().getColor();
         int indexOfCurrentPlayer;
         if (colorOfCurrentPlayerTurn == COLOR.RED){
@@ -160,7 +142,7 @@ class GameTest {
         }
         String _token=users.get(indexOfCurrentPlayer).getToken() ;
 
-        Move  _move= new Move(_fromPos,_toPos,_fromPosInGoal,_toPosInGoal,_card,_token,movecolor);
+        Move  _move= generateMove(_token, true,COLOR.BLUE);
 
         Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
         assertEquals("Bad move logic", exception.getMessage());
@@ -169,19 +151,7 @@ class GameTest {
 
     @Test
     void playerMovePlayerToMoveWrongTest() {
-        //  setting up for a correct move if not for the token
-        ArrayList<Integer> _fromPos = new ArrayList<>();
-        ArrayList<Integer> _toPos = new ArrayList<>();
-        ArrayList<Boolean> _fromPosInGoal = new ArrayList<>();
-        ArrayList<Boolean> _toPosInGoal = new ArrayList<>();
-        _fromPos.add(2);
-        _toPos.add(3);
-        _fromPosInGoal.add(false);
-        _toPosInGoal.add(false);
-        COLOR movecolor= COLOR.GREEN;
 
-        //gets _token from user that is using
-        Card _card= new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
         COLOR colorOfCurrentPlayerTurn= _g.getCurrentTurn().getColor();
         int indexOfCurrentPlayer;
         if (colorOfCurrentPlayerTurn == COLOR.RED){
@@ -197,7 +167,7 @@ class GameTest {
 
 
 
-        Move  _move= new Move(_fromPos,_toPos,_fromPosInGoal,_toPosInGoal,_card,_token,movecolor);
+        Move  _move= generateMove(_token, true,COLOR.BLUE);
 
         Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
         assertEquals("Bad move logic", exception.getMessage());
@@ -205,18 +175,7 @@ class GameTest {
 
     @Test
     void playerMoveWrongMarbelColorTest() {
-        //  setting up for a correct move if not for the token
-        ArrayList<Integer> _fromPos = new ArrayList<>();
-        ArrayList<Integer> _toPos = new ArrayList<>();
-        ArrayList<Boolean> _fromPosInGoal = new ArrayList<>();
-        ArrayList<Boolean> _toPosInGoal = new ArrayList<>();
-        _fromPos.add(2);
-        _toPos.add(3);
-        _fromPosInGoal.add(false);
-        _toPosInGoal.add(false);
 
-        //gets _token from user that is using
-        Card _card= new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
         COLOR colorOfCurrentPlayerTurn= _g.getCurrentTurn().getColor();
         int indexOfCurrentPlayer;
         if (colorOfCurrentPlayerTurn == COLOR.RED){
@@ -237,26 +196,14 @@ class GameTest {
         }else {moveColor= COLOR.RED;}
 
 
-        Move  _move= new Move(_fromPos,_toPos,_fromPosInGoal,_toPosInGoal,_card,_token,moveColor);
-
+        Move  _move= generateMove(_token, true,moveColor);
         Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
         assertEquals("Bad move logic", exception.getMessage());
     }
 
     //@Test
     void playerCallingMoveHasNotAValidMove() {
-        //  setting up for a correct move if not for the token
-        ArrayList<Integer> _fromPos = new ArrayList<>();
-        ArrayList<Integer> _toPos = new ArrayList<>();
-        ArrayList<Boolean> _fromPosInGoal = new ArrayList<>();
-        ArrayList<Boolean> _toPosInGoal = new ArrayList<>();
-        _fromPos.add(2);
-        _toPos.add(3);
-        _fromPosInGoal.add(false);
-        _toPosInGoal.add(false);
 
-        //gets _token from user that is using
-        Card _card= new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
         COLOR colorOfCurrentPlayerTurn= _g.getCurrentTurn().getColor();
         int indexOfCurrentPlayer;
         if (colorOfCurrentPlayerTurn == COLOR.RED){
@@ -270,10 +217,8 @@ class GameTest {
         }
         String _token=users.get(indexOfCurrentPlayer).getToken() ;
 
-        // the marble  has not the same color has the player that has to play
+        Move  _move= generateMove(_token, true,colorOfCurrentPlayerTurn);
 
-
-        Move  _move= new Move(_fromPos,_toPos,_fromPosInGoal,_toPosInGoal,_card,_token,colorOfCurrentPlayerTurn);
         Player playerNotAbleToMove = _g.getCurrentTurn();
         _g.getCurrentTurn().removeAllCard();
         //gets 1 player without cards so he can't move
@@ -287,7 +232,7 @@ class GameTest {
         }
     }
 
-    void   playerMoveIsNotValidForThisUSer(){
+    void   playerMoveIsNotValidForThisUser(){
 
     }
 

@@ -19,6 +19,7 @@ import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -66,7 +67,7 @@ public class Game {
     }
 
     public Game(){
-        // for test porpuse
+        // for test purpose
     }
 
     private boolean checkValidTurns(Move move, Player playerWantToMove) {
@@ -123,10 +124,9 @@ public class Game {
                 }
                 //remove card from player hand
                 _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, "TURN_FINISH"));
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,"NEW_TURN"));
                 nextTurns();
             }
-
 
 
             //TODO FOR ALL _userManager calls: make sure the message is valid JSON and not just text
@@ -137,7 +137,8 @@ public class Game {
         // check if somebody won
         for (Player player:_players){
             if (_board.checkWinningCondition(player.getColor())) {
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, player.getColor()+" Won"));
+
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, player.getColor()+"|WON"));
                 return;
             }
         }
@@ -150,22 +151,14 @@ public class Game {
         }
 
 
-        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD, "New Cards"));
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD, "NEW_CARDS"));
         //wait for a moment
 
         //because the next player with the ability to do something is not strictly the next player it is necessary to loop it through
-        int indexNextPlayerTurn=-1;
-        int i=_indexWithCurrentTurn;
-        do{
-            if(_playersWithValidTurns.get(i)==true){
-                indexNextPlayerTurn=0;
-            }
-            else {
-                 nextTurns();
-            }
-        }while(indexNextPlayerTurn!=-1);
 
-        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, "Your Turn"));
+        _indexWithCurrentTurn= findNextPlayer(_indexWithCurrentTurn);
+
+        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, _players.get(_indexWithCurrentTurn).getColor()+"|NEXT_TURN"));
     }
 
     /**
@@ -251,6 +244,21 @@ public class Game {
         if (_indexOfHowManyCardToDeal ==4){
             _indexOfHowManyCardToDeal =0;
         }
+    }
+
+    private int findNextPlayer(int i){
+        int indexNextPlayerTurn=-1;
+
+        do{
+            if(_playersWithValidTurns.get(i)){
+                indexNextPlayerTurn=0;
+            }
+            else {
+                nextTurns();
+            }
+        }while(indexNextPlayerTurn!=-1);
+        return i;
+
     }
 
     private void nextTurns(){
