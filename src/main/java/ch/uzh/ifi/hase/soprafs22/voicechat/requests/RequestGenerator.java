@@ -28,6 +28,10 @@ public class RequestGenerator {
         apiUrl = new ApiAuth().getId();
     }
 
+    public HttpURLConnection createConnection(URL url) throws IOException {
+        return (HttpURLConnection) url.openConnection();
+    }
+
     /**
      * Make a get request to either the calls or chat SendBird API
      * @param urlpart the specific resource to get
@@ -47,7 +51,7 @@ public class RequestGenerator {
             {
                 url = new URL(String.format("https://api-%s.sendbird.com/v3/%s", apiUrl, urlpart));
             }
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = createConnection(url);
             conn.setRequestMethod("GET");
 
             //parameters
@@ -105,7 +109,11 @@ public class RequestGenerator {
             {
                 url = new URL(String.format("https://api-%s.sendbird.com/v3/%s", apiUrl, urlpart));
             }
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            log.info(url.toString());
+
+
+            HttpURLConnection conn = createConnection(url);
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
 
@@ -171,7 +179,7 @@ public class RequestGenerator {
             {
                 url = new URL(String.format("https://api-%s.sendbird.com/v3/%s", apiUrl, urlpart));
             }
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = createConnection(url);
             conn.setRequestMethod("DELETE");
 
             //headers

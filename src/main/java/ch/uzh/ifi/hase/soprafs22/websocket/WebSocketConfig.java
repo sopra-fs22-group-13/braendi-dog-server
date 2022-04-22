@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs22.websocket;
 
-import ch.uzh.ifi.hase.soprafs22.websocket.interceptors.RmeSessionChannelInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -32,6 +31,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     }
 
+/*
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.setInterceptors(rmeSessionChannelInterceptor());
@@ -41,5 +41,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public RmeSessionChannelInterceptor rmeSessionChannelInterceptor() {
         return new RmeSessionChannelInterceptor();
     }
+*/
 
 }

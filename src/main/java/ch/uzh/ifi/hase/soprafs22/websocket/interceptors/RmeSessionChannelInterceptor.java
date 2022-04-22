@@ -13,7 +13,7 @@ import org.springframework.util.MultiValueMap;
 /**
  * This class is currently not used, but would be used to do authentication over websocket. This will probably not be necessary as we just send it to a path with the users authtoken from REST.
  */
-public class RmeSessionChannelInterceptor implements ChannelInterceptor {
+/*public class RmeSessionChannelInterceptor implements ChannelInterceptor {
     private final Logger log = LoggerFactory.getLogger(UpdateController.class);
 
     @Override
@@ -34,4 +34,4 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
 
         return message;
     }
-}
+}*/
