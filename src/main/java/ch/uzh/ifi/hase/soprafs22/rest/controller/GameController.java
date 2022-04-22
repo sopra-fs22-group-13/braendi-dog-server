@@ -44,18 +44,15 @@ public class GameController {
     public void start() { gameManager = GameManager.getInstance();
     }
 
-    @GetMapping("/game/board/{gametoken}")
+    @GetMapping("/game/{gametoken}/board")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public BoardData getGame( @PathVariable String gametoken, HttpServletRequest response) {
         User user = userService.checkIfLoggedIn(response);
-        if (user== null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, user == null ? "bad token" : "something went wrong");
-        }
-        if (GameManager.getInstance().getGameByToken(gametoken)== null){
-            return null;
-        }
-        Game game= GameManager.getInstance().getGameByToken(gametoken);
+
+        Game game = GameManager.getInstance().getGameByToken(gametoken);
+        if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
+
         String auth = response.getHeader("Authorization");
         String playerToken = auth.substring(6);
         if (game.getPlayerByToken(playerToken) == null){
