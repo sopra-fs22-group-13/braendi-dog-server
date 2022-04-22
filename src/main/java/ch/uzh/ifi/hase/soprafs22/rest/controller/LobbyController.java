@@ -2,6 +2,8 @@ package ch.uzh.ifi.hase.soprafs22.rest.controller;
 
 import ch.uzh.ifi.hase.soprafs22.lobby.Lobby;
 import ch.uzh.ifi.hase.soprafs22.lobby.LobbyManager;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.InvitationPutDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.InvitationResponsePutDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
@@ -73,10 +75,11 @@ public class LobbyController {
     @PutMapping("/lobby/{lobbyID}/invitations")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void invitePlayer(HttpServletRequest response, @PathVariable Integer lobbyID, Long playerID) {
+    public void invitePlayer(HttpServletRequest response, @PathVariable Integer lobbyID, @RequestBody InvitationPutDTO invitationPutDTO) {
         User client = userService.checkIfLoggedIn(response);
-        User invitee = userService.getUserById(playerID);
+        User invitee = userService.getUserById(invitationPutDTO.getInviteeID());
         if (invitee == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The player you're trying to invite doesn't exist");
+        if (invitee.isInLobby()) throw new ResponseStatusException(HttpStatus.CONFLICT, "This player is already in a lobby");
 
         lobbyManager.invitePlayer(lobbyID, client.getToken(), invitee.getToken());
     }
@@ -84,9 +87,9 @@ public class LobbyController {
     @PutMapping("/invitations")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void respondToInvitation(HttpServletRequest response, Integer lobbyID, boolean invResponse) {
+    public void respondToInvitation(HttpServletRequest response, @RequestBody InvitationResponsePutDTO invitationResponsePutDTO) {
         User client = userService.checkIfLoggedIn(response);
 
-        lobbyManager.inviteResponse(lobbyID, client.getToken(), invResponse);
+        lobbyManager.inviteResponse(invitationResponsePutDTO.getLobbyID(), client.getToken(), invitationResponsePutDTO.getResponse());
     }
 }
