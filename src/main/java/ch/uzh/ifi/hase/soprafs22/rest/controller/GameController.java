@@ -62,6 +62,13 @@ public class GameController {
 
     }
 
+    @GetMapping("/game/{gametoken}/players")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void getPlayerHands() {
+
+    }
+
     @PutMapping("/game/{gametoken}/board")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
