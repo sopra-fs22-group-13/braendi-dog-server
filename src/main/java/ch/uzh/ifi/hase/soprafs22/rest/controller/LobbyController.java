@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs22.rest.controller;
 
 import ch.uzh.ifi.hase.soprafs22.lobby.Lobby;
 import ch.uzh.ifi.hase.soprafs22.lobby.LobbyManager;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.InvitationPutDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.InvitationResponsePutDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.LobbyGetDTO;
@@ -63,13 +64,13 @@ public class LobbyController {
     @PostMapping("/game")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public void createGame(HttpServletRequest response, Integer lobbyID) {
+    public void createGame(HttpServletRequest response, @RequestBody GamePostDTO gamePostDTO) {
         User client = userService.checkIfLoggedIn(response);
-        Lobby gameLobby = lobbyManager.getLobbyByID(lobbyID);
+        Lobby gameLobby = lobbyManager.getLobbyByID(gamePostDTO.getLobbyID());
         if (gameLobby == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This lobby doesn't exist.");
         if (!Objects.equals(gameLobby.getOwner().getToken(), client.getToken())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must be the owner to start the game.");
 
-        lobbyManager.startGame(lobbyID, client.getToken());
+        lobbyManager.startGame(gamePostDTO.getLobbyID(), client.getToken());
     }
 
     @PutMapping("/lobby/{lobbyID}/invitations")
