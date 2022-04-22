@@ -132,6 +132,7 @@ public class BoardIsMovePossibleTest {
     public void startingMovePossible()
     {
         assertTrue(_b.isAnyMovePossible(king, COLOR.RED));
+        assertTrue(_b.isAnyMovePossible(ace, COLOR.RED));
     }
 
     @Test
@@ -143,4 +144,25 @@ public class BoardIsMovePossibleTest {
         assertTrue(_b.isAnyMovePossible(king, COLOR.RED));
         assertTrue(_b.isAnyMovePossible(seven, COLOR.RED));
     }
+
+    //@Test
+    public void test()
+    {
+
+    }
+
+
+
+
+    //@Test
+    public void winningConditionRightTest(){
+
+    }
+
+    //@Test
+    public void winningConditionWrongTest(){
+
+    }
+
+
 }
