@@ -62,4 +62,31 @@ public class Card {
     public boolean equalsContent(Card card) {
         return this.suite == card.getSuite() && this.type == card.getType() && this.value == card.getValue();
     }
+
+    public String getFormatted() {
+        String formatted = "";
+        switch (this.value) {
+            case TWO -> formatted += "2";
+            case THREE -> formatted += "3";
+            case FOUR -> formatted += "4";
+            case FIVE -> formatted += "5";
+            case SIX -> formatted += "6";
+            case SEVEN -> formatted += "7";
+            case EIGHT -> formatted += "8";
+            case NINE -> formatted += "9";
+            case TEN -> formatted += "10";
+            case JACK -> formatted += "J";
+            case QUEEN -> formatted += "Q";
+            case KING -> formatted += "K";
+            case ACE -> formatted += "A";
+            case JOKER -> { formatted += "Joker"; return formatted; }
+        }
+        switch (this.suite) {
+            case CLUBS -> formatted += "C";
+            case HEARTS -> formatted += "H";
+            case SPADES -> formatted += "S";
+            case DIAMOND -> formatted += "D";
+        }
+        return formatted;
+    }
 }
