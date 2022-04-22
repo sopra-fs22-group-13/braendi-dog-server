@@ -10,7 +10,7 @@ import java.util.List;
 public class GameCreator {
 
 
-    public boolean createGame(Lobby lobby) {
+    public String createGame(Lobby lobby) {
         GameManager manager= GameManager.getInstance();
         List<User> users =lobby.getPlayers();
         ArrayList<User> users1= new ArrayList<>();
@@ -18,10 +18,10 @@ public class GameCreator {
         for (User user: users){
             users1.add(user);
         }
-
-        manager.addGame(new Game(users1));
+        Game newGame =  new Game(users1);
+        manager.addGame(newGame);
 
         //connect to voice chat still in process
-        return true;
+        return newGame.getGameToken();
     };
 }

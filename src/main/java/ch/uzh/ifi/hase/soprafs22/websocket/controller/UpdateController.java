@@ -50,6 +50,7 @@ public class UpdateController implements IUpdateController {
      */
     public void sendUpdateToUser(String usertoken, UpdateDTO updateMessage)
     {
+        log.info(String.format("updating user %s with updatetype %s and message %s", usertoken, updateMessage.getType().toString(), updateMessage.getMessage()));
         String path = "/user/" + usertoken + "/queue/specific-user";
         messagingTemplate.convertAndSend(path, updateMessage);
     }
