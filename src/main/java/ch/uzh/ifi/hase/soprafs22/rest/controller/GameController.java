@@ -11,6 +11,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.Game;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.lobby.Lobby;
 import ch.uzh.ifi.hase.soprafs22.lobby.LobbyManager;
@@ -65,8 +66,11 @@ public class GameController {
     @GetMapping("/game/{gametoken}/players")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void getPlayerHands() {
+    public PlayerData getPlayerHands(HttpServletRequest response, @PathVariable String gametoken) {
+        User client = userService.checkIfLoggedIn(response);
+        Game game = gameManager.getGameByToken(gametoken);
 
+        return game.getPlayerStates(client.getToken());
     }
 
     @PutMapping("/game/{gametoken}/board")
