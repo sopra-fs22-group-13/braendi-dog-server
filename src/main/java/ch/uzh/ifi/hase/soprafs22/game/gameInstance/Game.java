@@ -19,6 +19,7 @@ import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -66,7 +67,7 @@ public class Game {
     }
 
     public Game(){
-        // for test porpuse
+        // for test purpose
     }
 
     private boolean checkValidTurns(Move move, Player playerWantToMove) {
@@ -123,52 +124,41 @@ public class Game {
                 }
                 //remove card from player hand
                 _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,"NEW_TURN"));
                 nextTurns();
             }
-            else {
-                //TODO This should probably be a return value rather than a user update... (eg: return 12;, where 12 is some error code)
-                //TODO FOR ALL _userManager calls: make sure the message is valid JSON and not just text
-                _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn),new UpdateDTO(UpdateType.TURN, "wrong Turn logic"));
-            }
 
-            //TODO no? if the move failed, there is no new turn (should this belong on line 126?)
-            _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, "New Turn"));
+
+            //TODO FOR ALL _userManager calls: make sure the message is valid JSON and not just text
+            throw new InvalidMoveException("Move Not allowed", "Wrong move logic");
+
         }
 
         // check if somebody won
         for (Player player:_players){
             if (_board.checkWinningCondition(player.getColor())) {
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, player.getColor()+" Won"));
+
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, "WON :"+player.getColor()));
                 return;
             }
         }
 
-        // TODO maybe I don't get it, but why do we deal new cards after only one move? we should only deal new cards if noone can move anymore
+
         // deal new cards until someone has a possible move
-        do {
+        while(!someoneValidTurn()) {
             removeAndDealNewCards();
             updateValidTurnAllPlayers();
-        }while(someoneValidTurn());
+        }
 
-        //TODO this should be of updateType CARD
-        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, "New Cards"));
+
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD, "NEW_CARDS"));
         //wait for a moment
 
         //because the next player with the ability to do something is not strictly the next player it is necessary to loop it through
-        int indexNextPlayerTurn=-1;
-        int i=_indexWithCurrentTurn;
-        do{
-            if(_playersWithValidTurns.get(i)==true){
-                indexNextPlayerTurn=0;
-            }
-            else {
-                i++;
-                if (i == 4) {
-                    i = 0;
-                }
-            }
-        }while(indexNextPlayerTurn!=-1);
-        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, "Your Turn"));
+
+        _indexWithCurrentTurn= findNextPlayer(_indexWithCurrentTurn);
+
+        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, "NEXT_TURN :"+_players.get(_indexWithCurrentTurn).getColor()));
     }
 
     /**
@@ -208,6 +198,7 @@ public class Game {
                 ArrayList<String> cards = p.getFormattedCards();
                 pd.setVisibleCards(cards);
                 validPOV = true;
+                hiddenCards.add(p.getCardCount());
 
             }else
             {
@@ -228,7 +219,8 @@ public class Game {
         return pd;
     }
 
-    private boolean ifMoveIsPossible(Move move) throws InvalidMoveException {
+    // does this part the same has updateValidTurnAllPlayers()  why do we need a constructor with strin? can't we send the card that we have? from Sandro todo @luca
+    private boolean ifMoveIsPossible(Move move){
 
         for (int i =0; i<4;i++){
             boolean possibleTurn= false;
@@ -253,6 +245,21 @@ public class Game {
         if (_indexOfHowManyCardToDeal ==4){
             _indexOfHowManyCardToDeal =0;
         }
+    }
+
+    private int findNextPlayer(int i){
+        int indexNextPlayerTurn=-1;
+
+        do{
+            if(_playersWithValidTurns.get(i)){
+                indexNextPlayerTurn=0;
+            }
+            else {
+                nextTurns();
+            }
+        }while(indexNextPlayerTurn!=-1);
+        return i;
+
     }
 
     private void nextTurns(){

@@ -23,23 +23,10 @@ public class UpdateController implements IUpdateController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    //just for testing, This is not used
-    //not removed yet as websocktes are weird and i do not want to read documentation again
-    @MessageMapping("/update")
-    @SendTo("/topic/update/test")
-    public UpdateDTO websocketUpdate() throws Exception{
-        messagingTemplate.convertAndSend("/topic/update/test", "LOL");
-        Thread.sleep(1000); //for testing
-        return new UpdateDTO(UpdateType.BOARD, "A test message.");
-    }
-
     //for connecting to /gameupdates. the updates will be sent back to /user/usertoken/queue/specific-user
-    // if the user sends a token in the header. The return here can be ignored by the client, as we expect the credentials to be correct.
     @MessageMapping("/gameupdates")
-    public void sendSpecific(@Payload Message msg, Principal user, @Header("simpSessionId") String sessionId) throws Exception {
-        log.warn("HELLO");
-        String path = "/user" + "/queue/specific-user";
-        messagingTemplate.convertAndSend(path, "Success");
+    public void sendSpecific() throws Exception {
+        log.info("Websocket: New Incoming Connection");
     }
 
     /**
@@ -50,6 +37,7 @@ public class UpdateController implements IUpdateController {
      */
     public void sendUpdateToUser(String usertoken, UpdateDTO updateMessage)
     {
+        log.info(String.format("updating user %s with updateType %s and message: %s", usertoken, updateMessage.getType().toString(), updateMessage.getMessage()));
         String path = "/user/" + usertoken + "/queue/specific-user";
         messagingTemplate.convertAndSend(path, updateMessage);
     }

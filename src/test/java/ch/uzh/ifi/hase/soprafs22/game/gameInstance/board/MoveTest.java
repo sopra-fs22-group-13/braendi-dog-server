@@ -38,7 +38,6 @@ public class MoveTest {
         board = new Board();
     }
 
-    @Test
     void moveComplete(){
         fromPos = new ArrayList<>(Arrays.asList(0));
         toPos = new ArrayList<>(Arrays.asList(1));
@@ -73,7 +72,6 @@ public class MoveTest {
     }
 
     // Testing ace moves
-    @Test
     void validAceMove(){
         fromPos = new ArrayList<>(Arrays.asList(-1));
         toPos = new ArrayList<>(Arrays.asList(0));

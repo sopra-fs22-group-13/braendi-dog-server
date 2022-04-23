@@ -68,7 +68,7 @@ public class LobbyManager {
 
         if (!lobby.getPendingInvites().contains(invitee)) lobby.addInvitee(invitee);
 
-        UpdateDTO updateDTO = new UpdateDTO(UpdateType.INVITE, "");
+        UpdateDTO updateDTO = new UpdateDTO(UpdateType.INVITE, String.format("{\"lobbyId\": %s}", lobbyID));
         updateController.sendUpdateToUser(playertoken, updateDTO);
     }
 
@@ -110,17 +110,23 @@ public class LobbyManager {
         if (!Objects.equals(lobby.getOwner().getToken(), ownerToken)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You need to be the owner of the lobby in order to start the game");
         if (lobby.getPlayers().size() < 4) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The lobby needs to be full. You can't start the game right now.");
 
-        gameCreator.createGame(lobby);
+        String gameToken = gameCreator.createGame(lobby);
 
-        updatePlayers(lobby, UpdateType.START);
+        String json = String.format("{gameToken: %s}", gameToken);
+
+        updatePlayers(lobby, UpdateType.START, json);
     }
 
     private void updatePlayers(Lobby lobby, UpdateType updateType) {
+        updatePlayers(lobby, updateType, "");
+    }
+
+    private void updatePlayers(Lobby lobby, UpdateType updateType, String message) {
         /**
          * The way I understand how the Update stuff works, the message would need to be JSON-formatted.
          * Not sure if it would make sense to actually send a message here (given that an empty string works at all)
          */
-        UpdateDTO updateDTO = new UpdateDTO(updateType, "");
+        UpdateDTO updateDTO = new UpdateDTO(updateType, message);
 
         for (User player: lobby.getPlayers()) updateController.sendUpdateToUser(player.getToken(), updateDTO);
     }

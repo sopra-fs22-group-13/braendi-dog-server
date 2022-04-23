@@ -26,7 +26,7 @@ public class GameManager {
     }
     public Game getGameByToken(String token){
         for (Game game:_games){
-            if (game.getGameToken()==token){
+            if (game.getGameToken().equals(token)){
                 return game;
             }
         }
@@ -42,21 +42,11 @@ public class GameManager {
         return null;
     }
 
-    public Player getPlayerByToken(String token){
-        for (Game game:_games){
-            Player player= game.getPlayerByToken(token);
-            if (player != null){
-                return player;
-            }
-        }
-        return null;
-    }
-
     public void deleteGame(Game gameToDelete){
         String gameTokenToDelete = gameToDelete.getGameToken();
         for (Game game:_games){
             String token= game.getGameToken();
-            if(gameTokenToDelete== token){
+            if(gameTokenToDelete.equals(token)){
                 _games.remove(game);
             }
         }

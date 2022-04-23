@@ -32,9 +32,9 @@ public class UserController {
   @GetMapping("/users")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<UserGetDTO> getAllUsers( HttpServletRequest response) {
+  public List<UserGetDTO> getAllUsers( HttpServletRequest request) {
 
-    if(userService.checkIfLoggedIn(response) == null){
+    if(userService.checkIfLoggedIn(request) == null){
         return null;
     }
 
@@ -60,7 +60,9 @@ public class UserController {
     User createdUser = userService.createUser(userInput);
 
     // convert internal representation of user back to API
+    response.addHeader("Access-Control-Expose-Headers", "Authorization"); //allows the Auth header to be seen
     response.addHeader("Authorization", "Basic " + createdUser.getToken());
+
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
 
@@ -73,8 +75,11 @@ public class UserController {
 
         // create user
         User loginUser = userService.loginUser(userInput);
+        response.addHeader("Access-Control-Expose-Headers", "Authorization"); //allows the Auth header to be seen
         response.addHeader("Authorization", "Basic " + loginUser.getToken());
         // convert internal representation of user back to API
+        
+
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loginUser);
     }
 }

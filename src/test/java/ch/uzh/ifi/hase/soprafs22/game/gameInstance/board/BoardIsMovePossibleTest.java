@@ -37,7 +37,7 @@ public class BoardIsMovePossibleTest {
     ArrayList<String> actualyellow;
     ArrayList<String> actualblue;
 
-    //@BeforeEach
+    @BeforeEach
     public void beforeEach()
     {
         _b = new Board();
@@ -107,7 +107,7 @@ public class BoardIsMovePossibleTest {
     }
 
     //this is a test for shitaos method, ignore
-    //@Test
+    @Test
     public void validStartingMove()
     {
         Move m = new Move();
@@ -128,13 +128,14 @@ public class BoardIsMovePossibleTest {
         }
     }
 
-    //@Test
+    @Test
     public void startingMovePossible()
     {
         assertTrue(_b.isAnyMovePossible(king, COLOR.RED));
+        assertTrue(_b.isAnyMovePossible(ace, COLOR.RED));
     }
 
-    //@Test
+    @Test
     public void simpleMovePossible()
     {
         makeStartBoardState(); // we should have 2 options here to move with a 12
@@ -143,4 +144,25 @@ public class BoardIsMovePossibleTest {
         assertTrue(_b.isAnyMovePossible(king, COLOR.RED));
         assertTrue(_b.isAnyMovePossible(seven, COLOR.RED));
     }
+
+    //@Test
+    public void test()
+    {
+
+    }
+
+
+
+
+    //@Test
+    public void winningConditionRightTest(){
+
+    }
+
+    //@Test
+    public void winningConditionWrongTest(){
+
+    }
+
+
 }
