@@ -38,20 +38,25 @@ public class Board {
     private final int YELLOWINTERSECT = 48;
 
     public Board() {
-        //set all marbles to the start pos.
+        // set all marbles to the start pos.
         _redBase = 4;
         _greenBase = 4;
         _blueBase = 4;
         _yellowBase = 4;
 
-        //create the board list
-        while (_mainCircle.size() < 64) _mainCircle.add(MARBLE.NONE);
+        // create the board list
+        while (_mainCircle.size() < 64)
+            _mainCircle.add(MARBLE.NONE);
 
-        //create the goal lists
-        while (_redGoal.size() < 4) _redGoal.add(MARBLE.NONE);
-        while (_greenGoal.size() < 4) _greenGoal.add(MARBLE.NONE);
-        while (_blueGoal.size() < 4) _blueGoal.add(MARBLE.NONE);
-        while (_yellowGoal.size() < 4) _yellowGoal.add(MARBLE.NONE);
+        // create the goal lists
+        while (_redGoal.size() < 4)
+            _redGoal.add(MARBLE.NONE);
+        while (_greenGoal.size() < 4)
+            _greenGoal.add(MARBLE.NONE);
+        while (_blueGoal.size() < 4)
+            _blueGoal.add(MARBLE.NONE);
+        while (_yellowGoal.size() < 4)
+            _yellowGoal.add(MARBLE.NONE);
     }
 
     private boolean setMarbleAtPosition(int position, MARBLE marble) {
@@ -62,19 +67,23 @@ public class Board {
     private boolean setMarbleAtPosition(int position, MARBLE marble, COLOR goalColor) {
         switch (goalColor) {
             case RED:
-                if (marble != MARBLE.RED && marble != MARBLE.NONE) return false;
+                if (marble != MARBLE.RED && marble != MARBLE.NONE)
+                    return false;
                 _redGoal.set(position, marble);
                 break;
             case BLUE:
-                if (marble != MARBLE.BLUE && marble != MARBLE.NONE) return false;
+                if (marble != MARBLE.BLUE && marble != MARBLE.NONE)
+                    return false;
                 _blueGoal.set(position, marble);
                 break;
             case YELLOW:
-                if (marble != MARBLE.YELLOW && marble != MARBLE.NONE) return false;
+                if (marble != MARBLE.YELLOW && marble != MARBLE.NONE)
+                    return false;
                 _yellowGoal.set(position, marble);
                 break;
             case GREEN:
-                if (marble != MARBLE.GREEN && marble != MARBLE.NONE) return false;
+                if (marble != MARBLE.GREEN && marble != MARBLE.NONE)
+                    return false;
                 _greenGoal.set(position, marble);
                 break;
             default:
@@ -89,7 +98,8 @@ public class Board {
     }
 
     /**
-     * Gets the inbetweeners in the main circle in the FORWARDS direction! (exclusive, inclusive)
+     * Gets the inbetweeners in the main circle in the FORWARDS direction!
+     * (exclusive, inclusive)
      * IMPORTANT: NEVER USE THIS METHOD WHEN TRYING TO MOVE BACKWARDS
      */
     private ArrayList<Integer> getInbetweeners(int pos1, int pos2) throws IndexOutOfBoundsException {
@@ -98,21 +108,20 @@ public class Board {
             throw new IndexOutOfBoundsException("the positions have to be in range 0-63 (inclusive)");
 
         if (pos1 < pos2) {
-            //no loop
+            // no loop
             for (int i = pos1 + 1; i <= pos2; i++) {
                 if (_mainCircle.get(i) != MARBLE.NONE) {
                     importantInbetweeners.add(i);
                 }
             }
-        }
-        else {
-            //get to half way
+        } else {
+            // get to half way
             for (int i = pos1 + 1; i < 64; i++) {
                 if (_mainCircle.get(i) != MARBLE.NONE) {
                     importantInbetweeners.add(i);
                 }
             }
-            //rest
+            // rest
             for (int i = 0; i <= pos2; i++) {
                 if (_mainCircle.get(i) != MARBLE.NONE) {
                     importantInbetweeners.add(i);
@@ -130,7 +139,8 @@ public class Board {
         if (pos < 0 || pos >= 64)
             throw new IndexOutOfBoundsException("the position has to be in range 0-63 (inclusive)");
 
-        if (_mainCircle.get(pos) == MARBLE.NONE) throw new NoMarbleException();
+        if (_mainCircle.get(pos) == MARBLE.NONE)
+            throw new NoMarbleException();
 
         MARBLE m = _mainCircle.get(pos);
 
@@ -207,7 +217,8 @@ public class Board {
     /**
      * Moves the marble from position 1 to position 2 in the main circle
      *
-     * @param removeInbetweeners IMPORTANT: NEVER SET THIS TO TRUE WHEN TRYING TO MOVE BACKWARDS
+     * @param removeInbetweeners IMPORTANT: NEVER SET THIS TO TRUE WHEN TRYING TO
+     *                           MOVE BACKWARDS
      * @throws NoMarbleException            no marble was at pos1
      * @throws MoveBlockedByMarbleException there was already a marble at pos2
      */
@@ -219,13 +230,14 @@ public class Board {
         MARBLE m1 = _mainCircle.get(pos1);
         MARBLE m2 = _mainCircle.get(pos2);
 
-        if (m1 == MARBLE.NONE) throw new NoMarbleException();
+        if (m1 == MARBLE.NONE)
+            throw new NoMarbleException();
         if (m2 != MARBLE.NONE) {
-            //reset the problem marble
+            // reset the problem marble
             resetMarble(pos2);
         }
 
-        //all good, make the move
+        // all good, make the move
         if (removeInbetweeners) {
             resetInbetweeners(pos1, pos2);
         }
@@ -234,13 +246,15 @@ public class Board {
         setMarbleAtPosition(pos1, MARBLE.NONE);
     }
 
-
     /**
-     * Moves the marble from position 1 to position 2 where position 2 is in the respective goal.
+     * Moves the marble from position 1 to position 2 where position 2 is in the
+     * respective goal.
      *
      * @param goalColor          the goal color to consider
-     * @param startInGoal        defines if position 1 is already in the goal. (ex: move 1 forward in the goal)
-     * @param removeInbetweeners IMPORTANT: NEVER SET THIS TO TRUE WHEN TRYING TO MOVE BACKWARDS
+     * @param startInGoal        defines if position 1 is already in the goal. (ex:
+     *                           move 1 forward in the goal)
+     * @param removeInbetweeners IMPORTANT: NEVER SET THIS TO TRUE WHEN TRYING TO
+     *                           MOVE BACKWARDS
      * @throws NoMarbleException            no marble was at pos1
      * @throws MoveBlockedByMarbleException there was already a marble at pos2
      */
@@ -252,7 +266,7 @@ public class Board {
         int colorintersect = 0;
 
         ArrayList<MARBLE> coloredGoalList = _redGoal;
-        //get the respective color
+        // get the respective color
         switch (goalColor) {
             case RED:
                 coloredGoalList = _redGoal;
@@ -273,27 +287,30 @@ public class Board {
 
         if (startInGoal) {
             if (pos1 < 0 || pos2 >= 4)
-                throw new IndexOutOfBoundsException("if startInGoal is true, the pos1 can be in the range 0-3 (inclusive)");
+                throw new IndexOutOfBoundsException(
+                        "if startInGoal is true, the pos1 can be in the range 0-3 (inclusive)");
             m1 = coloredGoalList.get(pos1);
-        }
-        else {
+        } else {
             if (pos1 < 0 || pos2 >= 64)
-                throw new IndexOutOfBoundsException("if startInGoal is false, the pos1 can be in the range 0-63 (inclusive)");
+                throw new IndexOutOfBoundsException(
+                        "if startInGoal is false, the pos1 can be in the range 0-63 (inclusive)");
             m1 = _mainCircle.get(pos1);
         }
 
-        if (pos2 < 0 || pos2 >= 4) throw new IndexOutOfBoundsException("the pos2 can be in the range 0-3 (inclusive)");
+        if (pos2 < 0 || pos2 >= 4)
+            throw new IndexOutOfBoundsException("the pos2 can be in the range 0-3 (inclusive)");
         m2 = coloredGoalList.get(pos2);
 
-        //we now have the start and end position. we move from pos1 to pos2
+        // we now have the start and end position. we move from pos1 to pos2
 
-        if (m1 == MARBLE.NONE) throw new NoMarbleException();
+        if (m1 == MARBLE.NONE)
+            throw new NoMarbleException();
         if (m2 != MARBLE.NONE) {
-            //reset the problem marble
+            // reset the problem marble
             resetMarble(pos2);
         }
 
-        //all good, make the move
+        // all good, make the move
 
         if (removeInbetweeners) {
             resetInbetweeners(pos1, colorintersect);
@@ -303,43 +320,43 @@ public class Board {
 
         if (startInGoal) {
             setMarbleAtPosition(pos1, MARBLE.NONE, goalColor);
-        }
-        else {
+        } else {
             setMarbleAtPosition(pos1, MARBLE.NONE);
         }
     }
 
     /**
-     * gets the next position when moving forward a certain distance on the main field
+     * gets the next position when moving forward a certain distance on the main
+     * field
      */
     private int getDistanceInBetween(int startPosition, int endPosition) throws IndexOutOfBoundsException {
         return getDistanceInBetween(startPosition, endPosition, true);
     }
 
     /**
-     * gets the next position when moving a certain distance on the main field, either forward or backwards
+     * gets the next position when moving a certain distance on the main field,
+     * either forward or backwards
      */
-    private int getDistanceInBetween(int startPosition, int endPosition, boolean forward) throws IndexOutOfBoundsException {
+    private int getDistanceInBetween(int startPosition, int endPosition, boolean forward)
+            throws IndexOutOfBoundsException {
         if (startPosition < 0 || startPosition >= 64 || endPosition < 0 || endPosition >= 64)
-            throw new IndexOutOfBoundsException("Index is wrong: the main ring has indices between 0 and 63 while goals reach from 0 to 3");
+            throw new IndexOutOfBoundsException(
+                    "Index is wrong: the main ring has indices between 0 and 63 while goals reach from 0 to 3");
         if (forward) {
-            if (startPosition <= endPosition) //we do not loop over
+            if (startPosition <= endPosition) // we do not loop over
             {
                 return endPosition - startPosition;
-            }
-            else //we loop over the edge
+            } else // we loop over the edge
             {
                 int rest = 63 - startPosition;
                 return endPosition + rest + 1;
             }
-        }
-        else //we move backwards
+        } else // we move backwards
         {
-            if (endPosition <= startPosition) //we do not loop over
+            if (endPosition <= startPosition) // we do not loop over
             {
                 return startPosition - endPosition;
-            }
-            else //we loop over the edge
+            } else // we loop over the edge
             {
                 int rest = 63 - endPosition;
                 return startPosition + rest + 1;
@@ -348,18 +365,22 @@ public class Board {
     }
 
     /**
-     * gets the next position when moving a certain distance to a goal, forward only!
+     * gets the next position when moving a certain distance to a goal, forward
+     * only!
      *
-     * @param startPosition the start position (0-63 or 0-3, depending on startInGoal)
+     * @param startPosition the start position (0-63 or 0-3, depending on
+     *                      startInGoal)
      * @param endPosition   the end position (0-3)
      * @param goalColor     the color of the goal we are considering for moving into
-     * @param startInGoal   if the marble already starts in its respective goal (eg: moving 1 forward in the goal)
+     * @param startInGoal   if the marble already starts in its respective goal (eg:
+     *                      moving 1 forward in the goal)
      */
-    private int getDistanceInBetween(int startPosition, int endPosition, COLOR goalColor, boolean startInGoal) throws IndexOutOfBoundsException {
-        if (!startInGoal) //normal move into a goal from outside
+    private int getDistanceInBetween(int startPosition, int endPosition, COLOR goalColor, boolean startInGoal)
+            throws IndexOutOfBoundsException {
+        if (!startInGoal) // normal move into a goal from outside
         {
             int intersect = 0;
-            //get the respective intersect
+            // get the respective intersect
             switch (goalColor) {
                 case RED:
                     intersect = REDINTERSECT;
@@ -374,19 +395,19 @@ public class Board {
                     intersect = GREENINTERSECT;
             }
 
-            //distance from the startposition to the respective INTERSECT
+            // distance from the startposition to the respective INTERSECT
             int distanceToIntersect = getDistanceInBetween(startPosition, intersect);
 
             if (endPosition < 0 || endPosition >= 4)
                 throw new IndexOutOfBoundsException("endposition must be between 0 and 3 (inclusive)");
 
-            //distance between the 2 positions
+            // distance between the 2 positions
             return distanceToIntersect + 1 + endPosition;
 
-        }
-        else        //from goal to goal, more simple
+        } else // from goal to goal, more simple
         {
-            if (endPosition < startPosition) throw new IndexOutOfBoundsException("cannot move backwards in the goal");
+            if (endPosition < startPosition)
+                throw new IndexOutOfBoundsException("cannot move backwards in the goal");
             if (endPosition < 0 || endPosition >= 4)
                 throw new IndexOutOfBoundsException("endposition must be between 0 and 3 (inclusive)");
             if (startPosition < 0 || startPosition >= 4)
@@ -419,35 +440,38 @@ public class Board {
             yellowGoal.add(m.toString());
         }
 
-        BoardData boardData = new BoardData(board, redGoal, greenGoal, blueGoal, yellowGoal, _redBase, _greenBase, _blueBase, _yellowBase);
+        BoardData boardData = new BoardData(board, redGoal, greenGoal, blueGoal, yellowGoal, _redBase, _greenBase,
+                _blueBase, _yellowBase);
         return boardData;
     }
 
     /**
      * Makes one or more moves specified by the move object.
-     * IMPORTANT: This does NOT check if the move is allowed depending on the rules (eg: move cost 12, card value: 8)
+     * IMPORTANT: This does NOT check if the move is allowed depending on the rules
+     * (eg: move cost 12, card value: 8)
      *
      * @param move the move object that holds the move
-     * @throws InvalidMoveException if the move cannot be completed because of the board state
+     * @throws InvalidMoveException if the move cannot be completed because of the
+     *                              board state
      */
     public void makeMove(Move move) throws InvalidMoveException {
-        //expects the move to be valid
+        // expects the move to be valid
         if (move == null || !move.isWellFormed()) {
             throw new InvalidMoveException("BAD_STRUCTURE", "Bad move structure");
         }
 
-        //For each move, make it
+        // For each move, make it
         for (int i = 0; i < move.get_fromPos().size(); i++) {
             int fromPos = move.get_fromPos().get(i);
             int toPos = move.get_toPos().get(i);
             boolean startsInGoal = move.get_fromPosInGoal().get(i);
             boolean endsInGoal = move.get_toPosInGoal().get(i);
 
-            //do the move
+            // do the move
             if (endsInGoal) {
-                movePositions(fromPos, toPos, move.get_color(), startsInGoal, move.get_card() != null ? move.get_card().isSeven() : false);
-            }
-            else {
+                movePositions(fromPos, toPos, move.get_color(), startsInGoal,
+                        move.get_card() != null ? move.get_card().isSeven() : false);
+            } else {
                 movePositions(fromPos, toPos, move.get_card() != null ? move.get_card().isSeven() : false);
             }
 
@@ -456,80 +480,90 @@ public class Board {
 
     /**
      * Makes a starting move (from the base to the starting intersect position)
-     * IMPORTANT: This does NOT check if the move is allowed depending on the rules (eg: card is not Ace/Joker/King)
+     * IMPORTANT: This does NOT check if the move is allowed depending on the rules
+     * (eg: card is not Ace/Joker/King)
      *
      * @param color the color we want to move out
-     * @throws InvalidMoveException if the move cannot be completed because of the board state
+     * @throws InvalidMoveException if the move cannot be completed because of the
+     *                              board state
      */
     public void makeStartingMove(COLOR color) throws InvalidMoveException {
         switch (color) {
             case RED:
                 if (_redBase > 0) {
-                    if (!isEmptyAt(REDINTERSECT)) resetMarble(REDINTERSECT);
+                    if (!isEmptyAt(REDINTERSECT))
+                        resetMarble(REDINTERSECT);
 
                     _redBase = _redBase - 1;
                     setMarbleAtPosition(REDINTERSECT, MARBLE.RED);
-                }
-                else {
+                } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
                 break;
             case YELLOW:
                 if (_yellowBase > 0) {
-                    if (!isEmptyAt(YELLOWINTERSECT)) resetMarble(YELLOWINTERSECT);
+                    if (!isEmptyAt(YELLOWINTERSECT))
+                        resetMarble(YELLOWINTERSECT);
 
                     _yellowBase = _yellowBase - 1;
                     setMarbleAtPosition(YELLOWINTERSECT, MARBLE.YELLOW);
-                }
-                else {
+                } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
                 break;
             case GREEN:
                 if (_greenBase > 0) {
-                    if (!isEmptyAt(GREENINTERSECT)) resetMarble(GREENINTERSECT);
+                    if (!isEmptyAt(GREENINTERSECT))
+                        resetMarble(GREENINTERSECT);
 
                     _greenBase = _greenBase - 1;
                     setMarbleAtPosition(GREENINTERSECT, MARBLE.GREEN);
-                }
-                else {
+                } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
                 break;
             case BLUE:
                 if (_blueBase > 0) {
-                    if (!isEmptyAt(BLUEINTERSECT)) resetMarble(BLUEINTERSECT);
+                    if (!isEmptyAt(BLUEINTERSECT))
+                        resetMarble(BLUEINTERSECT);
 
                     _blueBase = _blueBase - 1;
                     setMarbleAtPosition(BLUEINTERSECT, MARBLE.BLUE);
-                }
-                else {
+                } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
                 break;
         }
     }
 
-    public boolean checkWinningCondition(COLOR color){
-        switch (color){
+    public boolean checkWinningCondition(COLOR color) {
+        switch (color) {
             case RED:
-                for (MARBLE m: _redGoal){
-                    if (m == MARBLE.NONE){return false;}
+                for (MARBLE m : _redGoal) {
+                    if (m == MARBLE.NONE) {
+                        return false;
+                    }
                 }
                 break;
             case BLUE:
-                for (MARBLE m: _blueGoal){
-                    if (m == MARBLE.NONE){return false;}
+                for (MARBLE m : _blueGoal) {
+                    if (m == MARBLE.NONE) {
+                        return false;
+                    }
                 }
                 break;
             case GREEN:
-                for (MARBLE m: _greenGoal){
-                    if (m == MARBLE.NONE){return false;}
+                for (MARBLE m : _greenGoal) {
+                    if (m == MARBLE.NONE) {
+                        return false;
+                    }
                 }
                 break;
             case YELLOW:
-                for (MARBLE m: _yellowGoal){
-                    if (m == MARBLE.NONE){return false;}
+                for (MARBLE m : _yellowGoal) {
+                    if (m == MARBLE.NONE) {
+                        return false;
+                    }
                 }
                 break;
         }
@@ -538,31 +572,32 @@ public class Board {
 
     /**
      * Makes a switch specified by the two positions on the board
-     * IMPORTANT: This does NOT check if the move is allowed depending on the rules (eg: card is not a joker/jack)
+     * IMPORTANT: This does NOT check if the move is allowed depending on the rules
+     * (eg: card is not a joker/jack)
      *
-     * @throws InvalidMoveException if the move cannot be completed because of the board state or if the card does not allow the move
+     * @throws InvalidMoveException if the move cannot be completed because of the
+     *                              board state or if the card does not allow the
+     *                              move
      */
     public void makeSwitch(int start, int end) throws InvalidMoveException {
         try {
             changePositions(start, end);
-        }
-        catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             throw new InvalidMoveException("OUT_OF_BOUNDS", "one of the positions was out of bounds (0-63)");
         }
     }
 
     /**
      * This method is a mess. Keep your sanity and do not even try to look at this.
-     * It checks if for a color and a card, any move is possible given the current board state.
+     * It checks if for a color and a card, any move is possible given the current
+     * board state.
      */
-    public boolean isAnyMovePossible(Card card, COLOR col)
-    {
-        //marble color
+    public boolean isAnyMovePossible(Card card, COLOR col) {
+        // marble color
         MARBLE searchedMarbleCol = MARBLE.NONE;
         ArrayList<MARBLE> colGoal = new ArrayList<>();
 
-        switch (col)
-        {
+        switch (col) {
             case YELLOW:
                 searchedMarbleCol = MARBLE.YELLOW;
                 colGoal = new ArrayList<>(_yellowGoal);
@@ -581,26 +616,28 @@ public class Board {
                 break;
         }
 
-        //get the marbles of card
+        // get the marbles of card
         ArrayList<Integer> marblesOnMain = new ArrayList<>();
         ArrayList<Integer> marblesInGoal = new ArrayList<>();
 
         for (int i = 0; i < _mainCircle.size(); i++) {
-            if(_mainCircle.get(i) == searchedMarbleCol) marblesOnMain.add(i);
+            if (_mainCircle.get(i) == searchedMarbleCol)
+                marblesOnMain.add(i);
         }
 
         for (int i = 0; i < colGoal.size(); i++) {
-            if(colGoal.get(i) == searchedMarbleCol) marblesInGoal.add(i);
+            if (colGoal.get(i) == searchedMarbleCol)
+                marblesInGoal.add(i);
         }
 
-        //make a new move with the card
+        // make a new move with the card
         Move m = new Move();
         m.set_card(card);
         m.set_color(col);
 
         ArrayList<Integer> allMoveValues = new ArrayList<>();
 
-        switch(card.getValue()) {
+        switch (card.getValue()) {
             case TWO:
                 allMoveValues.add(2);
                 break;
@@ -638,48 +675,50 @@ public class Board {
                 break;
         }
 
-        //try normal moves
+        // try normal moves
         for (int i = 0; i < marblesOnMain.size(); i++) {
 
             for (int j = 0; j < allMoveValues.size(); j++) {
 
-                //try a normal move
+                // try a normal move
                 m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
-                m.set_toPos(new ArrayList<>(Arrays.asList(getIndexAfterDistance(marblesOnMain.get(i), allMoveValues.get(j)))));
+                m.set_toPos(new ArrayList<>(
+                        Arrays.asList(getIndexAfterDistance(marblesOnMain.get(i), allMoveValues.get(j)))));
                 m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
                 m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
 
-                //always early return, saves this O(scary) algorithm to terminate a lot earlier most of the time
+                // always early return, saves this O(scary) algorithm to terminate a lot earlier
+                // most of the time
                 try {
-                    if(isValidMove(m)) return true;
-                }
-                catch (InvalidMoveException e) {
-                    //do nothing here
-                    //ik this is terrible, but our move is always well formed in this case
+                    if (isValidMove(m))
+                        return true;
+                } catch (InvalidMoveException e) {
+                    // do nothing here
+                    // ik this is terrible, but our move is always well formed in this case
                 }
 
-                //try a goal move
+                // try a goal move
                 m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
-                try{
-                    m.set_toPos(new ArrayList<>(Arrays.asList(getIndexInGoalAfterDistance(marblesOnMain.get(i), allMoveValues.get(j), col))));
-                }catch (IndexOutOfBoundsException e)
-                {
-                    //a four cannot move in a goal backwards.
+                try {
+                    m.set_toPos(new ArrayList<>(Arrays
+                            .asList(getIndexInGoalAfterDistance(marblesOnMain.get(i), allMoveValues.get(j), col))));
+                } catch (IndexOutOfBoundsException e) {
+                    // a four cannot move in a goal backwards.
                     m.set_toPos(new ArrayList<>());
                 }
                 m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
                 m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
 
                 // goal reachable:
-                if(m.get_toPos().size() > 0 && m.get_toPos().get(0) != -1)
-                {
-                    //always early return, saves this O(scary) algorithm to terminate a lot earlier most of the time
+                if (m.get_toPos().size() > 0 && m.get_toPos().get(0) != -1) {
+                    // always early return, saves this O(scary) algorithm to terminate a lot earlier
+                    // most of the time
                     try {
-                        if(isValidMove(m)) return true;
-                    }
-                    catch (InvalidMoveException e) {
-                        //do nothing here
-                        //ik this is terrible, but our move is always well-formed in this case
+                        if (isValidMove(m))
+                            return true;
+                    } catch (InvalidMoveException e) {
+                        // do nothing here
+                        // ik this is terrible, but our move is always well-formed in this case
                     }
                 }
 
@@ -687,70 +726,68 @@ public class Board {
 
         }
 
-        //try goal to goal moves
+        // try goal to goal moves
         for (int i = 0; i < marblesInGoal.size(); i++) {
             for (int j = 0; j < allMoveValues.size(); j++) {
 
-                //try a goal move from a goal
-                if(allMoveValues.get(j) == 1 || allMoveValues.get(j) == 2 || allMoveValues.get(j) == 3)
-                {
+                // try a goal move from a goal
+                if (allMoveValues.get(j) == 1 || allMoveValues.get(j) == 2 || allMoveValues.get(j) == 3) {
                     int toPos = marblesInGoal.get(i) + allMoveValues.get(j);
-                    if(toPos < 3)
-                    {
+                    if (toPos < 3) {
                         m.set_fromPos(new ArrayList<>(Arrays.asList(marblesInGoal.get(i))));
                         m.set_toPos(new ArrayList<>(Arrays.asList(toPos)));
                         m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(true)));
                         m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
 
-                        //try the move
-                        //always early return, saves this O(scary) algorithm to terminate a lot earlier most of the time
+                        // try the move
+                        // always early return, saves this O(scary) algorithm to terminate a lot earlier
+                        // most of the time
                         try {
-                            if(isValidMove(m)) return true;
-                        }
-                        catch (InvalidMoveException e) {
-                            //do nothing here
-                            //ik this is terrible, but our move is always well-formed in this case
+                            if (isValidMove(m))
+                                return true;
+                        } catch (InvalidMoveException e) {
+                            // do nothing here
+                            // ik this is terrible, but our move is always well-formed in this case
                         }
                     }
                 }
             }
         }
 
-        //try jack move
-        if(card.getValue() == CARDVALUE.JACK)
-        {
+        // try jack move
+        if (card.getValue() == CARDVALUE.JACK) {
             ArrayList<Integer> otherMarbles = new ArrayList<>();
             for (int i = 0; i < _mainCircle.size(); i++) {
-                if(_mainCircle.get(i) != searchedMarbleCol && _mainCircle.get(i) != MARBLE.NONE) otherMarbles.add(i);
+                if (_mainCircle.get(i) != searchedMarbleCol && _mainCircle.get(i) != MARBLE.NONE)
+                    otherMarbles.add(i);
             }
-            //can we make any switch?
+            // can we make any switch?
             for (int i = 0; i < marblesOnMain.size(); i++) {
                 for (int j = 0; j < otherMarbles.size(); j++) {
 
-                    //try the switch move for each combination
+                    // try the switch move for each combination
                     m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
                     m.set_toPos(new ArrayList<>(Arrays.asList(otherMarbles.get(j))));
                     m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
                     m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
 
-                    //always early return, saves this O(scary) algorithm to terminate a lot earlier most of the time
+                    // always early return, saves this O(scary) algorithm to terminate a lot earlier
+                    // most of the time
                     try {
-                        if(isValidMove(m)) return true;
-                    }
-                    catch (InvalidMoveException e) {
-                        //do nothing here
-                        //ik this is terrible, but our move is always well-formed in this case
+                        if (isValidMove(m))
+                            return true;
+                    } catch (InvalidMoveException e) {
+                        // do nothing here
+                        // ik this is terrible, but our move is always well-formed in this case
                     }
                 }
             }
         }
 
-        //try start move
-        if(card.getValue() == CARDVALUE.ACE || card.getValue() == CARDVALUE.KING)
-        {
+        // try start move
+        if (card.getValue() == CARDVALUE.ACE || card.getValue() == CARDVALUE.KING) {
             int intersect = 0;
-            switch (col)
-            {
+            switch (col) {
                 case YELLOW:
                     intersect = YELLOWINTERSECT;
                     break;
@@ -771,31 +808,31 @@ public class Board {
             m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
 
             try {
-                if(isValidMove(m)) return true;
-            }
-            catch (InvalidMoveException e) {
-                //do nothing here
-                //ik this is terrible, but our move is always well-formed in this case
+                if (isValidMove(m))
+                    return true;
+            } catch (InvalidMoveException e) {
+                // do nothing here
+                // ik this is terrible, but our move is always well-formed in this case
             }
         }
 
-        //try 7 move. OH, GOD
-        if(card.getValue() == CARDVALUE.SEVEN)
-        {
-            if(isAnySevenMovePossible(marblesOnMain, marblesInGoal, col)) return true;
+        // try 7 move. OH, GOD
+        if (card.getValue() == CARDVALUE.SEVEN) {
+            if (isAnySevenMovePossible(marblesOnMain, marblesInGoal, col))
+                return true;
         }
 
-        //try joker move
-        if(card.getValue() == CARDVALUE.JOKER)
-        {
+        // try joker move
+        if (card.getValue() == CARDVALUE.JOKER) {
 
             ArrayList<CARDVALUE> allValues = new ArrayList<>(Arrays.asList(CARDVALUE.values()));
             allValues.remove(CARDVALUE.JOKER);
 
             for (CARDVALUE value : allValues) {
                 Card c = new Card(value, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
-                if(isAnyMovePossible(c, col)) return true; //THIS IS RECURSIVE: MAKE SURE THERE IS NO JOKER IN THE LIST!!!
-                //oh great, O(5n^6) just turned into O(scary)
+                if (isAnyMovePossible(c, col))
+                    return true; // THIS IS RECURSIVE: MAKE SURE THERE IS NO JOKER IN THE LIST!!!
+                // oh great, O(5n^6) just turned into O(scary)
             }
         }
 
@@ -803,27 +840,27 @@ public class Board {
     }
 
     /**
-     * This method is an utter mess. Keep your sanity and do not even try to look at this.
+     * This method is an utter mess. Keep your sanity and do not even try to look at
+     * this.
      * The complexity is about O(5n^6), so if you want to improve this, feel free.
      * For better overview just add your hours wasted here
      * HoursWasted = 4;
      */
-    private boolean isAnySevenMovePossible(ArrayList<Integer> marblesOnMain, ArrayList<Integer> marblesInGoal, COLOR col)
-    {
-        //try all possible splits
+    private boolean isAnySevenMovePossible(ArrayList<Integer> marblesOnMain, ArrayList<Integer> marblesInGoal,
+            COLOR col) {
+        // try all possible splits
         ArrayList<Integer[]> allPossibilites = new ArrayList<>();
 
-        //DONT EVEN SAY A WORD.
+        // DONT EVEN SAY A WORD.
 
-        //pyramid of dooooooooom.
+        // pyramid of dooooooooom.
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 7; j++) {
                 for (int k = 0; k < 7; k++) {
                     for (int l = 0; l < 7; l++) {
-                        if(i + j + k + l == 7)
-                        {
-                            //theoretically valid, so add
-                            Integer[] movecombo = {i, j, k, l};
+                        if (i + j + k + l == 7) {
+                            // theoretically valid, so add
+                            Integer[] movecombo = { i, j, k, l };
                             allPossibilites.add(movecombo);
                         }
                     }
@@ -831,12 +868,12 @@ public class Board {
             }
         }
 
-        //now we have all possible splits in all permutations possible
+        // now we have all possible splits in all permutations possible
 
-        //0 moves into a goal
+        // 0 moves into a goal
         for (Integer[] movecombo : allPossibilites) {
 
-            //move init
+            // move init
             Move sevenmove = new Move();
             sevenmove.set_color(col);
             Card c = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
@@ -848,7 +885,7 @@ public class Board {
             ArrayList<Boolean> toInGoal = new ArrayList<Boolean>();
 
             int marbleCount = 0;
-            //assign to all marbles
+            // assign to all marbles
             for (int i = 0; i < marblesOnMain.size(); i++) {
                 fromPos.add(marblesOnMain.get(i));
                 toPos.add(getIndexAfterDistance(marblesOnMain.get(i), movecombo[marbleCount]));
@@ -867,37 +904,35 @@ public class Board {
             boolean addsTo7 = true;
 
             for (int i = marbleCount; i < 4; i++) {
-                if(movecombo[i] != 0)
-                {
-                    //invalid, as it does not sum up to 7 then.
+                if (movecombo[i] != 0) {
+                    // invalid, as it does not sum up to 7 then.
                     addsTo7 = false;
                 }
             }
 
-            if(addsTo7)
-            {
+            if (addsTo7) {
                 sevenmove.set_fromPos(fromPos);
                 sevenmove.set_toPos(toPos);
                 sevenmove.set_fromPosInGoal(fromInGoal);
                 sevenmove.set_toPosInGoal(toInGoal);
 
-                //try the move
+                // try the move
                 try {
-                    if(isValidMove(sevenmove)) return true;
-                }
-                catch (InvalidMoveException e) {
-                    //do nothing here
-                    //ik this is terrible, but our move is always well-formed in this case
+                    if (isValidMove(sevenmove))
+                        return true;
+                } catch (InvalidMoveException e) {
+                    // do nothing here
+                    // ik this is terrible, but our move is always well-formed in this case
                 }
             }
         }
 
-        //1 move into a goal
+        // 1 move into a goal
         for (Integer[] movecombo : allPossibilites) {
 
             for (int maincount = 0; maincount < marblesOnMain.size(); maincount++) {
 
-                //move init
+                // move init
                 Move sevenmove = new Move();
                 sevenmove.set_color(col);
                 Card c = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
@@ -910,7 +945,7 @@ public class Board {
 
                 int marbleCount = 0;
 
-                //assign to all marbles
+                // assign to all marbles
                 for (int i = 0; i < marblesOnMain.size(); i++) {
                     fromPos.add(marblesOnMain.get(i));
                     toPos.add(getIndexAfterDistance(marblesOnMain.get(i), movecombo[marbleCount]));
@@ -929,44 +964,41 @@ public class Board {
                 boolean addsTo7 = true;
 
                 for (int i = marbleCount; i < 4; i++) {
-                    if(movecombo[i] != 0)
-                    {
-                        //invalid, as it does not sum up to 7 then.
+                    if (movecombo[i] != 0) {
+                        // invalid, as it does not sum up to 7 then.
                         addsTo7 = false;
                     }
                 }
 
-                if(addsTo7)
-                {
+                if (addsTo7) {
                     sevenmove.set_fromPos(fromPos);
                     sevenmove.set_toPos(toPos);
                     sevenmove.set_fromPosInGoal(fromInGoal);
                     sevenmove.set_toPosInGoal(toInGoal);
 
-                    //try the move
+                    // try the move
                     try {
-                        if(isValidMove(sevenmove)) return true;
-                    }
-                    catch (InvalidMoveException e) {
-                        //do nothing here
-                        //ik this is terrible, but our move is always well-formed in this case
+                        if (isValidMove(sevenmove))
+                            return true;
+                    } catch (InvalidMoveException e) {
+                        // do nothing here
+                        // ik this is terrible, but our move is always well-formed in this case
                     }
                 }
             }
 
         }
 
-        //2 moves into a goal
-        if(marblesOnMain.size() >= 2)
-        {
+        // 2 moves into a goal
+        if (marblesOnMain.size() >= 2) {
             for (Integer[] movecombo : allPossibilites) {
 
-                //permutations of what 2 marbles should go in a goal state
-                //yes, you see correctly. more for loops
+                // permutations of what 2 marbles should go in a goal state
+                // yes, you see correctly. more for loops
                 for (int maincount = 0; maincount < marblesOnMain.size(); maincount++) {
                     for (int offcount = maincount + 1; offcount < marblesInGoal.size(); offcount++) {
 
-                        //move init
+                        // move init
                         Move sevenmove = new Move();
                         sevenmove.set_color(col);
                         Card c = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
@@ -979,7 +1011,7 @@ public class Board {
 
                         int marbleCount = 0;
 
-                        //assign to all marbles
+                        // assign to all marbles
                         for (int i = 0; i < marblesOnMain.size(); i++) {
                             fromPos.add(marblesOnMain.get(i));
                             toPos.add(getIndexAfterDistance(marblesOnMain.get(i), movecombo[marbleCount]));
@@ -998,56 +1030,50 @@ public class Board {
                         boolean addsTo7 = true;
 
                         for (int i = marbleCount; i < 4; i++) {
-                            if(movecombo[i] != 0)
-                            {
-                                //invalid, as it does not sum up to 7 then.
+                            if (movecombo[i] != 0) {
+                                // invalid, as it does not sum up to 7 then.
                                 addsTo7 = false;
                             }
                         }
 
-                        if(addsTo7)
-                        {
+                        if (addsTo7) {
                             sevenmove.set_fromPos(fromPos);
                             sevenmove.set_toPos(toPos);
                             sevenmove.set_fromPosInGoal(fromInGoal);
                             sevenmove.set_toPosInGoal(toInGoal);
 
-                            //try the move
+                            // try the move
                             try {
-                                if(isValidMove(sevenmove)) return true;
-                            }
-                            catch (InvalidMoveException e) {
-                                //do nothing here
-                                //ik this is terrible, but our move is always well-formed in this case
+                                if (isValidMove(sevenmove))
+                                    return true;
+                            } catch (InvalidMoveException e) {
+                                // do nothing here
+                                // ik this is terrible, but our move is always well-formed in this case
                             }
                         }
                     }
                 }
             }
         }
-        //more than 2 moves into a goal with a 7 is not possible
+        // more than 2 moves into a goal with a 7 is not possible
 
         return false;
     }
 
-    private int getIndexAfterDistance(int start, int distance) throws IndexOutOfBoundsException
-    {
-        if(start < 0 || start >= 64 || distance <= -64 || distance >= 64) throw new IndexOutOfBoundsException();
+    private int getIndexAfterDistance(int start, int distance) throws IndexOutOfBoundsException {
+        if (start < 0 || start >= 64 || distance <= -64 || distance >= 64)
+            throw new IndexOutOfBoundsException();
 
-        //normal
+        // normal
         int newPos = start + distance;
 
-        //looping
-        if(distance < 0)
-        {
-            if(newPos < 0)
-            {
+        // looping
+        if (distance < 0) {
+            if (newPos < 0) {
                 newPos = 64 + newPos;
             }
-        }else
-        {
-            if(newPos > 63)
-            {
+        } else {
+            if (newPos > 63) {
                 newPos = newPos - 64;
             }
         }
@@ -1056,11 +1082,11 @@ public class Board {
     }
 
     private int getIndexInGoalAfterDistance(int start, int distance, COLOR color) throws IndexOutOfBoundsException {
-        if (start < 0 || start >= 64 || distance < 0 || distance >= 64) throw new IndexOutOfBoundsException();
+        if (start < 0 || start >= 64 || distance < 0 || distance >= 64)
+            throw new IndexOutOfBoundsException();
 
         int intersect = 0;
-        switch (color)
-        {
+        switch (color) {
             case BLUE:
                 intersect = BLUEINTERSECT;
                 break;
@@ -1075,31 +1101,34 @@ public class Board {
                 break;
         }
 
-        //only forwards in goal!
+        // only forwards in goal!
         int distToGoalStart = getDistanceInBetween(start, intersect);
         int restDistance = distance - distToGoalStart;
 
-        //cannot reach a goal
-        if(restDistance < 1 || restDistance > 4) return -1;
+        // cannot reach a goal
+        if (restDistance < 1 || restDistance > 4)
+            return -1;
 
         return restDistance;
 
     }
 
     /**
-     * returns true if the move is valid (ie: the move is allowed) based on the card and the rules
+     * returns true if the move is valid (ie: the move is allowed) based on the card
+     * and the rules
+     * 
      * @param move the move object that contains all the information
-     * @throws InvalidMoveException if the move object has any missing params or is not well-formed
+     * @throws InvalidMoveException if the move object has any missing params or is
+     *                              not well-formed
      */
-    public boolean isValidMove(Move move) throws InvalidMoveException
-    {
-        //throwing exceptions
-        if(!move.checkIfComplete()) {
+    public boolean isValidMove(Move move) throws InvalidMoveException {
+        // throwing exceptions
+        if (!move.checkIfComplete()) {
             throw new InvalidMoveException("BAD_MOVE", "move is not complete");
         }
-        
+
         // checking if the move is valid based on the card
-        switch(move.get_card().getValue()) {
+        switch (move.get_card().getValue()) {
             case ACE:
                 return isValidAceMove(move);
             case KING:
@@ -1120,6 +1149,7 @@ public class Board {
     // check if the move is valid for an ace card
     /**
      * checks if the move is valid for an ace card
+     * 
      * @param move the move object that contains all the information
      * @throws NoMarbleException if there are no marbles at the position
      * @return true if the move is valid
@@ -1128,53 +1158,57 @@ public class Board {
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor;
-        try{
-            if(startPos != -1){
+        try {
+            if (startPos != -1) {
                 marbleColor = this.getColorFromPosition(startPos);
-            }else{
+            } else {
                 marbleColor = move.get_color();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new NoMarbleException();
         }
         // check if marble color is the same as move color
-        if(marbleColor != move.get_color()) {
+        if (marbleColor != move.get_color()) {
             return false;
         }
         // validate for starting move
-        if(startPos == -1){
-            switch(marbleColor){
+        if (startPos == -1) {
+            switch (marbleColor) {
                 case RED:
-                    if(endPos == REDINTERSECT && !REDBLOCKED){
-                        REDBLOCKED = true;
+                    if (endPos == REDINTERSECT && !REDBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 case YELLOW:
-                    if(endPos == YELLOWINTERSECT && !YELLOWBLOCKED){
-                        YELLOWBLOCKED = true;
+                    if (endPos == YELLOWINTERSECT && !YELLOWBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 case GREEN:
-                    if(endPos == GREENINTERSECT && !GREENBLOCKED){
-                        GREENBLOCKED = true;
+                    if (endPos == GREENINTERSECT && !GREENBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 case BLUE:
-                    if(endPos == BLUEINTERSECT && !BLUEBLOCKED){
-                        BLUEBLOCKED = true;
+                    if (endPos == BLUEINTERSECT && !BLUEBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 default:
                     return false;
             }
         }
-        //validate for goal move
-        if(move.isGoalMove()) {
+        // validate for goal move
+        if (move.isGoalMove()) {
             boolean startInGoal = !move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
         int moveDist = getDistanceInBetween(startPos, endPos);
-        if(moveDist != 1 || moveDist != 11) {
+        if (moveDist != 1 || moveDist != 11) {
             return false;
         }
         return true;
@@ -1185,22 +1219,25 @@ public class Board {
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor;
-        try{
-            if(startPos == -1) {return false;}
+        try {
+            if (startPos == -1) {
+                return false;
+            }
             marbleColor = this.getColorFromPosition(startPos);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new NoMarbleException();
         }
         // check if marble color is the same as move color
-        if(marbleColor != move.get_color()) {
+        if (marbleColor != move.get_color()) {
             return false;
         }
         // validate for starting move
-        if(startPos == -1){
+        if (startPos == -1) {
             return false;
         }
         // jack behaviour unclear yet: unclear on how front-end passes the move
-        if(this._mainCircle.get(startPos) == MARBLE.NONE || this._mainCircle.get(endPos) == MARBLE.NONE || marbleColor == this.getColorFromPosition(endPos)) {
+        if (this._mainCircle.get(startPos) == MARBLE.NONE || this._mainCircle.get(endPos) == MARBLE.NONE
+                || marbleColor == this.getColorFromPosition(endPos)) {
             return false;
         }
         return true;
@@ -1211,53 +1248,58 @@ public class Board {
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor;
-        try{
-            if(startPos != -1){
+        try {
+            if (startPos != -1) {
                 marbleColor = this.getColorFromPosition(startPos);
-            }else{
+            } else {
                 marbleColor = move.get_color();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new NoMarbleException();
         }
         // check if marble color is the same as move color
-        if(marbleColor != move.get_color()) {
+        if (marbleColor != move.get_color()) {
             return false;
         }
         // validate for starting move
-        if(startPos == -1){
+        if (startPos == -1) {
 
-            switch(marbleColor){
+            switch (marbleColor) {
                 case RED:
-                    if(endPos == REDINTERSECT && !REDBLOCKED){
-                        REDBLOCKED = true;
+                    if (endPos == REDINTERSECT && !REDBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 case YELLOW:
-                    if(endPos == YELLOWINTERSECT && !YELLOWBLOCKED){
-                        YELLOWBLOCKED = true;
+                    if (endPos == YELLOWINTERSECT && !YELLOWBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 case GREEN:
-                    if(endPos == GREENINTERSECT && !GREENBLOCKED){
-                        GREENBLOCKED = true;
+                    if (endPos == GREENINTERSECT && !GREENBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 case BLUE:
-                    if(endPos == BLUEINTERSECT && !BLUEBLOCKED){
-                        BLUEBLOCKED = true;
+                    if (endPos == BLUEINTERSECT && !BLUEBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 default:
                     return false;
             }
         }
-        //validate for goal move
-        if(move.isGoalMove()) {
+        // validate for goal move
+        if (move.isGoalMove()) {
             boolean startInGoal = !move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
-        //TODO joker behaviour unclear yet, can be any card: need to define behaviour in front-end
+        // TODO joker behaviour unclear yet, can be any card: need to define behaviour
+        // in front-end
         return true;
     }
 
@@ -1266,54 +1308,58 @@ public class Board {
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor;
-        try{
-            if(startPos != -1){
+        try {
+            if (startPos != -1) {
                 marbleColor = this.getColorFromPosition(startPos);
-            }else{
+            } else {
                 marbleColor = move.get_color();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new NoMarbleException();
         }
         // check if marble color is the same as move color
-        if(marbleColor != move.get_color()) {
+        if (marbleColor != move.get_color()) {
             return false;
         }
         // validate for starting move
-        if(startPos == -1){
-            switch(marbleColor){
+        if (startPos == -1) {
+            switch (marbleColor) {
                 case RED:
-                    if(endPos == REDINTERSECT && !REDBLOCKED){
-                        REDBLOCKED = true;
+                    if (endPos == REDINTERSECT && !REDBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 case YELLOW:
-                    if(endPos == YELLOWINTERSECT && !YELLOWBLOCKED){
-                        YELLOWBLOCKED = true;
+                    if (endPos == YELLOWINTERSECT && !YELLOWBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 case GREEN:
-                    if(endPos == GREENINTERSECT && !GREENBLOCKED){
-                        GREENBLOCKED = true;
+                    if (endPos == GREENINTERSECT && !GREENBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 case BLUE:
-                    if(endPos == BLUEINTERSECT && !BLUEBLOCKED){
-                        BLUEBLOCKED = true;
+                    if (endPos == BLUEINTERSECT && !BLUEBLOCKED) {
                         return true;
-                    }else{return false;}
+                    } else {
+                        return false;
+                    }
                 default:
                     return false;
             }
         }
-        //validate for goal move
-        if(move.isGoalMove()) {
+        // validate for goal move
+        if (move.isGoalMove()) {
             boolean startInGoal = !move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
-        //check if distance is valid for the card
+        // check if distance is valid for the card
         int moveDist = getDistanceInBetween(startPos, endPos);
-        if(moveDist != 13) {
+        if (moveDist != 13) {
             return false;
         }
         return true;
@@ -1322,6 +1368,7 @@ public class Board {
     // check if the move is valid for a 7 card
     /**
      * checks if the move is valid for a 7 card
+     * 
      * @param move
      * @return true if all moves are valid, a single invalid move will return false
      * @throws NoMarbleException
@@ -1331,13 +1378,15 @@ public class Board {
         ArrayList<Integer> endPos = move.get_toPos();
         ArrayList<COLOR> marbleColor = new ArrayList<>();
         ArrayList<MARBLE> curMarble = new ArrayList<>();
-        try{
+        try {
             for (int i = 0; i < startPos.size(); i++) {
-                if(startPos.get(i) == -1){return false;} //seven cant make a starting move
+                if (startPos.get(i) == -1) {
+                    return false;
+                } // seven cant make a starting move
                 marbleColor.add(this.getColorFromPosition(startPos.get(i)));
                 curMarble.add(this._mainCircle.get(startPos.get(i)));
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new NoMarbleException();
         }
         // check if marble color is the same as move color
@@ -1347,20 +1396,21 @@ public class Board {
             }
         }
         int moveDist = 0;
-        for(int i = 0; i < startPos.size(); i++) {
+        for (int i = 0; i < startPos.size(); i++) {
             moveDist += getDistanceInBetween(startPos.get(i), endPos.get(i));
         }
-        if(moveDist != 7) {
+        if (moveDist != 7) {
             return false;
         }
-        //validate for goal move
-        if(move.isGoalMove()) {
-            for(int i = 0; i < startPos.size(); i++) {
-                if(move.get_toPosInGoal().get(i)){
-                    if(!isValidGoalMove(startPos.get(i), endPos.get(i), move.get_fromPosInGoal().get(i), marbleColor.get(i))){
+        // validate for goal move
+        if (move.isGoalMove()) {
+            for (int i = 0; i < startPos.size(); i++) {
+                if (move.get_toPosInGoal().get(i)) {
+                    if (!isValidGoalMove(startPos.get(i), endPos.get(i), move.get_fromPosInGoal().get(i),
+                            marbleColor.get(i))) {
                         return false;
                     }
-                    
+
                 }
             }
         }
@@ -1372,23 +1422,25 @@ public class Board {
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor;
-        try{
-            if(startPos == -1){return false;}
+        try {
+            if (startPos == -1) {
+                return false;
+            }
             marbleColor = this.getColorFromPosition(startPos);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new NoMarbleException();
         }
         // check if marble color is the same as move color
-        if(marbleColor != move.get_color()) {
+        if (marbleColor != move.get_color()) {
             return false;
         }
         int moveDistForward = getDistanceInBetween(startPos, endPos, true);
         int moveDistBackward = getDistanceInBetween(startPos, endPos, false);
-        if(moveDistForward != 4 || moveDistBackward != 4) {
+        if (moveDistForward != 4 || moveDistBackward != 4) {
             return false;
         }
-        //validate for goal move
-        if(move.isGoalMove()) {
+        // validate for goal move
+        if (move.isGoalMove()) {
             boolean startInGoal = !move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
@@ -1401,29 +1453,39 @@ public class Board {
         int endPos = move.get_toPos().get(0);
         Card moveCard = move.get_card();
         COLOR marbleColor;
-        try{
-            if(startPos == -1){return false;}
+        try {
+            if (startPos == -1) {
+                return false;
+            }
             marbleColor = this.getColorFromPosition(startPos);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new NoMarbleException();
         }
         // check if marble color is the same as move color
-        if(marbleColor != move.get_color()) {
+        if (marbleColor != move.get_color()) {
             return false;
         }
         int moveDist = getDistanceInBetween(startPos, endPos);
-        switch(moveCard.getValue()) {
-            case TWO: return moveDist == 2;
-            case THREE: return moveDist == 3;
-            case FIVE: return moveDist == 5;
-            case SIX: return moveDist == 6;
-            case EIGHT: return moveDist == 8;
-            case NINE: return moveDist == 9;
-            case TEN: return moveDist == 10;
-            case QUEEN: return moveDist == 12;
+        switch (moveCard.getValue()) {
+            case TWO:
+                return moveDist == 2;
+            case THREE:
+                return moveDist == 3;
+            case FIVE:
+                return moveDist == 5;
+            case SIX:
+                return moveDist == 6;
+            case EIGHT:
+                return moveDist == 8;
+            case NINE:
+                return moveDist == 9;
+            case TEN:
+                return moveDist == 10;
+            case QUEEN:
+                return moveDist == 12;
         }
-        //validate for goal move
-        if(move.isGoalMove()) {
+        // validate for goal move
+        if (move.isGoalMove()) {
             boolean startInGoal = !move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
@@ -1433,15 +1495,16 @@ public class Board {
     /**
      * checks if the move is valid to enter goal
      * assumes that endPos will end in goal, otherwise this methos is not called
+     * 
      * @param move
      * @return true if the move can enter the goal
      */
     private boolean isValidGoalMove(int startPos, int endPos, boolean startPosInGoal, COLOR color) {
         int moveDist = getDistanceInBetween(startPos, endPos);
-        //get intersect and goal depending on marble color
+        // get intersect and goal depending on marble color
         int intersect = -1;
         ArrayList<MARBLE> goal = new ArrayList<>();
-        switch(color){
+        switch (color) {
             case RED:
                 intersect = REDINTERSECT;
                 goal = _redGoal;
@@ -1459,33 +1522,33 @@ public class Board {
                 goal = _blueGoal;
                 break;
         }
-        //check if intersect can be reached or startPos is in goal
-        if(moveDist < getDistanceInBetween(startPos, intersect) && !startPosInGoal) {
+        // check if intersect can be reached or startPos is in goal
+        if (moveDist < getDistanceInBetween(startPos, intersect) && !startPosInGoal) {
             return false;
         }
-        if(startPosInGoal) {
-            //check if goal can be reached from inside goal
-            if(moveDist < getDistanceInBetween(startPos, endPos, color, true)) {
+        if (startPosInGoal) {
+            // check if goal can be reached from inside goal
+            if (moveDist < getDistanceInBetween(startPos, endPos, color, true)) {
                 return false;
             }
-            //check if there is a marble between startPos and endPos in goal
-            for(int i = startPos; i <= endPos; i++){
-                if(goal.get(i) != MARBLE.NONE) {
+            // check if there is a marble between startPos and endPos in goal
+            for (int i = startPos; i <= endPos; i++) {
+                if (goal.get(i) != MARBLE.NONE) {
                     return false;
                 }
             }
-        }else{
-            //check if goal can be reached from outside goal
-            if(moveDist < getDistanceInBetween(startPos, endPos, color, false)) {
+        } else {
+            // check if goal can be reached from outside goal
+            if (moveDist < getDistanceInBetween(startPos, endPos, color, false)) {
                 return false;
             }
-            //check if there is a marble between intersect and endPos in goal
-            for(int i = 0; i <= endPos; i++){
-                if(goal.get(i) != MARBLE.NONE) {
+            // check if there is a marble between intersect and endPos in goal
+            for (int i = 0; i <= endPos; i++) {
+                if (goal.get(i) != MARBLE.NONE) {
                     return false;
                 }
             }
         }
         return true;
     }
-}   
+}

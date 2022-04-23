@@ -52,11 +52,13 @@ public class MoveTest {
         assertTrue(move.checkIfComplete());
 
         fromPos.remove(0);
+        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
         assertFalse(move.isWellFormed());
         assertFalse(move.checkIfComplete());
 
         fromPos.add(0);
         _color = null;
+        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
         assertTrue(move.isWellFormed());
         assertFalse(move.checkIfComplete());
 
@@ -65,6 +67,7 @@ public class MoveTest {
         toPos.remove(0);
         fromPosInGoal.remove(0);
         toPosInGoal.remove(0);
+        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
         assertTrue(move.isWellFormed());
         assertFalse(move.checkIfComplete());
     }
@@ -72,7 +75,6 @@ public class MoveTest {
     // Testing ace moves
     @Test
     void validAceMove(){
-        //TODO
         fromPos = new ArrayList<>(Arrays.asList(-1));
         toPos = new ArrayList<>(Arrays.asList(0));
         fromPosInGoal = new ArrayList<>(Arrays.asList(false));
@@ -106,16 +108,92 @@ public class MoveTest {
         }
 
         // test normal moves toPos in goal
-        //TODO
+        try{
+            // test for 1
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(0));
+            toPosInGoal = new ArrayList<>(Arrays.asList(true));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+
+            // test for 11
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(56));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            board.makeMove(move); //move marble to right position
+
+            fromPos = new ArrayList<>(Arrays.asList(56));
+            toPos = new ArrayList<>(Arrays.asList(2));
+            toPosInGoal = new ArrayList<>(Arrays.asList(true));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+        }catch(InvalidMoveException e){
+            fail("Should not throw exception");
+        }
 
         // test nromal moves fromPos and toPos in goal
-        //TODO
+        try{
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(1));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(true));
+            toPosInGoal = new ArrayList<>(Arrays.asList(true));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+        }catch(InvalidMoveException e){
+            fail("Should not throw exception");
+        }
 
     }
 
     @Test
     void invalidAceMove(){
         //TODO
+        // test invalid starting move
+        fromPos = new ArrayList<>(Arrays.asList(-1));
+        toPos = new ArrayList<>(Arrays.asList(1));
+        fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+        toPosInGoal = new ArrayList<>(Arrays.asList(false));
+        _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+        _color = COLOR.RED;
+        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+
+        // no intersect
+        try{
+            assertFalse(board.isValidMove(move));
+        }catch(InvalidMoveException e){
+            fail("Should not throw exception");
+        }
+
+        // wrong intersect for color
+        toPos = new ArrayList<>(Arrays.asList(16));
+        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+        try{
+            assertFalse(board.isValidMove(move));
+        }catch(InvalidMoveException e){
+            fail("Should not throw exception");
+        }
+
+        // test regular move distance
+        fromPos = new ArrayList<>(Arrays.asList(0));
+        toPos = new ArrayList<>(Arrays.asList(0));
+        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+        try{
+            // move distance too low
+            board.makeStartingMove(COLOR.RED);
+            assertFalse(board.isValidMove(move));
+            // move distance too high
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(15));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+        }catch(InvalidMoveException e){
+            fail("Should not throw exception");
+        }
+
+        // test regular moves in goal
+        // 
+
     }
 
     @Test
