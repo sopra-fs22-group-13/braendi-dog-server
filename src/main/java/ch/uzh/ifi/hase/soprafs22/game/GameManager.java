@@ -42,16 +42,6 @@ public class GameManager {
         return null;
     }
 
-    public Player getPlayerByToken(String token){
-        for (Game game:_games){
-            Player player= game.getPlayerByToken(token);
-            if (player != null){
-                return player;
-            }
-        }
-        return null;
-    }
-
     public void deleteGame(Game gameToDelete){
         String gameTokenToDelete = gameToDelete.getGameToken();
         for (Game game:_games){

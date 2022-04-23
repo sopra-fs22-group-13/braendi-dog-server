@@ -36,8 +36,8 @@ public class LobbyController {
     @GetMapping("/lobby/{lobbyID}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public LobbyData getLobby(HttpServletRequest response, @PathVariable Integer lobbyID) {
-        User client = userService.checkIfLoggedIn(response);
+    public LobbyData getLobby(HttpServletRequest request, @PathVariable Integer lobbyID) {
+        User client = userService.checkIfLoggedIn(request);
         Lobby lobby = lobbyManager.getLobbyByID(lobbyID);
         if (!lobby.getPlayers().contains(client)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not in this lobby.");
@@ -54,8 +54,8 @@ public class LobbyController {
     @PostMapping("/lobby")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public LobbyGetDTO createLobby(HttpServletRequest response) {
-        User user = userService.checkIfLoggedIn(response);
+    public LobbyGetDTO createLobby(HttpServletRequest request) {
+        User user = userService.checkIfLoggedIn(request);
         if (user==null) return null;
         if (user.isInLobby()) throw new ResponseStatusException(HttpStatus.CONFLICT, "You are already in a lobby.");
 
@@ -83,8 +83,8 @@ public class LobbyController {
     @PostMapping("/game")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public void createGame(HttpServletRequest response, @RequestBody GamePostDTO gamePostDTO) {
-        User client = userService.checkIfLoggedIn(response);
+    public void createGame(HttpServletRequest request, @RequestBody GamePostDTO gamePostDTO) {
+        User client = userService.checkIfLoggedIn(request);
         Lobby gameLobby = lobbyManager.getLobbyByID(gamePostDTO.getLobbyID());
         if (gameLobby == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This lobby doesn't exist.");
         if (!Objects.equals(gameLobby.getOwner().getToken(), client.getToken())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must be the owner to start the game.");
@@ -95,8 +95,8 @@ public class LobbyController {
     @PutMapping("/lobby/{lobbyID}/invitations")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void invitePlayer(HttpServletRequest response, @PathVariable Integer lobbyID, @RequestBody InvitationPutDTO invitationPutDTO) {
-        User client = userService.checkIfLoggedIn(response);
+    public void invitePlayer(HttpServletRequest request, @PathVariable Integer lobbyID, @RequestBody InvitationPutDTO invitationPutDTO) {
+        User client = userService.checkIfLoggedIn(request);
         User invitee = userService.getUserById(invitationPutDTO.getInviteeID());
         if (invitee == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The player you're trying to invite doesn't exist");
         if (invitee.isInLobby()) throw new ResponseStatusException(HttpStatus.CONFLICT, "This player is already in a lobby");
@@ -107,8 +107,8 @@ public class LobbyController {
     @PutMapping("/invitations")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void respondToInvitation(HttpServletRequest response, @RequestBody InvitationResponsePutDTO invitationResponsePutDTO) {
-        User client = userService.checkIfLoggedIn(response);
+    public void respondToInvitation(HttpServletRequest request, @RequestBody InvitationResponsePutDTO invitationResponsePutDTO) {
+        User client = userService.checkIfLoggedIn(request);
 
         lobbyManager.inviteResponse(invitationResponsePutDTO.getLobbyID(), client.getToken(), invitationResponsePutDTO.getResponse());
     }

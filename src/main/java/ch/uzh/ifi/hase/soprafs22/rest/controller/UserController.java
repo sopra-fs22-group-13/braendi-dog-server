@@ -32,9 +32,9 @@ public class UserController {
   @GetMapping("/users")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<UserGetDTO> getAllUsers( HttpServletRequest response) {
+  public List<UserGetDTO> getAllUsers( HttpServletRequest request) {
 
-    if(userService.checkIfLoggedIn(response) == null){
+    if(userService.checkIfLoggedIn(request) == null){
         return null;
     }
 

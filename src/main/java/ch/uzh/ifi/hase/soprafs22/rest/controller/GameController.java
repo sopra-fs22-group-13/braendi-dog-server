@@ -48,13 +48,13 @@ public class GameController {
     @GetMapping("/game/{gametoken}/board")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public BoardData getGame( @PathVariable String gametoken, HttpServletRequest response) {
-        User user = userService.checkIfLoggedIn(response);
+    public BoardData getGame( @PathVariable String gametoken, HttpServletRequest request) {
+        User user = userService.checkIfLoggedIn(request);
 
         Game game = GameManager.getInstance().getGameByToken(gametoken);
         if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
 
-        String auth = response.getHeader("Authorization");
+        String auth = request.getHeader("Authorization");
         String playerToken = auth.substring(6);
         if (game.getPlayerByToken(playerToken) == null){
             return null;
@@ -66,13 +66,18 @@ public class GameController {
     @GetMapping("/game/{gametoken}/players")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public PlayerData getPlayerHands(HttpServletRequest response, @PathVariable String gametoken) {
-        User client = userService.checkIfLoggedIn(response);
+    public PlayerData getPlayerHands(HttpServletRequest request, @PathVariable String gametoken) {
+        User client = userService.checkIfLoggedIn(request);
         Game game = gameManager.getGameByToken(gametoken);
 
         return game.getPlayerStates(client.getToken());
     }
 
+    /**TODO
+     * authentication check pls
+     * @param gametoken
+     * @param movePutDTO
+     */
     @PutMapping("/game/{gametoken}/board")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
