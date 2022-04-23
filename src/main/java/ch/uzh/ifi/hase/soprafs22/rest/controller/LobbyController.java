@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.rest.controller;
 
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.LobbyData;
 import ch.uzh.ifi.hase.soprafs22.lobby.Lobby;
 import ch.uzh.ifi.hase.soprafs22.lobby.LobbyManager;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.GamePostDTO;
@@ -30,6 +31,24 @@ public class LobbyController {
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
         lobbyManager = new LobbyManager();
+    }
+
+    @GetMapping("/lobby/{lobbyID}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public LobbyData getLobby(HttpServletRequest response, @PathVariable Integer lobbyID) {
+        User client = userService.checkIfLoggedIn(response);
+        Lobby lobby = lobbyManager.getLobbyByID(lobbyID);
+        if (!lobby.getPlayers().contains(client)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not in this lobby.");
+        }
+
+        LobbyData lobbyData = new LobbyData(lobby.getPlayers());
+        if (lobbyData.getUserIDs().size() != lobbyData.getUsernames().size()) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong while fetching the lobby data.");
+        }
+
+        return lobbyData;
     }
 
     @PostMapping("/lobby")
