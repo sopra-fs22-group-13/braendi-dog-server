@@ -1211,6 +1211,29 @@ public class Board {
         if (moveDist != 1 || moveDist != 11) {
             return false;
         }
+
+        // checking for blocked intersect
+        ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
+        ArrayList<Integer> blockIntersect = new ArrayList<>();
+        if(blockPos.size() < 0){
+            for(int i = 0; i < blockPos.size(); i++){
+                if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
+                    blockIntersect.add(blockPos.get(i));
+                }
+            }
+            for(int i = 0; i < blockIntersect.size(); i++){
+                switch(blockIntersect.get(i)){
+                    case REDINTERSECT:
+                        if(REDBLOCKED){return false;}
+                    case YELLOWINTERSECT:
+                        if(YELLOWBLOCKED){return false;}
+                    case GREENINTERSECT:
+                        if(GREENBLOCKED){return false;}
+                    case BLUEINTERSECT:
+                        if(BLUEBLOCKED){return false;}
+                }
+            }
+        }
         return true;
     }
 
@@ -1240,6 +1263,7 @@ public class Board {
                 || marbleColor == this.getColorFromPosition(endPos)) {
             return false;
         }
+        //TODO dont know if Jack can move when the other marble is on a blocked intersect
         return true;
     }
 
@@ -1300,6 +1324,29 @@ public class Board {
         }
         // TODO joker behaviour unclear yet, can be any card: need to define behaviour
         // in front-end
+
+        // checking for blocked intersect
+        ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
+        ArrayList<Integer> blockIntersect = new ArrayList<>();
+        if(blockPos.size() < 0){
+            for(int i = 0; i < blockPos.size(); i++){
+                if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
+                    blockIntersect.add(blockPos.get(i));
+                }
+            }
+            for(int i = 0; i < blockIntersect.size(); i++){
+                switch(blockIntersect.get(i)){
+                    case REDINTERSECT:
+                        if(REDBLOCKED){return false;}
+                    case YELLOWINTERSECT:
+                        if(YELLOWBLOCKED){return false;}
+                    case GREENINTERSECT:
+                        if(GREENBLOCKED){return false;}
+                    case BLUEINTERSECT:
+                        if(BLUEBLOCKED){return false;}
+                }
+            }
+        }
         return true;
     }
 
@@ -1362,6 +1409,29 @@ public class Board {
         if (moveDist != 13) {
             return false;
         }
+
+        // checking for blocked intersect
+        ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
+        ArrayList<Integer> blockIntersect = new ArrayList<>();
+        if(blockPos.size() < 0){
+            for(int i = 0; i < blockPos.size(); i++){
+                if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
+                    blockIntersect.add(blockPos.get(i));
+                }
+            }
+            for(int i = 0; i < blockIntersect.size(); i++){
+                switch(blockIntersect.get(i)){
+                    case REDINTERSECT:
+                        if(REDBLOCKED){return false;}
+                    case YELLOWINTERSECT:
+                        if(YELLOWBLOCKED){return false;}
+                    case GREENINTERSECT:
+                        if(GREENBLOCKED){return false;}
+                    case BLUEINTERSECT:
+                        if(BLUEBLOCKED){return false;}
+                }
+            }
+        }
         return true;
     }
 
@@ -1414,6 +1484,32 @@ public class Board {
                 }
             }
         }
+
+        // checking for blocked intersect
+        ArrayList<Integer> blockPos = new ArrayList<>();
+        for(int i = 0; i < startPos.size(); i++){
+            blockPos.addAll(getInbetweeners(startPos.get(i), endPos.get(i)));
+        }
+        ArrayList<Integer> blockIntersect = new ArrayList<>();
+        if(blockPos.size() < 0){
+            for(int i = 0; i < blockPos.size(); i++){
+                if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
+                    blockIntersect.add(blockPos.get(i));
+                }
+            }
+            for(int i = 0; i < blockIntersect.size(); i++){
+                switch(blockIntersect.get(i)){
+                    case REDINTERSECT:
+                        if(REDBLOCKED){return false;}
+                    case YELLOWINTERSECT:
+                        if(YELLOWBLOCKED){return false;}
+                    case GREENINTERSECT:
+                        if(GREENBLOCKED){return false;}
+                    case BLUEINTERSECT:
+                        if(BLUEBLOCKED){return false;}
+                }
+            }
+        }
         return true;
     }
 
@@ -1443,6 +1539,29 @@ public class Board {
         if (move.isGoalMove()) {
             boolean startInGoal = !move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
+        }
+
+        // checking for blocked intersect
+        ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
+        ArrayList<Integer> blockIntersect = new ArrayList<>();
+        if(blockPos.size() < 0){
+            for(int i = 0; i < blockPos.size(); i++){
+                if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
+                    blockIntersect.add(blockPos.get(i));
+                }
+            }
+            for(int i = 0; i < blockIntersect.size(); i++){
+                switch(blockIntersect.get(i)){
+                    case REDINTERSECT:
+                        if(REDBLOCKED){return false;}
+                    case YELLOWINTERSECT:
+                        if(YELLOWBLOCKED){return false;}
+                    case GREENINTERSECT:
+                        if(GREENBLOCKED){return false;}
+                    case BLUEINTERSECT:
+                        if(BLUEBLOCKED){return false;}
+                }
+            }
         }
         return true;
     }
@@ -1488,6 +1607,29 @@ public class Board {
         if (move.isGoalMove()) {
             boolean startInGoal = !move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
+        }
+
+        // checking for blocked intersect
+        ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
+        ArrayList<Integer> blockIntersect = new ArrayList<>();
+        if(blockPos.size() < 0){
+            for(int i = 0; i < blockPos.size(); i++){
+                if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
+                    blockIntersect.add(blockPos.get(i));
+                }
+            }
+            for(int i = 0; i < blockIntersect.size(); i++){
+                switch(blockIntersect.get(i)){
+                    case REDINTERSECT:
+                        if(REDBLOCKED){return false;}
+                    case YELLOWINTERSECT:
+                        if(YELLOWBLOCKED){return false;}
+                    case GREENINTERSECT:
+                        if(GREENBLOCKED){return false;}
+                    case BLUEINTERSECT:
+                        if(BLUEBLOCKED){return false;}
+                }
+            }
         }
         return true;
     }
