@@ -205,6 +205,7 @@ public class Game {
                 ArrayList<String> cards = p.getFormattedCards();
                 pd.setVisibleCards(cards);
                 validPOV = true;
+                hiddenCards.add(p.getCardCount());
 
             }else
             {

@@ -41,13 +41,11 @@ public class Player {
         return _hand.size();
     }
 
-    /**
-     * TODO
-     */
     public ArrayList<String> getFormattedCards() {
-        return null;
+        ArrayList<String> formattedCards = new ArrayList<>();
+        for (Card card: _hand) formattedCards.add(card.getFormatted());
+        return formattedCards;
     }
-
 
     public Card getCartValueInIndexHand(int i){
         return _hand.get(i);
