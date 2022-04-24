@@ -68,7 +68,7 @@ public class LobbyManager {
 
         if (!lobby.getPendingInvites().contains(invitee)) lobby.addInvitee(invitee);
 
-        UpdateDTO updateDTO = new UpdateDTO(UpdateType.INVITE, String.format("{\"lobbyId\": %s}", lobbyID));
+        UpdateDTO updateDTO = new UpdateDTO(UpdateType.INVITE, String.format("{\"lobbyId\": %s, \"ownerName\": %s}", lobbyID, lobby.getOwner().getUsername()));
         updateController.sendUpdateToUser(playertoken, updateDTO);
     }
 

@@ -57,7 +57,7 @@ public class GameController {
         String auth = request.getHeader("Authorization");
         String playerToken = auth.substring(6);
         if (game.getPlayerByToken(playerToken) == null){
-            return null;
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not a player in this game.");
         }
         return game.gameState();
 
@@ -69,6 +69,7 @@ public class GameController {
     public PlayerData getPlayerHands(HttpServletRequest request, @PathVariable String gametoken) {
         User client = userService.checkIfLoggedIn(request);
         Game game = gameManager.getGameByToken(gametoken);
+        if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
 
         return game.getPlayerStates(client.getToken());
     }
@@ -85,7 +86,7 @@ public class GameController {
         Move move = new Move(movePutDTO.get_fromPos(), movePutDTO.get_toPos(), movePutDTO.get_fromPosInGoal(), movePutDTO.get_toPosInGoal(), movePutDTO.getCard(), movePutDTO.getToken(), movePutDTO.getColor());
 
         Game game = gameManager.getGameByToken(gametoken);
-        //if (game==null) then
+        if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
 
         try {
             game.playerMove(move);
