@@ -1215,7 +1215,7 @@ public class Board {
         // checking for blocked intersect
         ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
         ArrayList<Integer> blockIntersect = new ArrayList<>();
-        if(blockPos.size() < 0){
+        if(blockPos.size() > 0){
             for(int i = 0; i < blockPos.size(); i++){
                 if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
                     blockIntersect.add(blockPos.get(i));
@@ -1328,7 +1328,7 @@ public class Board {
         // checking for blocked intersect
         ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
         ArrayList<Integer> blockIntersect = new ArrayList<>();
-        if(blockPos.size() < 0){
+        if(blockPos.size() > 0){
             for(int i = 0; i < blockPos.size(); i++){
                 if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
                     blockIntersect.add(blockPos.get(i));
@@ -1413,7 +1413,7 @@ public class Board {
         // checking for blocked intersect
         ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
         ArrayList<Integer> blockIntersect = new ArrayList<>();
-        if(blockPos.size() < 0){
+        if(blockPos.size() > 0){
             for(int i = 0; i < blockPos.size(); i++){
                 if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
                     blockIntersect.add(blockPos.get(i));
@@ -1491,7 +1491,7 @@ public class Board {
             blockPos.addAll(getInbetweeners(startPos.get(i), endPos.get(i)));
         }
         ArrayList<Integer> blockIntersect = new ArrayList<>();
-        if(blockPos.size() < 0){
+        if(blockPos.size() > 0){
             for(int i = 0; i < blockPos.size(); i++){
                 if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
                     blockIntersect.add(blockPos.get(i));
@@ -1544,7 +1544,7 @@ public class Board {
         // checking for blocked intersect
         ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
         ArrayList<Integer> blockIntersect = new ArrayList<>();
-        if(blockPos.size() < 0){
+        if(blockPos.size() > 0){
             for(int i = 0; i < blockPos.size(); i++){
                 if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
                     blockIntersect.add(blockPos.get(i));
@@ -1612,7 +1612,7 @@ public class Board {
         // checking for blocked intersect
         ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
         ArrayList<Integer> blockIntersect = new ArrayList<>();
-        if(blockPos.size() < 0){
+        if(blockPos.size() > 0){
             for(int i = 0; i < blockPos.size(); i++){
                 if(blockPos.get(i) == REDINTERSECT || blockPos.get(i) == YELLOWINTERSECT || blockPos.get(i) == GREENINTERSECT || blockPos.get(i) == BLUEINTERSECT){
                     blockIntersect.add(blockPos.get(i));

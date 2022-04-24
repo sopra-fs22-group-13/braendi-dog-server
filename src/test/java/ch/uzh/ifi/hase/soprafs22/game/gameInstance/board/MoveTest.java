@@ -194,15 +194,6 @@ public class MoveTest {
 
     }
 
-    @Test
-    void startAceMove(){
-        //TODO
-    }
-
-    @Test
-    void goalAceMove(){
-        //TODO
-    }
 
     // test king moves
     @Test
