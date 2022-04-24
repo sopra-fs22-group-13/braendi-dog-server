@@ -112,7 +112,7 @@ public class LobbyManager {
 
         String gameToken = gameCreator.createGame(lobby);
 
-        String json = String.format("{gameToken: %s}", gameToken);
+        String json = String.format("{\"gameToken\": \"%s\"}", gameToken);
 
         updatePlayers(lobby, UpdateType.START, json);
     }
