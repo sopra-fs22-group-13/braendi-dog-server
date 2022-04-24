@@ -201,7 +201,7 @@ class GameTest {
         assertEquals("Bad move logic", exception.getMessage());
     }
 
-    //@Test
+    @Test
     void playerCallingMoveHasNotAValidMove() {
 
         COLOR colorOfCurrentPlayerTurn= _g.getCurrentTurn().getColor();
@@ -217,7 +217,7 @@ class GameTest {
         }
         String _token=users.get(indexOfCurrentPlayer).getToken() ;
 
-        Move  _move= generateMove(_token, true,colorOfCurrentPlayerTurn);
+        Move  _move= generateMove(_token, false,colorOfCurrentPlayerTurn);
 
         Player playerNotAbleToMove = _g.getCurrentTurn();
         _g.getCurrentTurn().removeAllCard();
@@ -226,10 +226,10 @@ class GameTest {
         try{_g.playerMove(_move);}
         catch (InvalidMoveException e){
         };
-        for (Player player: _g.getPlayers()){
-            assertNotEquals(playerNotAbleToMove,_g.getCurrentTurn());
+
+        assertNotEquals(playerNotAbleToMove,_g.getCurrentTurn());
             // most of the time it is a new player that has to move because the
-        }
+
     }
 
     void   playerMoveIsNotValidForThisUser(){

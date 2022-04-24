@@ -124,7 +124,7 @@ public class Game {
                 }
                 //remove card from player hand
                 _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,"NEW_TURN"));
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,String.format("{\"nextTurn\"}")));
                 nextTurns();
             }
 
@@ -138,7 +138,7 @@ public class Game {
         for (Player player:_players){
             if (_board.checkWinningCondition(player.getColor())) {
 
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, "WON :"+player.getColor()));
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, String.format("{\"win\": %s}", player.getColor())));
                 return;
             }
         }
@@ -151,14 +151,14 @@ public class Game {
         }
 
 
-        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD, "NEW_CARDS"));
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD, String.format("{\"newCards\"}")));
         //wait for a moment
 
         //because the next player with the ability to do something is not strictly the next player it is necessary to loop it through
 
         _indexWithCurrentTurn= findNextPlayer(_indexWithCurrentTurn);
 
-        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, "NEXT_TURN :"+_players.get(_indexWithCurrentTurn).getColor()));
+        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, String.format("{\"nextTurn\": %s}", _players.get(_indexWithCurrentTurn).getColor())));
     }
 
     /**

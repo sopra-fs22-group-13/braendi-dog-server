@@ -20,6 +20,7 @@ public class BoardIsMovePossibleTest {
 
     Board _b;
 
+    Card joker = new Card(CARDVALUE.JOKER, CARDTYPE.JOKER, CARDSUITE.CLUBS);
     Card king = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
     Card ace = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
     Card seven = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
@@ -56,6 +57,58 @@ public class BoardIsMovePossibleTest {
         while(actualblue.size() < 4) actualblue.add("NONE");
     }
 
+    public void emptyStartingPosition(){
+        try{
+
+            //create a simple move
+            ArrayList<Integer> from = new ArrayList<>();
+            ArrayList<Integer> to = new ArrayList<>();
+
+            ArrayList<Boolean> from_base = new ArrayList<>();
+            ArrayList<Boolean> to_base = new ArrayList<>();
+
+            _b.makeStartingMove(COLOR.RED);
+
+            from.add(0);
+            to.add(3);
+            from_base.add(false);
+            to_base.add(false);
+
+            Move move = new Move();
+            move.set_fromPos(from);
+            move.set_toPos(to);
+            move.set_fromPosInGoal(from_base);
+            move.set_toPosInGoal(to_base);
+
+            _b.makeMove(move);
+
+            _b.makeStartingMove(COLOR.RED);
+
+            to.clear();
+            to.add(54);
+            _b.makeMove(move);
+
+            _b.makeStartingMove(COLOR.RED);
+
+            to.clear();
+            to.add(41);
+            _b.makeMove(move);
+
+            _b.makeStartingMove(COLOR.RED);
+
+            to.clear();
+            to.add(28);
+            _b.makeMove(move);
+
+            _b.makeStartingMove(COLOR.BLUE);
+
+
+
+        }
+        catch (InvalidMoveException e) {
+            fail("Cannot generate StartBoardState");
+        }
+    }
     public void makeStartBoardState()
     {
         try {
@@ -133,7 +186,18 @@ public class BoardIsMovePossibleTest {
     {
         assertTrue(_b.isAnyMovePossible(king, COLOR.RED));
         assertTrue(_b.isAnyMovePossible(ace, COLOR.RED));
+        assertTrue(_b.isAnyMovePossible(joker, COLOR.RED));
     }
+
+    //@Test
+    public void noStartingMovePossibleAnymore()
+    {
+        emptyStartingPosition();
+        assertFalse(_b.isAnyMovePossible(king, COLOR.RED));
+
+    }
+
+
 
     @Test
     public void simpleMovePossible()
@@ -145,11 +209,6 @@ public class BoardIsMovePossibleTest {
         assertTrue(_b.isAnyMovePossible(seven, COLOR.RED));
     }
 
-    //@Test
-    public void test()
-    {
-
-    }
 
 
 
