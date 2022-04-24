@@ -124,7 +124,7 @@ public class Game {
                 }
                 //remove card from player hand
                 _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,null));
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,""));
                 nextTurns();
             }
 
@@ -151,7 +151,7 @@ public class Game {
         }
 
 
-        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD, null));
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD, ""));
         //wait for a moment
 
         //because the next player with the ability to do something is not strictly the next player it is necessary to loop it through
