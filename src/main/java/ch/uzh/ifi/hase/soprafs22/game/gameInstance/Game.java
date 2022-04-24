@@ -34,7 +34,7 @@ public class Game {
     private GameManager _manager;
     private Board _board;
     private UserManager _userManager;
-    private int[] _numberOfCardsInTurns = {7,6,5,4,3};
+    private int[] _numberOfCardsInTurns = {6,5,4,3,2};
     private int _indexOfHowManyCardToDeal;
 
     @Autowired
