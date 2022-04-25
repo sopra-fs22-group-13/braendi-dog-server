@@ -36,7 +36,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@SpringBootTest
 class GameTest {
 
     Game _g;
@@ -139,6 +139,7 @@ class GameTest {
     void clean(){
 
         //IMPORTANT: RESET THE SPRING CONTEXT FOR THE NEXT TESTS (in different files)
+
         SpringContext.resetSpringContextObject();
     }
 
