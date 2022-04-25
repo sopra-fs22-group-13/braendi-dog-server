@@ -57,7 +57,7 @@ public class BoardIsMovePossibleTest {
         while(actualblue.size() < 4) actualblue.add("NONE");
     }
 
-    public void emptyStartingPosition(){
+    public void blockedMovementForKing(){
         try{
 
             //create a simple move
@@ -192,10 +192,71 @@ public class BoardIsMovePossibleTest {
     //@Test
     public void noStartingMovePossibleAnymore()
     {
-        emptyStartingPosition();
+        blockedMovementForKing();
         assertFalse(_b.isAnyMovePossible(king, COLOR.RED));
+    }
+
+    //@Test
+    public void movementAce11(){
 
     }
+    //@Test
+    public void movementAce1() {
+    }
+
+    //@Test
+    public void movement2(){}
+
+    //@Test
+    public void movement3(){}
+    //@Test
+    public void movement5(){}
+    //@Test
+    public void movement6(){}
+    //@Test
+    public void movement8(){}
+    //@Test
+    public void movement9(){}
+    //@Test
+    public void movement10(){}
+    //@Test
+    public void movementQueen(){}
+
+    //@Test
+    public void movement7Normaleat(){}
+
+    //@Test
+    public void movement7Separate2(){}
+    //@Test
+    public void movement7Separate3(){}
+    //@Test
+    public void movement7Separate4(){}
+
+    //@Test
+    public void movement7Separate1Eat(){}
+
+    //@Test
+    public void movement7Separate2Eat(){}
+
+    //@Test
+    public void movement7Separate3Eat(){}
+
+    //@Test
+    public void movement7Separate4Eat(){}
+
+    //@Test
+    public void  swapJack(){}
+
+    public void swapJackNotPossible(){}
+
+
+    //@Test
+    public void movementToEat1(){
+
+    }
+
+
+
 
 
 

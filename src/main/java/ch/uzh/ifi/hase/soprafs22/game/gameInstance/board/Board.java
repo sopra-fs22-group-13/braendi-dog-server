@@ -1208,7 +1208,7 @@ public class Board implements IBoard {
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
         int moveDist = getDistanceInBetween(startPos, endPos);
-        if (moveDist != 1 || moveDist != 11) {
+        if (moveDist != 1 && moveDist != 11) {
             return false;
         }
 
@@ -1693,5 +1693,21 @@ public class Board implements IBoard {
             }
         }
         return true;
+    }
+
+    //for Test
+    public int getCountStartingMove(){
+
+        return 0;
+    }
+    //for Test
+    public int getCountJackMove(){
+
+        return 0;
+    }
+    //for Test
+    public int getCountNormalMove(){
+
+        return 0;
     }
 }

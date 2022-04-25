@@ -74,7 +74,7 @@ public class MoveTest {
         assertFalse(move.checkIfComplete());
     }
 
-    // @Test
+    @Test
     void validAceStart() {
         _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -92,7 +92,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void invalidAceStart() {
         _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -110,7 +110,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void validAceMove() {
         _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -138,7 +138,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void invalidAceMove() {
         _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -166,7 +166,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void validAceToGoal() {
         _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -201,7 +201,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void invalidAceToGoal() {
         _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -235,7 +235,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void validAceFromToGoal() {
         _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -261,7 +261,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void invalidAceFromToGoal() {
         _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -289,7 +289,7 @@ public class MoveTest {
     }
 
     // test king moves
-    // @Test
+    @Test
     void validKingStart() {
         _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -307,7 +307,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void invalidKingStart() {
         _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -326,7 +326,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void validKingMove() {
         _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -346,7 +346,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void invalidKingMove() {
         _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -374,7 +374,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void validKingToGoal() {
         _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -382,13 +382,13 @@ public class MoveTest {
         try {
             board.makeStartingMove(COLOR.RED); // move marble to start
             fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(52));
+            toPos = new ArrayList<>(Arrays.asList(51));
             fromPosInGoal = new ArrayList<>(Arrays.asList(false));
             toPosInGoal = new ArrayList<>(Arrays.asList(false));
             move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
             board.makeMove(move); // move marble into position
 
-            fromPos = new ArrayList<>(Arrays.asList(52));
+            fromPos = new ArrayList<>(Arrays.asList(51));
             toPos = new ArrayList<>(Arrays.asList(0));
             fromPosInGoal = new ArrayList<>(Arrays.asList(false));
             toPosInGoal = new ArrayList<>(Arrays.asList(true));
@@ -399,7 +399,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void invalidKingToGoal() {
         _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -432,7 +432,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void invalidKingFromToGoal() {
         _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -543,7 +543,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void validSevenToGoal() {
         _card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -608,7 +608,7 @@ public class MoveTest {
     }
 
     // testing four moves
-    // @Test
+    @Test
     void validFourMove() {
         _card = new Card(CARDVALUE.FOUR, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -634,7 +634,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void validFourToGoal() {
         _card = new Card(CARDVALUE.FOUR, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -654,7 +654,7 @@ public class MoveTest {
     }
 
     // testing regular moves
-    // @Test
+    @Test
     void validRegularMove() {
         _color = COLOR.RED;
         try {
@@ -736,7 +736,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void validRegularToGoal() {
         _color = COLOR.RED;
         try {
@@ -854,7 +854,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void validRegularFromToGoal() {
         _color = COLOR.RED;
         try {
