@@ -14,4 +14,8 @@ public interface IBoard {
     void makeSwitch(int start, int end) throws InvalidMoveException;
     boolean isAnyMovePossible(Card card, COLOR col);
     boolean isValidMove(Move move) throws InvalidMoveException;
+    int getCountStartingMove();
+    int getCountJackMove();
+    int getCountNormalMove();
+
 }
