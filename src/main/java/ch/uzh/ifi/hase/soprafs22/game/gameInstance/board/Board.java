@@ -1720,4 +1720,20 @@ public class Board implements IBoard {
         }
         return true;
     }
+
+    //for Test
+    public int getCountStartingMove(){
+
+        return 0;
+    }
+    //for Test
+    public int getCountJackMove(){
+
+        return 0;
+    }
+    //for Test
+    public int getCountNormalMove(){
+
+        return 0;
+    }
 }

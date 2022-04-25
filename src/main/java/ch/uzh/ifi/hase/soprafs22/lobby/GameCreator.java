@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.Game;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GameCreator {
@@ -14,10 +15,11 @@ public class GameCreator {
         GameManager manager= GameManager.getInstance();
         List<User> users =lobby.getPlayers();
         ArrayList<User> users1= new ArrayList<>();
-        //what?? TODO
+
         for (User user: users){
             users1.add(user);
         }
+        Collections.shuffle(users1);
         Game newGame =  new Game(users1);
         manager.addGame(newGame);
 
