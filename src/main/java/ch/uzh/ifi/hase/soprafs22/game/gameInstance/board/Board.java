@@ -823,6 +823,7 @@ public class Board implements IBoard {
         }
 
         // try joker move
+        //TODO
         if (card.getValue() == CARDVALUE.JOKER) {
 
             ArrayList<CARDVALUE> allValues = new ArrayList<>(Arrays.asList(CARDVALUE.values()));
@@ -1159,12 +1160,13 @@ public class Board implements IBoard {
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor;
         try {
-            if (startPos != -1) {
+            if (startPos != -1 && !move.isGoalMove()) {
                 marbleColor = this.getColorFromPosition(startPos);
             } else {
                 marbleColor = move.get_color();
             }
         } catch (Exception e) {
+            System.out.println(e);
             throw new NoMarbleException();
         }
         // check if marble color is the same as move color
@@ -1204,7 +1206,7 @@ public class Board implements IBoard {
         }
         // validate for goal move
         if (move.isGoalMove()) {
-            boolean startInGoal = !move.get_fromPosInGoal().get(0);
+            boolean startInGoal = move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
         int moveDist = getDistanceInBetween(startPos, endPos);
@@ -1319,7 +1321,7 @@ public class Board implements IBoard {
         }
         // validate for goal move
         if (move.isGoalMove()) {
-            boolean startInGoal = !move.get_fromPosInGoal().get(0);
+            boolean startInGoal = move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
         // TODO joker behaviour unclear yet, can be any card: need to define behaviour
@@ -1401,7 +1403,7 @@ public class Board implements IBoard {
         }
         // validate for goal move
         if (move.isGoalMove()) {
-            boolean startInGoal = !move.get_fromPosInGoal().get(0);
+            boolean startInGoal = move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
         // check if distance is valid for the card
@@ -1466,8 +1468,18 @@ public class Board implements IBoard {
             }
         }
         int moveDist = 0;
-        for (int i = 0; i < startPos.size(); i++) {
-            moveDist += getDistanceInBetween(startPos.get(i), endPos.get(i));
+        if(move.isGoalMove()){
+            for (int i = 0; i < startPos.size(); i++) {
+                if(move.get_fromPosInGoal().get(i)){
+                    moveDist += getDistanceInBetween(startPos.get(i), endPos.get(i), marbleColor.get(i), true);
+                }else{
+                    moveDist += getDistanceInBetween(startPos.get(i), endPos.get(i), marbleColor.get(i), false);
+                }
+            }
+        }else{
+            for (int i = 0; i < startPos.size(); i++) {
+                moveDist += getDistanceInBetween(startPos.get(i), endPos.get(i));
+            }
         }
         if (moveDist != 7) {
             return false;
@@ -1530,14 +1542,18 @@ public class Board implements IBoard {
         if (marbleColor != move.get_color()) {
             return false;
         }
+        // check if distance is valid for the card
         int moveDistForward = getDistanceInBetween(startPos, endPos, true);
         int moveDistBackward = getDistanceInBetween(startPos, endPos, false);
-        if (moveDistForward != 4 || moveDistBackward != 4) {
+        if(move.isGoalMove()){
+            moveDistForward = getDistanceInBetween(startPos, endPos, marbleColor, false);
+        }
+        if (moveDistForward != 4 && moveDistBackward != 4) {
             return false;
         }
         // validate for goal move
         if (move.isGoalMove()) {
-            boolean startInGoal = !move.get_fromPosInGoal().get(0);
+            boolean startInGoal = move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
 
@@ -1574,10 +1590,11 @@ public class Board implements IBoard {
         Card moveCard = move.get_card();
         COLOR marbleColor;
         try {
-            if (startPos == -1) {
-                return false;
+            if (startPos != -1 && !move.isGoalMove()) {
+                marbleColor = this.getColorFromPosition(startPos);
+            } else {
+                marbleColor = move.get_color();
             }
-            marbleColor = this.getColorFromPosition(startPos);
         } catch (Exception e) {
             throw new NoMarbleException();
         }
@@ -1586,6 +1603,13 @@ public class Board implements IBoard {
             return false;
         }
         int moveDist = getDistanceInBetween(startPos, endPos);
+        if(move.isGoalMove()){
+            if(move.get_fromPosInGoal().get(0)){
+                moveDist = getDistanceInBetween(startPos, endPos, marbleColor, true);
+            }else{
+                moveDist = getDistanceInBetween(startPos, endPos, marbleColor, false);
+            }
+        }
         switch (moveCard.getValue()) {
             case TWO:
                 return moveDist == 2;
@@ -1606,7 +1630,7 @@ public class Board implements IBoard {
         }
         // validate for goal move
         if (move.isGoalMove()) {
-            boolean startInGoal = !move.get_fromPosInGoal().get(0);
+            boolean startInGoal = move.get_fromPosInGoal().get(0);
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
 
@@ -1643,7 +1667,7 @@ public class Board implements IBoard {
      * @return true if the move can enter the goal
      */
     private boolean isValidGoalMove(int startPos, int endPos, boolean startPosInGoal, COLOR color) {
-        int moveDist = getDistanceInBetween(startPos, endPos);
+        int moveDist = getDistanceInBetween(startPos, endPos, color, startPosInGoal);
         // get intersect and goal depending on marble color
         int intersect = -1;
         ArrayList<MARBLE> goal = new ArrayList<>();
@@ -1666,8 +1690,10 @@ public class Board implements IBoard {
                 break;
         }
         // check if intersect can be reached or startPos is in goal
-        if (moveDist < getDistanceInBetween(startPos, intersect) && !startPosInGoal) {
-            return false;
+        if (!startPosInGoal) {
+            if(moveDist < getDistanceInBetween(startPos, intersect)){
+                return false;
+            }
         }
         if (startPosInGoal) {
             // check if goal can be reached from inside goal
@@ -1675,7 +1701,7 @@ public class Board implements IBoard {
                 return false;
             }
             // check if there is a marble between startPos and endPos in goal
-            for (int i = startPos; i <= endPos; i++) {
+            for (int i = startPos + 1; i <= endPos; i++) {
                 if (goal.get(i) != MARBLE.NONE) {
                     return false;
                 }
