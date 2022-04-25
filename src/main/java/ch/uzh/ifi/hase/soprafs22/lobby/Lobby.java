@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs22.lobby;
 
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,7 +20,6 @@ public class Lobby {
     /**
      * decided to implement the list of users in a lobby as a single list with a fixed length instead of 4 separate entries.
      * owner still has its own entry, but will be added automatically to the list on creation.
-     * while this implementation definitely has its own flaws, I still think it's a bit cleaner, makes some methods a bit easier to implement and easier to maintain
      */
     private List<User> players = Arrays.asList(new User[4]);
 
@@ -40,8 +41,8 @@ public class Lobby {
      *
      * @return player number: int
      * returns the player number. the third player in a lobby is player Nr.3
-     * @throws null
-     * currently doesn't throw anything at all. definitely should though
+     * @throws ResponseStatusException
+     * throws an error if the lobby is already full
      */
     public int addPlayer(User newPlayer) {
         for (int i=0; i < players.size(); i++) {
@@ -51,7 +52,7 @@ public class Lobby {
                 return i+1;
             }
         }
-        return -1;
+        throw new ResponseStatusException(HttpStatus.CONFLICT, "This lobby is already full.");
     }
 
     public void addInvitee(User invitee) {

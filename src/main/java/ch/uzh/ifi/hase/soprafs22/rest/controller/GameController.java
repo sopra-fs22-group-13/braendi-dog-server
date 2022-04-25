@@ -74,11 +74,6 @@ public class GameController {
         return game.getPlayerStates(client.getToken());
     }
 
-    /**TODO
-     * authentication check pls
-     * @param gametoken
-     * @param movePutDTO
-     */
     @PutMapping("/game/{gametoken}/board")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

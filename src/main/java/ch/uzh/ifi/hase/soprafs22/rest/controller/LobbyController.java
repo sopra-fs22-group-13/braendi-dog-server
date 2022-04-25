@@ -44,6 +44,7 @@ public class LobbyController {
         for (User user: lobby.getPlayers()) {
             if (Objects.equals(user.getToken(), client.getToken())) {
                 inLobby = true;
+                break;
             }
         }
         if (!inLobby) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not in this lobby.");

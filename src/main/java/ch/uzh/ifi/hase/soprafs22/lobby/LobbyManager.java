@@ -27,7 +27,7 @@ public class LobbyManager {
 
     public Integer openLobby(String usertoken) {
         User owner = userRepository.findByToken(usertoken);
-        //if (owner == null) { throw an exception }
+        if (owner == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't create lobby because couldn't find owner.");
 
         Lobby newLobby = new Lobby(owner);
         openLobbies.add(newLobby);
@@ -56,10 +56,6 @@ public class LobbyManager {
     public void invitePlayer(Integer lobbyID, String ownerToken, String playertoken) throws ResponseStatusException{
         Lobby lobby = getLobbyByID(lobbyID);
 
-        /** TODO
-         * test this shit pls
-         * maybe write own exceptions
-         */
         if (lobby == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The lobby you want to join doesn't exist (anymore)");
         if (!Objects.equals(lobby.getOwner().getToken(), ownerToken)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You need to be the lobby owner in order to invite other players");
 
@@ -93,11 +89,6 @@ public class LobbyManager {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "You have not been invited to this lobby");
     }
 
-    /**
-     * Not sure what getLobbyInfo() (see class diagram) was initially intended for.
-     * I can't think of a case where it would be easier to get some formatted bundle of data instead of just the lobby object.
-     * Feel free to adjust this if needed (I'm the one who writes the REST anyway, lol)
-     */
     public Lobby getLobbyByID(Integer id) {
         for (Lobby lobby: openLobbies) {
             if (lobby.getId() == id) return lobby;
@@ -122,10 +113,6 @@ public class LobbyManager {
     }
 
     private void updatePlayers(Lobby lobby, UpdateType updateType, String message) {
-        /**
-         * The way I understand how the Update stuff works, the message would need to be JSON-formatted.
-         * Not sure if it would make sense to actually send a message here (given that an empty string works at all)
-         */
         UpdateDTO updateDTO = new UpdateDTO(updateType, message);
 
         for (User player: lobby.getPlayers()) updateController.sendUpdateToUser(player.getToken(), updateDTO);
