@@ -17,6 +17,79 @@ public class Card {
         this.suite = suite;
     }
 
+    public Card(String card){
+        if(card.equals("JOKER")){
+            this.value = CARDVALUE.JOKER;
+            this.type = CARDTYPE.JOKER;
+            this.suite = null;
+        }else{
+            String[] splitString = card.split("");
+            switch(splitString[0]){
+                case "C":
+                    this.suite = CARDSUITE.CLUBS;
+                    break;
+                case "D":
+                    this.suite = CARDSUITE.DIAMOND;
+                    break;
+                case "H":
+                    this.suite = CARDSUITE.HEARTS;
+                    break;
+                case "S":
+                    this.suite = CARDSUITE.SPADES;
+                    break;
+                default:
+                    this.suite = null;
+                    break;
+            }
+            switch(splitString[1]){
+                case "2":
+                    this.value = CARDVALUE.TWO;
+                    break;
+                case "3":
+                    this.value = CARDVALUE.THREE;
+                    break;
+                case "4":
+                    this.value = CARDVALUE.FOUR;
+                    break;
+                case "5":
+                    this.value = CARDVALUE.FIVE;
+                    break;
+                case "6":
+                    this.value = CARDVALUE.SIX;
+                    break;
+                case "7":
+                    this.value = CARDVALUE.SEVEN;
+                    break;
+                case "8":
+                    this.value = CARDVALUE.EIGHT;
+                    break;
+                case "9":
+                    this.value = CARDVALUE.NINE;
+                    break;
+                case "10":
+                    this.value = CARDVALUE.TEN;
+                    break;
+                case "J":
+                    this.value = CARDVALUE.JACK;
+                    break;
+                case "Q":
+                    this.value = CARDVALUE.QUEEN;
+                    break;
+                case "K":
+                    this.value = CARDVALUE.KING;
+                    break;
+                case "A":
+                    this.value = CARDVALUE.ACE;
+                    break;
+                default:
+                    this.value = null;
+                    break;
+            }
+            this.type = CARDTYPE.DEFAULT;
+        }
+
+    }
+
     // gets the move distance depending on the move
     public int getCorrespondingMoveDistance() {
         
