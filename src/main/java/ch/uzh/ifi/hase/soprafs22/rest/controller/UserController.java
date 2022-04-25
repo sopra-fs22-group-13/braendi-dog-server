@@ -78,7 +78,7 @@ public class UserController {
         response.addHeader("Access-Control-Expose-Headers", "Authorization"); //allows the Auth header to be seen
         response.addHeader("Authorization", "Basic " + loginUser.getToken());
         // convert internal representation of user back to API
-        
+
 
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loginUser);
     }

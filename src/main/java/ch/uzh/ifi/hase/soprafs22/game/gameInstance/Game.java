@@ -9,6 +9,7 @@ import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.Board;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.IBoard;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.CardStack;
@@ -32,16 +33,19 @@ public class Game {
     private CardStack _cardStack;
     private String _gameToken;
     private GameManager _manager;
-    private Board _board;
+    private IBoard _board;
     private UserManager _userManager;
-    private int[] _numberOfCardsInTurns = {7,6,5,4,3};
+    private int[] _numberOfCardsInTurns = {6,5,4,3,2};
     private int _indexOfHowManyCardToDeal;
 
     @Autowired
     private UserService _user;
 
     public Game(ArrayList<User> users){
+        Setup(users);
+    }
 
+    private void Setup(ArrayList<User> users){
         Random rand = new Random();
         this._players= new ArrayList<>();
         this._players.add(new Player(COLOR.RED));
@@ -62,8 +66,12 @@ public class Game {
         this._manager= GameManager.getInstance();
 
         this._userManager= new UserManager(_players,users);
+    }
 
-
+    public Game(ArrayList<User> users, IBoard boardObj)
+    {
+        Setup(users);
+        this._board = boardObj;
     }
 
     public Game(){
@@ -124,7 +132,7 @@ public class Game {
                 }
                 //remove card from player hand
                 _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,"NEW_TURN"));
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,""));
                 nextTurns();
             }
 
@@ -138,7 +146,7 @@ public class Game {
         for (Player player:_players){
             if (_board.checkWinningCondition(player.getColor())) {
 
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, "WON :"+player.getColor()));
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, String.format("{\"win\": %s}", player.getColor())));
                 return;
             }
         }
@@ -151,14 +159,14 @@ public class Game {
         }
 
 
-        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD, "NEW_CARDS"));
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD, ""));
         //wait for a moment
 
         //because the next player with the ability to do something is not strictly the next player it is necessary to loop it through
 
         _indexWithCurrentTurn= findNextPlayer(_indexWithCurrentTurn);
 
-        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, "NEXT_TURN :"+_players.get(_indexWithCurrentTurn).getColor()));
+        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, String.format("{\"nextTurn\": %s}", _players.get(_indexWithCurrentTurn).getColor())));
     }
 
     /**

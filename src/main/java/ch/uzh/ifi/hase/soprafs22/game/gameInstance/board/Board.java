@@ -12,7 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Board {
+public class Board implements IBoard {
     private ArrayList<MARBLE> _mainCircle = new ArrayList<>();
 
     private ArrayList<MARBLE> _redGoal = new ArrayList<>();

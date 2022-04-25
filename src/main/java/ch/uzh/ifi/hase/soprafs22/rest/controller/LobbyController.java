@@ -39,9 +39,14 @@ public class LobbyController {
     public LobbyData getLobby(HttpServletRequest request, @PathVariable Integer lobbyID) {
         User client = userService.checkIfLoggedIn(request);
         Lobby lobby = lobbyManager.getLobbyByID(lobbyID);
-        if (!lobby.getPlayers().contains(client)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not in this lobby.");
+
+        boolean inLobby = false;
+        for (User user: lobby.getPlayers()) {
+            if (Objects.equals(user.getToken(), client.getToken())) {
+                inLobby = true;
+            }
         }
+        if (!inLobby) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not in this lobby.");
 
         LobbyData lobbyData = new LobbyData(lobby.getPlayers());
         if (lobbyData.getUserIDs().size() != lobbyData.getUsernames().size()) {
@@ -56,7 +61,6 @@ public class LobbyController {
     @ResponseBody
     public LobbyGetDTO createLobby(HttpServletRequest request) {
         User user = userService.checkIfLoggedIn(request);
-        if (user==null) return null;
         if (user.isInLobby()) throw new ResponseStatusException(HttpStatus.CONFLICT, "You are already in a lobby.");
 
         int lobbyID = lobbyManager.openLobby(user.getToken());
