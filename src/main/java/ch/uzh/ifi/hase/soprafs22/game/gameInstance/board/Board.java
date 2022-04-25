@@ -1208,7 +1208,7 @@ public class Board implements IBoard {
             return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
         }
         int moveDist = getDistanceInBetween(startPos, endPos);
-        if (moveDist != 1 || moveDist != 11) {
+        if (moveDist != 1 && moveDist != 11) {
             return false;
         }
 
