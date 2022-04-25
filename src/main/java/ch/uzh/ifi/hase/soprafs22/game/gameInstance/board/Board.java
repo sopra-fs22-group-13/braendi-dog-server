@@ -466,7 +466,23 @@ public class Board implements IBoard {
             int toPos = move.get_toPos().get(i);
             boolean startsInGoal = move.get_fromPosInGoal().get(i);
             boolean endsInGoal = move.get_toPosInGoal().get(i);
-
+            // unblock if it was on an intersection
+            if(!startsInGoal){
+                switch(fromPos){
+                    case REDINTERSECT:
+                        REDBLOCKED = false;
+                        break;
+                    case GREENINTERSECT:
+                        GREENBLOCKED = false;
+                        break;
+                    case BLUEINTERSECT:
+                        BLUEBLOCKED = false;
+                        break;
+                    case YELLOWINTERSECT:
+                        YELLOWBLOCKED = false;
+                        break;
+                }
+            }
             // do the move
             if (endsInGoal) {
                 movePositions(fromPos, toPos, move.get_color(), startsInGoal,
@@ -496,6 +512,7 @@ public class Board implements IBoard {
 
                     _redBase = _redBase - 1;
                     setMarbleAtPosition(REDINTERSECT, MARBLE.RED);
+                    REDBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
@@ -507,6 +524,7 @@ public class Board implements IBoard {
 
                     _yellowBase = _yellowBase - 1;
                     setMarbleAtPosition(YELLOWINTERSECT, MARBLE.YELLOW);
+                    YELLOWBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
@@ -518,6 +536,7 @@ public class Board implements IBoard {
 
                     _greenBase = _greenBase - 1;
                     setMarbleAtPosition(GREENINTERSECT, MARBLE.GREEN);
+                    GREENBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
@@ -529,6 +548,7 @@ public class Board implements IBoard {
 
                     _blueBase = _blueBase - 1;
                     setMarbleAtPosition(BLUEINTERSECT, MARBLE.BLUE);
+                    BLUEBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
