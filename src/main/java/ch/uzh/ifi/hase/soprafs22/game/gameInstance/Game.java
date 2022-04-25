@@ -46,7 +46,6 @@ public class Game {
     }
 
     private void Setup(ArrayList<User> users){
-        Random rand = new Random();
         this._players= new ArrayList<>();
         this._players.add(new Player(COLOR.RED));
         this._players.add(new Player(COLOR.YELLOW));
@@ -56,7 +55,7 @@ public class Game {
         this._board= new Board();
         this._indexOfHowManyCardToDeal =0;
         this.removeAndDealNewCards();
-        this._indexWithCurrentTurn= rand.nextInt(4);
+        this._indexWithCurrentTurn = 2;
         this._playersWithValidTurns = new ArrayList();
         for (int i = 0; i < 4; i++) {
             _playersWithValidTurns.add(false);
@@ -67,7 +66,6 @@ public class Game {
 
         this._userManager= new UserManager(_players,users);
 
-        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, String.format("{\"turn\": %s}", _players.get(_indexWithCurrentTurn).getColor())));
     }
 
     public Game(ArrayList<User> users, IBoard boardObj)
@@ -144,7 +142,7 @@ public class Game {
         for (Player player:_players){
             if (_board.checkWinningCondition(player.getColor())) {
 
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, String.format("{\"win\": %s}", player.getColor())));
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, String.format("{\"win\": \"%s\"}", player.getColor())));
                 return;
             }
         }
@@ -165,7 +163,7 @@ public class Game {
            nextTurns();
         }while(!_playersWithValidTurns.get(_indexWithCurrentTurn));
 
-        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, String.format("{\"nextTurn\": %s}", _players.get(_indexWithCurrentTurn).getColor())));
+        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, String.format("{\"turn\": \"%s\"}", _players.get(_indexWithCurrentTurn).getColor())));
     }
 
     /**
