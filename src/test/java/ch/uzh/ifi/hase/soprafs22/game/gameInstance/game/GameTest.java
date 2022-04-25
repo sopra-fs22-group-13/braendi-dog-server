@@ -225,6 +225,7 @@ class GameTest {
 
         try{_g.playerMove(_move);}
         catch (InvalidMoveException e){
+            fail();
         };
 
         assertNotEquals(playerNotAbleToMove,_g.getCurrentTurn());

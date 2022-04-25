@@ -9,6 +9,7 @@ import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.Board;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.IBoard;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.CardStack;
@@ -32,7 +33,7 @@ public class Game {
     private CardStack _cardStack;
     private String _gameToken;
     private GameManager _manager;
-    private Board _board;
+    private IBoard _board;
     private UserManager _userManager;
     private int[] _numberOfCardsInTurns = {6,5,4,3,2};
     private int _indexOfHowManyCardToDeal;
@@ -41,7 +42,10 @@ public class Game {
     private UserService _user;
 
     public Game(ArrayList<User> users){
+        Setup(users);
+    }
 
+    private void Setup(ArrayList<User> users){
         Random rand = new Random();
         this._players= new ArrayList<>();
         this._players.add(new Player(COLOR.RED));
@@ -62,8 +66,12 @@ public class Game {
         this._manager= GameManager.getInstance();
 
         this._userManager= new UserManager(_players,users);
+    }
 
-
+    public Game(ArrayList<User> users, IBoard boardObj)
+    {
+        Setup(users);
+        this._board = boardObj;
     }
 
     public Game(){
