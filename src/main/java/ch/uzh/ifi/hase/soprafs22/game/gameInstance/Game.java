@@ -66,6 +66,8 @@ public class Game {
         this._manager= GameManager.getInstance();
 
         this._userManager= new UserManager(_players,users);
+
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, String.format("{\"turn\": %s}", _players.get(_indexWithCurrentTurn).getColor())));
     }
 
     public Game(ArrayList<User> users, IBoard boardObj)
