@@ -1542,6 +1542,7 @@ public class Board implements IBoard {
         }
 
         // checking for blocked intersect
+        //TODO getInbetweeners does not work for backwards moves yet --> switch startPos and endPos when going backwards
         ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
         ArrayList<Integer> blockIntersect = new ArrayList<>();
         if(blockPos.size() > 0){
