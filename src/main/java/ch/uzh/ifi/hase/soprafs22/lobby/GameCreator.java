@@ -14,7 +14,7 @@ public class GameCreator {
         GameManager manager= GameManager.getInstance();
         List<User> users =lobby.getPlayers();
         ArrayList<User> users1= new ArrayList<>();
-        //what?? TODO
+
         for (User user: users){
             users1.add(user);
         }

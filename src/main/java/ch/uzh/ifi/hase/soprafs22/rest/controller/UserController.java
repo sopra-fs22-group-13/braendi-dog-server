@@ -34,9 +34,7 @@ public class UserController {
   @ResponseBody
   public List<UserGetDTO> getAllUsers( HttpServletRequest request) {
 
-    if(userService.checkIfLoggedIn(request) == null){
-        return null;
-    }
+    userService.checkIfLoggedIn(request);
 
     // fetch all users in the internal representation
     List<User> users = userService.getUsers();
