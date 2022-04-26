@@ -16,6 +16,9 @@ import java.util.UUID;
  * Class that has common functions for creating and deleting voice chats with 4 members.
  */
 public class VoiceChatCreator {
+
+    private static VoiceChatCreator instance = null;
+
     private final UserManager userManager = new UserManager();
     private final RoomManager roomManager = new RoomManager();
 
@@ -25,6 +28,17 @@ public class VoiceChatCreator {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
+    public static VoiceChatCreator getInstance()
+    {
+        if(instance == null)
+        {
+            instance = new VoiceChatCreator();
+        }
+        return instance;
+    }
+
+    private VoiceChatCreator(){}
+
     /**
      * Creats a room with 4 players
      * @param gametoken the gameToken to reference later for deletion (if the VoiceRoom object is lost)
@@ -32,6 +46,11 @@ public class VoiceChatCreator {
      */
     public VoiceRoom createRoomWithPlayers(String gametoken)
     {
+        if(!new ApiAuth().vcEnabled())
+        {
+            return null;
+        }
+
         VoiceRoom vr =  new VoiceRoom();
         try {
             //create room

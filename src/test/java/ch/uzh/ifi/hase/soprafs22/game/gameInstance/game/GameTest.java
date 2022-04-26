@@ -171,10 +171,9 @@ class GameTest {
     @Test
     void getPlayers_Test(){
         assertEquals(COLOR.RED,_g.getPlayerByToken(users.get(0).getToken()).getColor());
-        assertEquals(COLOR.YELLOW,_g.getPlayerByToken(users.get(1).getToken()).getColor());
+        assertEquals(COLOR.BLUE,_g.getPlayerByToken(users.get(1).getToken()).getColor());
         assertEquals(COLOR.GREEN,_g.getPlayerByToken(users.get(2).getToken()).getColor());
-        assertEquals(COLOR.BLUE,_g.getPlayerByToken(users.get(3).getToken()).getColor());
-
+        assertEquals(COLOR.YELLOW,_g.getPlayerByToken(users.get(3).getToken()).getColor());
     }
 
     @Test
@@ -243,7 +242,7 @@ class GameTest {
         int indexOfCurrentPlayer;
         if (colorOfCurrentPlayerTurn == COLOR.RED){
             indexOfCurrentPlayer=1;
-        }else if (colorOfCurrentPlayerTurn == COLOR.YELLOW){
+        }else if (colorOfCurrentPlayerTurn == COLOR.BLUE){
             indexOfCurrentPlayer=2;
         }else if (colorOfCurrentPlayerTurn == COLOR.GREEN){
             indexOfCurrentPlayer=3;

@@ -7,5 +7,6 @@ public enum UpdateType {
     START,
     WIN,
     LOBBY,
-    INVITE
+    INVITE,
+    VOICE
 }

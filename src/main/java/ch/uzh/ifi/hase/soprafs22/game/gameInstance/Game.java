@@ -18,6 +18,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
+import ch.uzh.ifi.hase.soprafs22.voicechat.VoiceChatCreator;
 import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
 import com.fasterxml.jackson.databind.util.JSONPObject;
@@ -42,10 +43,11 @@ public class Game {
     private UserService _user;
 
     public Game(ArrayList<User> users){
-        Setup(users);
+        setup(users);
+        makeFirstMoveValid();
     }
 
-    private void Setup(ArrayList<User> users){
+    private void setup(ArrayList<User> users){
         this._players= new ArrayList<>();
         this._players.add(new Player(COLOR.RED));
         this._players.add(new Player(COLOR.BLUE));
@@ -65,7 +67,10 @@ public class Game {
         this._manager= GameManager.getInstance();
 
         this._userManager= new UserManager(_players,users);
+    }
 
+    private void makeFirstMoveValid()
+    {
         //play some invalid move. like this we update the turns etc.
         // check if someone has a valid turn
         updateValidTurnAllPlayers();
@@ -79,13 +84,13 @@ public class Game {
         }
 
         removeInvalidTurnCards();
-
     }
 
     public Game(ArrayList<User> users, IBoard boardObj)
     {
-        Setup(users);
+        setup(users);
         this._board = boardObj;
+        makeFirstMoveValid();
     }
 
     public Game(){
@@ -162,8 +167,10 @@ public class Game {
             if (_board.checkWinningCondition(player.getColor())) {
 
                 _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, String.format("{\"win\": \"%s\"}", player.getColor())));
-                return;
+
                 //todo decusctruction Sandro
+                VoiceChatCreator.getInstance().destroyRoomWithPlayers(_gameToken);
+                return;
 
             }
         }

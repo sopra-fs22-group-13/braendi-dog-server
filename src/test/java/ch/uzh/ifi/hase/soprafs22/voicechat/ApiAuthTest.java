@@ -10,10 +10,13 @@ class ApiAuthTest {
     void getKeyProp() {
         System.setProperty("api.key", "APIKEYVALUE");
         System.setProperty("api.url", "APIURLVALUE");
+        System.setProperty("api.enabled", "True");
+
 
         ApiAuth apiAuth = new ApiAuth();
         assertEquals("APIKEYVALUE", apiAuth.getKey());
         assertEquals("APIURLVALUE", apiAuth.getId());
+        assertTrue(apiAuth.vcEnabled());
     }
 
     @Test
@@ -21,6 +24,8 @@ class ApiAuthTest {
         ApiAuth apiAuth = new ApiAuth();
         assertEquals("key", apiAuth.getKey());
         assertEquals("url", apiAuth.getId());
+        assertFalse(apiAuth.vcEnabled());
+
     }
 
 }

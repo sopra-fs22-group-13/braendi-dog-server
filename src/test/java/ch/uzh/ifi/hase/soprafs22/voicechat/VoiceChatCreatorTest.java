@@ -32,7 +32,7 @@ class VoiceChatCreatorTest {
     @Mock
     HttpURLConnection connection;
 
-    VoiceChatCreator voiceChatCreator = Mockito.spy(new VoiceChatCreator());
+    VoiceChatCreator voiceChatCreator = Mockito.spy(VoiceChatCreator.getInstance());
 
     @BeforeEach
     void setup()
