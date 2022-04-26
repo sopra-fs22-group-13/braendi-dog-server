@@ -123,8 +123,17 @@ public class Game {
         catch (NullPointerException e){
             throw new InvalidMoveException("Move Not allowed", "Bad token");}
 
-        if (!checkValidTurns(move, playerWantToMove)||move.get_color()!=playerWantToMove.getColor()) {
-            throw new InvalidMoveException("Move Not allowed", "Bad move logic");
+        if (!checkValidTurns(move, playerWantToMove)) {
+            throw new InvalidMoveException("Move Not allowed", "Wrong move formation");
+        }
+
+        if (move.get_color()!=playerWantToMove.getColor()) {
+            throw new InvalidMoveException("Move Not allowed", "You want to move the wrong marble");
+        }
+
+
+        if (!playerWantToMove.isCardAvailable(move.get_card())){
+            throw new InvalidMoveException("Move Not allowed", "Card is not in hand");
         }
 
         // check if someone has a valid turn
@@ -162,8 +171,10 @@ public class Game {
             if (_board.checkWinningCondition(player.getColor())) {
 
                 _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, String.format("{\"win\": \"%s\"}", player.getColor())));
+
+                _manager.deleteGame(_gameToken);
                 return;
-                //todo decusctruction Sandro
+
 
             }
         }
