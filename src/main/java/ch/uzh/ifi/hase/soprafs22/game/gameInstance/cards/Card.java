@@ -24,7 +24,16 @@ public class Card {
             this.suite = null;
         }else{
             String[] splitString = card.split("");
-            switch(splitString[0]){
+            String suite;
+            String value;
+            if(splitString.length > 2){
+                suite = splitString[2];
+                value = splitString[0] + splitString[1];
+            }else{
+                suite = splitString[1];
+                value = splitString[0];
+            }
+            switch(suite){
                 case "C":
                     this.suite = CARDSUITE.CLUBS;
                     break;
@@ -41,7 +50,7 @@ public class Card {
                     this.suite = null;
                     break;
             }
-            switch(splitString[1]){
+            switch(value){
                 case "2":
                     this.value = CARDVALUE.TWO;
                     break;
