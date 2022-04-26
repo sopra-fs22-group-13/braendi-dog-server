@@ -2,16 +2,12 @@ package ch.uzh.ifi.hase.soprafs22.game.gameInstance.game;
 
 
 import ch.uzh.ifi.hase.soprafs22.game.GameManager;
-import ch.uzh.ifi.hase.soprafs22.game.constants.CARDSUITE;
-import ch.uzh.ifi.hase.soprafs22.game.constants.CARDTYPE;
-import ch.uzh.ifi.hase.soprafs22.game.constants.CARDVALUE;
-import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
+import ch.uzh.ifi.hase.soprafs22.game.constants.*;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.Game;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.Board;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.IBoard;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
-import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.mocks.MockBoard;
@@ -20,7 +16,6 @@ import ch.uzh.ifi.hase.soprafs22.mocks.MockUpdateController;
 import ch.uzh.ifi.hase.soprafs22.mocks.MockUserRepo;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
-import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
@@ -28,7 +23,6 @@ import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -90,38 +84,55 @@ class GameTest {
 
 
         //make a fake board
-         board = new MockBoard() {
-            private int countStartingMove=0;
-            private int countJackMove=0;
-            private int countNormalMove=0;
-            @Override
-            public boolean isAnyMovePossible(Card card, COLOR col){
-                return true;
-            }
-            @Override
-            public boolean isValidMove(Move move) throws InvalidMoveException{
-                if (move.get_card().getType().equals(CARDTYPE.JOKER)){
-                    return false;
-                }
-                return true;
-            }
-            @Override
-            public void makeStartingMove (COLOR color) {countStartingMove++;}
+         board = new Board() {
+             private int countStartingMove = 0;
+             private int countJackMove = 0;
+             private int countNormalMove = 0;
 
-            @Override
-            public void makeSwitch(int from, int to){ countJackMove++;}
+             @Override
+             public boolean isAnyMovePossible(Card card, COLOR col) {
+                 return true;
+             }
 
-            @Override
-            public void makeMove(Move move){countNormalMove++;}
+             @Override
+             public boolean isValidMove(Move move) throws InvalidMoveException {
+                 if (move.get_card().getType().equals(CARDTYPE.JOKER)) {
+                     return false;
+                 }
+                 return true;
+             }
 
-            @Override
-            public int getCountStartingMove() {
-                return countStartingMove;
-            }
-            @Override
+             @Override
+             public void makeStartingMove(COLOR color) {
+                 countStartingMove++;
+             }
+
+             @Override
+             public void makeSwitch(int from, int to) {
+                 countJackMove++;
+             }
+
+             @Override
+             public void makeMove(Move move) {
+                 countNormalMove++;
+
+             }
+             @Override
+             public boolean checkWinningCondition(COLOR color){
+                 if (getCountNormalMove()==4){return true;}
+                 return false;
+             }
+
+             @Override
+             public int getCountStartingMove() {
+                 return countStartingMove;
+             }
+
+             @Override
              public int getCountJackMove() {
                  return countJackMove;
              }
+
              @Override
              public int getCountNormalMove() {
                  return countNormalMove;
@@ -231,7 +242,7 @@ class GameTest {
         Move  _move= generateMove(_token, COLOR.BLUE, 2,noConte,false,false,CARDVALUE.FIVE,CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
 
         Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
-        assertEquals("Bad move logic", exception.getMessage());
+        assertEquals("Wrong move formation", exception.getMessage());
     }
 
 
@@ -256,7 +267,7 @@ class GameTest {
         Move  _move= generateMove(_token, COLOR.BLUE, 2,3,false,false,CARDVALUE.FIVE,CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
 
         Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
-        assertEquals("Bad move logic", exception.getMessage());
+        assertEquals("Wrong move formation", exception.getMessage());
     }
 
     @Test
@@ -284,13 +295,13 @@ class GameTest {
 
         Move  _move= generateMove(_token, moveColor, 2,3,false,false,CARDVALUE.FIVE,CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
         Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
-        assertEquals("Bad move logic", exception.getMessage());
+        assertEquals("You want to move the wrong marble", exception.getMessage());
     }
 
     @Test
-    void playerMove_PlayerNotValidTurn() {
-
-        COLOR colorOfCurrentPlayerTurn= _g.getCurrentTurn().getColor();
+    void   playerMove_IsNotValidForThisUser()  {
+        Player playerWithCurrentTurn= _g.getCurrentTurn();
+        COLOR colorOfCurrentPlayerTurn= playerWithCurrentTurn.getColor();
         int indexOfCurrentPlayer;
         if (colorOfCurrentPlayerTurn == COLOR.RED){
             indexOfCurrentPlayer=0;
@@ -303,36 +314,7 @@ class GameTest {
         }
         String _token=users.get(indexOfCurrentPlayer).getToken() ;
 
-        Move  _move= generateMove(_token, colorOfCurrentPlayerTurn, 2,3,false,false,CARDVALUE.FIVE,CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
-
-        Player playerNotAbleToMove = _g.getCurrentTurn();
-        _g.getCurrentTurn().removeAllCard();
-        //gets 1 player without cards so he can't move
-
-        try{_g.playerMove(_move);}
-        catch (InvalidMoveException e){
-            fail();
-        };
-        assertFalse(_g.getPlayerValidTurn(indexOfCurrentPlayer));
-            // most of the time it is a new player that has to move because the
-        assertNotEquals(_g.getCurrentTurn(),playerNotAbleToMove);
-    }
-
-    @Test
-    void   playerMoveIsNotValidForThisUser()  {
-
-        COLOR colorOfCurrentPlayerTurn= _g.getCurrentTurn().getColor();
-        int indexOfCurrentPlayer;
-        if (colorOfCurrentPlayerTurn == COLOR.RED){
-            indexOfCurrentPlayer=0;
-        }else if (colorOfCurrentPlayerTurn == COLOR.YELLOW){
-            indexOfCurrentPlayer=1;
-        }else if (colorOfCurrentPlayerTurn == COLOR.GREEN){
-            indexOfCurrentPlayer=2;
-        }else {
-            indexOfCurrentPlayer=3;
-        }
-        String _token=users.get(indexOfCurrentPlayer).getToken() ;
+        playerWithCurrentTurn.addCard(new Card(CARDVALUE.FIVE,CARDTYPE.JOKER,CARDSUITE.CLUBS));
 
         Move  _move= generateMove(_token, colorOfCurrentPlayerTurn, 2,3,false,false,CARDVALUE.FIVE,CARDTYPE.JOKER,CARDSUITE.CLUBS);
 
@@ -343,7 +325,7 @@ class GameTest {
     }
 
     @Test
-    void   playerMoveMakeStartingMove(){
+    void   playerMove_MakeStartingMove(){
         Player withCurrentTurn= _g.getCurrentTurn();
         COLOR colorOfCurrentPlayerTurn= withCurrentTurn.getColor();
         int indexOfCurrentPlayer;
@@ -379,7 +361,7 @@ class GameTest {
     }
 
     @Test
-    void   playerMoveMakeSwitchMove(){
+    void   playerMove_MakeSwitchMove(){
         Player playerWithCurrentTurn= _g.getCurrentTurn();
         COLOR colorOfCurrentPlayerTurn= playerWithCurrentTurn.getColor();
         int indexOfCurrentPlayer;
@@ -411,7 +393,7 @@ class GameTest {
     }
 
     @Test
-    void   playerMoveMakeNormalMove(){
+    void   playerMove_MakeNormalMove(){
 
         Player playerWithCurrentTurn= _g.getCurrentTurn();
         COLOR colorOfCurrentPlayerTurn= playerWithCurrentTurn.getColor();
@@ -442,7 +424,59 @@ class GameTest {
         assertEquals(1,board.getCountNormalMove());
     }
 
+    @Test
+    void playerWin(){
 
+        // this test checks if the winning condition are meet and if the game is then deleted
+        // the winningcondition are actual mocked because and are: if a player does more the 4 of a normal move it gives true back
+        
+        GameManager gameManager= GameManager.getInstance();
+        gameManager.addGame(_g);
+
+        assertEquals(_g,gameManager.getGameByToken(_g.getGameToken()));
+
+        Player playerWithCurrentTurn= _g.getCurrentTurn();
+        COLOR colorOfCurrentPlayerTurn= playerWithCurrentTurn.getColor();
+
+        String _token=users.get(2).getToken() ;
+
+        playerWithCurrentTurn.addCard(new Card(CARDVALUE.TWO,CARDTYPE.DEFAULT,CARDSUITE.CLUBS));
+
+        Card firstCard=playerWithCurrentTurn.getCartValueInIndexHand(playerWithCurrentTurn.getCardCount()-1);
+
+
+        Move  _move= generateMove(_token, colorOfCurrentPlayerTurn, -29, 30,false,false,firstCard.getValue(),firstCard.getType(),firstCard.getSuite());
+        try{
+            board.makeMove(_move);
+        } catch (InvalidMoveException e) {
+            fail();
+        }
+
+        try{
+            board.makeMove(_move);
+        } catch (InvalidMoveException e) {
+            fail();
+        }
+
+        try{
+            board.makeMove(_move);
+        } catch (InvalidMoveException e) {
+            fail();
+        }
+
+        try {
+            _g.playerMove(_move);
+        }catch (InvalidMoveException e){
+            fail();
+        }
+
+        assertNull(gameManager.getGameByToken(_g.getGameToken()));
+
+
+
+
+
+    }
 
 
 

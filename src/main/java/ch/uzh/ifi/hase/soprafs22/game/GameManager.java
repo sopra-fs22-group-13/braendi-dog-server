@@ -24,6 +24,7 @@ public class GameManager {
     public void addGame(Game newGame){
         _games.add(newGame);
     }
+
     public Game getGameByToken(String token){
         for (Game game:_games){
             if (game.getGameToken().equals(token)){
@@ -42,12 +43,12 @@ public class GameManager {
         return null;
     }
 
-    public void deleteGame(Game gameToDelete){
-        String gameTokenToDelete = gameToDelete.getGameToken();
+    public void deleteGame(String tokenToDelete){
         for (Game game:_games){
             String token= game.getGameToken();
-            if(gameTokenToDelete.equals(token)){
+            if(tokenToDelete.equals(token)){
                 _games.remove(game);
+                return;
             }
         }
     }
