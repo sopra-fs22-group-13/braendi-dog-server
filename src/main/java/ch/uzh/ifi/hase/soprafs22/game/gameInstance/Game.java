@@ -55,7 +55,7 @@ public class Game {
         this._board= new Board();
         this._indexOfHowManyCardToDeal =0;
         this.removeAndDealNewCards();
-        this._indexWithCurrentTurn = 2;
+        this._indexWithCurrentTurn= 2;
         this._playersWithValidTurns = new ArrayList();
         for (int i = 0; i < 4; i++) {
             _playersWithValidTurns.add(false);
@@ -65,7 +65,6 @@ public class Game {
         this._manager= GameManager.getInstance();
 
         this._userManager= new UserManager(_players,users);
-
     }
 
     public Game(ArrayList<User> users, IBoard boardObj)
@@ -144,6 +143,8 @@ public class Game {
 
                 _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, String.format("{\"win\": \"%s\"}", player.getColor())));
                 return;
+                //todo decusctruction Sandro
+
             }
         }
 
@@ -164,6 +165,7 @@ public class Game {
         }while(!_playersWithValidTurns.get(_indexWithCurrentTurn));
 
         _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, String.format("{\"turn\": \"%s\"}", _players.get(_indexWithCurrentTurn).getColor())));
+
     }
 
     /**
