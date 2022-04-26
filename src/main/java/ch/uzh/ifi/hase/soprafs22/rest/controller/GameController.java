@@ -78,7 +78,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void playMove(@PathVariable String gametoken, @RequestBody MovePutDTO movePutDTO) {
-        Move move = new Move(movePutDTO.get_fromPos(), movePutDTO.get_toPos(), movePutDTO.get_fromPosInGoal(), movePutDTO.get_toPosInGoal(), movePutDTO.getCard(), movePutDTO.getToken(), movePutDTO.getColor());
+        Move move = new Move(movePutDTO.get_fromPos(), movePutDTO.get_toPos(), movePutDTO.get_fromPosInGoal(), movePutDTO.get_toPosInGoal(), new Card(movePutDTO.getCard()), movePutDTO.getToken(), movePutDTO.getColor());
 
         Game game = gameManager.getGameByToken(gametoken);
         if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
@@ -86,7 +86,7 @@ public class GameController {
         try {
             game.playerMove(move);
         } catch (InvalidMoveException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid move request");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid move request: " + e.getMessage());
         }
     }
 }

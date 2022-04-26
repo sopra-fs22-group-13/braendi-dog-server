@@ -7,6 +7,7 @@ import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
@@ -843,8 +844,8 @@ public class Board implements IBoard {
         }
 
         // try joker move
-        //TODO
-        if (card.getValue() == CARDVALUE.JOKER) {
+        //TODO debug: this is false
+/*        if (card.getValue() == CARDVALUE.JOKER) {
 
             ArrayList<CARDVALUE> allValues = new ArrayList<>(Arrays.asList(CARDVALUE.values()));
             allValues.remove(CARDVALUE.JOKER);
@@ -855,7 +856,7 @@ public class Board implements IBoard {
                     return true; // THIS IS RECURSIVE: MAKE SURE THERE IS NO JOKER IN THE LIST!!!
                 // oh great, O(5n^6) just turned into O(scary)
             }
-        }
+        }*/
 
         return false;
     }
@@ -1682,8 +1683,7 @@ public class Board implements IBoard {
     /**
      * checks if the move is valid to enter goal
      * assumes that endPos will end in goal, otherwise this methos is not called
-     * 
-     * @param move
+     *
      * @return true if the move can enter the goal
      */
     private boolean isValidGoalMove(int startPos, int endPos, boolean startPosInGoal, COLOR color) {

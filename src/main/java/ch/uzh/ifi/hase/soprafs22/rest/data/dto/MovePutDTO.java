@@ -12,12 +12,12 @@ public class MovePutDTO {
     private ArrayList<Boolean> _fromPosInGoal;
     private ArrayList<Boolean> _toPosInGoal;
 
-    private Card card;
+    private String card;
     private COLOR color;
 
     private String token;
 
-    public MovePutDTO(ArrayList<Integer> fromPos, ArrayList<Integer> toPos, ArrayList<Boolean> fromPosInGoal, ArrayList<Boolean> toPosInGoal, Card c, String token, COLOR color) {
+    public MovePutDTO(ArrayList<Integer> fromPos, ArrayList<Integer> toPos, ArrayList<Boolean> fromPosInGoal, ArrayList<Boolean> toPosInGoal, String c, String token, COLOR color) {
         this._fromPos = fromPos;
         this._toPos = toPos;
         this._fromPosInGoal = fromPosInGoal;
@@ -43,7 +43,7 @@ public class MovePutDTO {
         return _toPosInGoal;
     }
 
-    public Card getCard() {
+    public String getCard() {
         return card;
     }
 
@@ -71,7 +71,7 @@ public class MovePutDTO {
         this._toPosInGoal = _toPosInGoal;
     }
 
-    public void setCard(Card card) {
+    public void setCard(String card) {
         this.card = card;
     }
 

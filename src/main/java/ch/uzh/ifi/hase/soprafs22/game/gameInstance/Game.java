@@ -48,9 +48,9 @@ public class Game {
     private void Setup(ArrayList<User> users){
         this._players= new ArrayList<>();
         this._players.add(new Player(COLOR.RED));
-        this._players.add(new Player(COLOR.YELLOW));
-        this._players.add(new Player(COLOR.GREEN));
         this._players.add(new Player(COLOR.BLUE));
+        this._players.add(new Player(COLOR.GREEN));
+        this._players.add(new Player(COLOR.YELLOW));
         this._cardStack= new CardStack();
         this._board= new Board();
         this._indexOfHowManyCardToDeal =0;
@@ -65,6 +65,21 @@ public class Game {
         this._manager= GameManager.getInstance();
 
         this._userManager= new UserManager(_players,users);
+
+        //play some invalid move. like this we update the turns etc.
+        // check if someone has a valid turn
+        updateValidTurnAllPlayers();
+
+        //TODO this is cheating, as green will now always have a valid starting turn, but who cares.
+
+        // deal new cards until someone has a possible move, worst case.
+        while(!_playersWithValidTurns.get(_indexWithCurrentTurn)) {
+            removeAndDealNewCards();
+            updateValidTurnAllPlayers();
+        }
+
+        removeInvalidTurnCards();
+
     }
 
     public Game(ArrayList<User> users, IBoard boardObj)
@@ -114,6 +129,8 @@ public class Game {
 
         // check if someone has a valid turn
         updateValidTurnAllPlayers();
+        //remove the rest of the cards if someone does not have a valid turn left
+        removeInvalidTurnCards();
 
         // checks if the player can do something
         if  (_playersWithValidTurns.get(_indexWithCurrentTurn)) {
@@ -130,7 +147,10 @@ public class Game {
                 }
                 //remove card from player hand
                 _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,""));
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,String.format("{\"turn\": \"%s\"}", _players.get(_indexWithCurrentTurn).getColor())));
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD,""));
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.BOARD,""));
+
             }
             else {
                 throw new InvalidMoveException("Move Not allowed", "Wrong move logic");
@@ -164,7 +184,7 @@ public class Game {
            nextTurns();
         }while(!_playersWithValidTurns.get(_indexWithCurrentTurn));
 
-        _userManager.sendUpdateToPlayer(_players.get(_indexWithCurrentTurn), new UpdateDTO(UpdateType.TURN, String.format("{\"turn\": \"%s\"}", _players.get(_indexWithCurrentTurn).getColor())));
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, String.format("{\"turn\": \"%s\"}", _players.get(_indexWithCurrentTurn).getColor())));
 
     }
 
@@ -195,6 +215,9 @@ public class Game {
 
         boolean validPOV = false;
 
+        int correctStartIndex = -1;
+
+
         for (Player p : _players) {
 
             User u = _userManager.getUserFromPlayer(p);
@@ -205,6 +228,7 @@ public class Game {
                 ArrayList<String> cards = p.getFormattedCards();
                 pd.setVisibleCards(cards);
                 validPOV = true;
+                correctStartIndex = hiddenCards.size();
                 hiddenCards.add(p.getCardCount());
 
             }else
@@ -215,7 +239,19 @@ public class Game {
 
         }
 
-        pd.setHiddenCardCount(hiddenCards);
+        List<Integer> correctHiddenCards = new ArrayList<>();
+
+        //fix hidden cards direction
+        if((correctStartIndex + 1) < 4)
+        {
+            correctHiddenCards = hiddenCards.subList(correctStartIndex + 1, 4);
+        }
+        //add rest
+        for (int i = 0; i < correctStartIndex; i++) {
+            correctHiddenCards.add(hiddenCards.get(i));
+        }
+
+        pd.setHiddenCardCount(new ArrayList<>(correctHiddenCards));
 
         if(!validPOV)
         {
@@ -288,6 +324,17 @@ public class Game {
                 possibleMove = possibleMove || _board.isAnyMovePossible(player.getCartValueInIndexHand(j), player.getColor());
             }
             _playersWithValidTurns.set(i, possibleMove);
+        }
+    }
+
+    private void removeInvalidTurnCards()
+    {
+        for (int i = 0; i < 4; i++) {
+            if(_playersWithValidTurns.get(i) == false){
+                Player player= _players.get(i);
+                player.removeAllCard();
+                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD,""));
+            }
         }
     }
 

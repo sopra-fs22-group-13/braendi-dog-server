@@ -18,7 +18,7 @@ public class Card {
     }
 
     public Card(String card){
-        if(card.equals("JOKER")){
+        if(card.equals("Joker")){
             this.value = CARDVALUE.JOKER;
             this.type = CARDTYPE.JOKER;
             this.suite = null;
