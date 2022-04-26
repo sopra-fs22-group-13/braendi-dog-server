@@ -23,7 +23,13 @@ public class CardStack {
     }
 
     public Card getNextCard() {
-        return this.deck.remove(0);
+        Card c =  this.deck.remove(0);
+        if(this.deck.size() == 0)
+        {
+            restock();
+        }
+
+        return c;
     }
 
     public void shuffle() {
@@ -32,5 +38,18 @@ public class CardStack {
 
     public List<Card> getDeck() {
         return new ArrayList<Card>(deck);
+    }
+
+    private void restock()
+    {
+        deck.clear();
+        for (CARDSUITE suite: CARDSUITE.values()) {
+            for (CARDVALUE value: CARDVALUE.values()) {
+                if(value == CARDVALUE.JOKER) continue;
+                if(value == CARDVALUE.SEVEN) continue;
+                deck.add(new Card(value, CARDTYPE.DEFAULT, suite));
+            }
+        }
+        shuffle();
     }
 }
