@@ -134,6 +134,34 @@ public class Board implements IBoard {
     }
 
     /**
+     *
+     * Gets the inbetweeners in the main circle in the BACKWARDS direction!
+     * (exclusive, inclusive)
+     * IMPORTANT: NEVER USE THIS METHOD WHEN TRYING TO MOVE FORWARDS
+     */
+    private ArrayList<Integer> getInbetweenersBackwards(int pos1, int pos2) throws IndexOutOfBoundsException
+    {
+        int newPos1 = pos2;
+        int newPos2 = pos1;
+
+        //manage exclusive/inclusive correctly
+        newPos1 = newPos1 - 1;
+        newPos2 = newPos2 - 1;
+
+        //fix looping
+        if(newPos1 < 0)
+        {
+            newPos1 = 64 + newPos1;
+        }
+        if(newPos2 < 0)
+        {
+            newPos2 = 64 + newPos2;
+        }
+
+        return getInbetweeners(newPos1, newPos2);
+    }
+
+    /**
      * Resets a marble on the main circle back to the base
      */
     private void resetMarble(int pos) throws NoMarbleException, IndexOutOfBoundsException {

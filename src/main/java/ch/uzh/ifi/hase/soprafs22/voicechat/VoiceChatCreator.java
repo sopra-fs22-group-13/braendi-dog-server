@@ -28,7 +28,7 @@ public class VoiceChatCreator {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    public static VoiceChatCreator getInstance()
+    public synchronized static VoiceChatCreator getInstance()
     {
         if(instance == null)
         {
@@ -67,7 +67,6 @@ public class VoiceChatCreator {
             vr.player4 = createRandomUser();
         }
         catch (JsonProcessingException e) {
-            e.printStackTrace();
             return null;
         }
 
