@@ -4,6 +4,9 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
+import ch.uzh.ifi.hase.soprafs22.voicechat.AsyncVoiceChatCreator;
+import ch.uzh.ifi.hase.soprafs22.voicechat.VoiceChatCreator;
+import ch.uzh.ifi.hase.soprafs22.voicechat.entities.VoiceRoom;
 import ch.uzh.ifi.hase.soprafs22.voicechat.entities.VoiceUser;
 import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
 import ch.uzh.ifi.hase.soprafs22.websocket.controller.IUpdateController;
@@ -102,43 +105,18 @@ public class LobbyManager {
         if (!Objects.equals(lobby.getOwner().getToken(), ownerToken)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You need to be the owner of the lobby in order to start the game");
         if (lobby.getPlayers().size() < 4) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The lobby needs to be full. You can't start the game right now.");
 
-        GameCreatorData creatorData = gameCreator.createGame(lobby);
+        //create Game
+        String newGameToken = gameCreator.createGame(lobby);
+        //create VC (if possible) ASYNC
+        //this will also send the update
+        Thread vcThread = new AsyncVoiceChatCreator(lobby, newGameToken);
+        vcThread.start();
 
-        String json = String.format("{\"gameToken\": \"%s\"}", creatorData.gameToken);
-
-        if(creatorData.vr != null)
-        {
-            //send vc updates
-            for (int i = 0; i < lobby.getPlayers().size(); i++) {
-                User p = lobby.getPlayers().get(i);
-                VoiceUser voiceUser;
-                String userId;
-                String userAuth;
-                switch (i)
-                {
-                    case 0:
-                        voiceUser = creatorData.vr.player1;
-                        break;
-                    case 1:
-                        voiceUser = creatorData.vr.player2;
-                        break;
-                    case 2:
-                        voiceUser = creatorData.vr.player3;
-                        break;
-                    case 3:
-                        voiceUser = creatorData.vr.player4;
-                        break;
-                    default:
-                        voiceUser = creatorData.vr.player1;
-                }
-
-                String voiceJson = String.format("{\"app_id\": \"%s\", \"user_auth\": \"%s\", \"user_id\": \"%s\", \"room_id\": \"%s\"}", creatorData.vr.appId, voiceUser.accessToken, voiceUser.id, creatorData.vr.roomId);
-                updateController.sendUpdateToUser(p.getToken(), new UpdateDTO(UpdateType.VOICE, voiceJson));
-            }
-        }
+        String json = String.format("{\"gameToken\": \"%s\"}", newGameToken);
 
         updatePlayers(lobby, UpdateType.START, json);
     }
+
 
     private void updatePlayers(Lobby lobby, UpdateType updateType) {
         updatePlayers(lobby, updateType, "");
