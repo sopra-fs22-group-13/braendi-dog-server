@@ -80,11 +80,10 @@ public class RequestGenerator {
             }
             in.close();
             conn.disconnect();
-            log.info(content.toString());
+            log.info(String.format("GET complete to %s", urlpart));
             return content.toString();
         }
         catch (Exception e) {
-            e.printStackTrace();
             return "Failed";
         }
     }
@@ -109,9 +108,6 @@ public class RequestGenerator {
             {
                 url = new URL(String.format("https://api-%s.sendbird.com/v3/%s", apiUrl, urlpart));
             }
-
-            log.info(url.toString());
-
 
             HttpURLConnection conn = createConnection(url);
             conn.setRequestMethod("POST");
@@ -151,12 +147,11 @@ public class RequestGenerator {
             }
             in.close();
             conn.disconnect();
-            log.info(content.toString());
+            log.info(String.format("POST complete to %s", urlpart));
             return content.toString();
 
         }catch (Exception e)
         {
-            e.printStackTrace();
             return "Failed";
         }
     }
@@ -190,13 +185,13 @@ public class RequestGenerator {
 
             if(status == 204)
             {
+                log.info(String.format("DELETE complete to %s", urlpart));
                 return true;
             }
             return false;
 
         }
         catch (Exception e) {
-            e.printStackTrace();
             return  false;
         }
 

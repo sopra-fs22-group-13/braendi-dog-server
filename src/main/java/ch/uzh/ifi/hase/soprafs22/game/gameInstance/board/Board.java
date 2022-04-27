@@ -1187,7 +1187,6 @@ public class Board implements IBoard {
                 marbleColor = move.get_color();
             }
         } catch (Exception e) {
-            System.out.println(e);
             throw new NoMarbleException();
         }
         // check if marble color is the same as move color

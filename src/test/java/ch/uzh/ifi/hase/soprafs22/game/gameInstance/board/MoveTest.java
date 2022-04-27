@@ -257,7 +257,6 @@ public class MoveTest {
             move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         } catch (Exception e) {
-            //e.printStackTrace();
             System.out.println(e + " | should not throw this exception");
         }
     }

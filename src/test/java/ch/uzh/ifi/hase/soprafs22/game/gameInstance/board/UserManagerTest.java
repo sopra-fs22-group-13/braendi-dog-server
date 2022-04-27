@@ -47,7 +47,6 @@ class UserManagerTest {
 
     @Test
     void testGetPlayerFromUsertoken(){
-        System.out.println("Token in Test: "+ users.get(0).getToken());
         assertEquals(players.get(0), userManager.getPlayerFromUserToken(users.get(0).getToken()));
         assertEquals(players.get(1), userManager.getPlayerFromUserToken(users.get(1).getToken()));
         assertEquals(players.get(2), userManager.getPlayerFromUserToken(users.get(2).getToken()));
