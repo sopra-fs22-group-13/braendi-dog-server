@@ -118,7 +118,7 @@ public class Game {
 
         // checks if token exist if not entire check of correctness of move failes
         if (move.getToken()== null){
-            throw new InvalidMoveException("Move Not allowed", "Move has no token");
+            throw new InvalidMoveException("Move Not allowed", "No token");
         }
 
         // catch if token is not null but also not of a user
@@ -129,16 +129,16 @@ public class Game {
             throw new InvalidMoveException("Move Not allowed", "Bad token");}
 
         if (!checkValidTurns(move, playerWantToMove)) {
-            throw new InvalidMoveException("Move Not allowed", "Wrong move formation");
+            throw new InvalidMoveException("Move Not allowed", "Current turn is not this color");
         }
 
         if (move.get_color()!=playerWantToMove.getColor()) {
-            throw new InvalidMoveException("Move Not allowed", "You want to move the wrong marble");
+            throw new InvalidMoveException("Move Not allowed", "You want to move the wrong marble color");
         }
 
 
         if (!playerWantToMove.isCardAvailable(move.get_card())){
-            throw new InvalidMoveException("Move Not allowed", "Card is not in hand");
+            throw new InvalidMoveException("Move Not allowed", "Selected card is not in hand");
         }
 
         // check if someone has a valid turn
@@ -161,15 +161,20 @@ public class Game {
                 }
                 //remove card from player hand
                 _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN,String.format("{\"turn\": \"%s\"}", _players.get(_indexWithCurrentTurn).getColor())));
                 _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD,""));
                 _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.BOARD,""));
 
             }
             else {
-                throw new InvalidMoveException("Move Not allowed", "Wrong move logic");
+                throw new InvalidMoveException("Move Not allowed", "Move is Invalid: Check the rules");
             }
+        }else
+        {
+            //should not happen
+            throw new InvalidMoveException("Move Not allowed", "Unexpected: You cannot move");
         }
+
+        //if we reach this, a valid move was done
 
         // check if somebody won
         for (Player player:_players){
@@ -180,12 +185,12 @@ public class Game {
                 VoiceChatCreator.getInstance().destroyRoomWithPlayers(_gameToken);
                 _manager.deleteGame(_gameToken);
                 return;
-
             }
         }
 
 
         // deal new cards until someone has a possible move
+        updateValidTurnAllPlayers();
         while(!someoneValidTurn()) {
             removeAndDealNewCards();
             updateValidTurnAllPlayers();
@@ -201,7 +206,6 @@ public class Game {
         }while(!_playersWithValidTurns.get(_indexWithCurrentTurn));
 
         _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, String.format("{\"turn\": \"%s\"}", _players.get(_indexWithCurrentTurn).getColor())));
-
     }
 
     /**

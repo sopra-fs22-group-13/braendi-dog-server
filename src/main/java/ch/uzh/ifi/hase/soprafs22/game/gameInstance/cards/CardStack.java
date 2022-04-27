@@ -15,6 +15,9 @@ public class CardStack {
     public CardStack() {
         for (CARDSUITE suite: CARDSUITE.values()) {
             for (CARDVALUE value: CARDVALUE.values()) {
+                //todo REMOVE WHEN WORKING
+                if(value == CARDVALUE.JOKER) continue;
+                if(value == CARDVALUE.SEVEN) continue;
                 deck.add(new Card(value, CARDTYPE.DEFAULT, suite));
             }
         }
@@ -45,6 +48,7 @@ public class CardStack {
         deck.clear();
         for (CARDSUITE suite: CARDSUITE.values()) {
             for (CARDVALUE value: CARDVALUE.values()) {
+                //todo REMOVE WHEN WORKING
                 if(value == CARDVALUE.JOKER) continue;
                 if(value == CARDVALUE.SEVEN) continue;
                 deck.add(new Card(value, CARDTYPE.DEFAULT, suite));

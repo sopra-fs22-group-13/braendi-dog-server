@@ -75,7 +75,7 @@ public class GameController {
     }
 
     @PutMapping("/game/{gametoken}/board")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void playMove(@PathVariable String gametoken, @RequestBody MovePutDTO movePutDTO) {
         Move move = new Move(movePutDTO.get_fromPos(), movePutDTO.get_toPos(), movePutDTO.get_fromPosInGoal(), movePutDTO.get_toPosInGoal(), new Card(movePutDTO.getCard()), movePutDTO.getToken(), movePutDTO.getColor());
