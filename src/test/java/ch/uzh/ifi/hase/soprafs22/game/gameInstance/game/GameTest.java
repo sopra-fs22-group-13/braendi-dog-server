@@ -197,8 +197,8 @@ class GameTest {
 
         Move move= new Move();
 
-        Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(move));
-        assertEquals("Move has no token", exception.getMessage());
+        InvalidMoveException exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(move));
+        assertEquals("NO_TOKEN", exception.getCode());
     }
 
     @Test
@@ -206,18 +206,18 @@ class GameTest {
         //  setting up for a correct move if not for the token
 
         Move _move = generateMove(null, COLOR.BLUE, 2,3,false,false,CARDVALUE.FIVE,CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
-        Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
+        InvalidMoveException exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
 
-        assertEquals("Move has no token", exception.getMessage());
+        assertEquals("NO_TOKEN", exception.getCode());
     }
 
     @Test
     void playerMove_BadTokenTest() {
 
         Move  _move= generateMove(UUID.randomUUID().toString(), COLOR.BLUE, 2,3,false,false,CARDVALUE.FIVE,CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
-        Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
+        InvalidMoveException exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
 
-        assertEquals("Bad token", exception.getMessage());
+        assertEquals("BAD_TOKEN", exception.getCode());
     }
 
     @Test
@@ -241,8 +241,8 @@ class GameTest {
 
         Move  _move= generateMove(_token, COLOR.BLUE, 2,noConte,false,false,CARDVALUE.FIVE,CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
 
-        Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
-        assertEquals("Wrong move formation", exception.getMessage());
+        InvalidMoveException exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
+        assertEquals("WRONG_COLOR_TURN", exception.getCode());
     }
 
 
@@ -266,8 +266,8 @@ class GameTest {
 
         Move  _move= generateMove(_token, COLOR.BLUE, 2,3,false,false,CARDVALUE.FIVE,CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
 
-        Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
-        assertEquals("Wrong move formation", exception.getMessage());
+        InvalidMoveException exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
+        assertEquals("WRONG_COLOR_TURN", exception.getCode());
     }
 
     @Test
@@ -294,8 +294,8 @@ class GameTest {
 
 
         Move  _move= generateMove(_token, moveColor, 2,3,false,false,CARDVALUE.FIVE,CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
-        Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
-        assertEquals("You want to move the wrong marble", exception.getMessage());
+        InvalidMoveException exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
+        assertEquals("WRONG_COLOR_MARBLE", exception.getCode());
     }
 
     @Test
@@ -319,8 +319,8 @@ class GameTest {
         Move  _move= generateMove(_token, colorOfCurrentPlayerTurn, 2,3,false,false,CARDVALUE.FIVE,CARDTYPE.JOKER,CARDSUITE.CLUBS);
 
 
-        Throwable exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
-        assertEquals("Wrong move logic", exception.getMessage());
+        InvalidMoveException exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
+        assertEquals("RULE_VIOLATION", exception.getCode());
 
     }
 

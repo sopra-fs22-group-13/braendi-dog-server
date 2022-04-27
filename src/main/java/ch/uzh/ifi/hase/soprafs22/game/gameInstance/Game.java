@@ -118,7 +118,7 @@ public class Game {
 
         // checks if token exist if not entire check of correctness of move failes
         if (move.getToken()== null){
-            throw new InvalidMoveException("Move Not allowed", "No token");
+            throw new InvalidMoveException("NO_TOKEN", "No token");
         }
 
         // catch if token is not null but also not of a user
@@ -126,19 +126,19 @@ public class Game {
             playerWantToMove = _userManager.getPlayerFromUserToken(move.getToken());
         }
         catch (NullPointerException e){
-            throw new InvalidMoveException("Move Not allowed", "Bad token");}
+            throw new InvalidMoveException("BAD_TOKEN", "Bad token");}
 
         if (!checkValidTurns(move, playerWantToMove)) {
-            throw new InvalidMoveException("Move Not allowed", "Current turn is not this color");
+            throw new InvalidMoveException("WRONG_COLOR_TURN", "Current turn is not this color");
         }
 
         if (move.get_color()!=playerWantToMove.getColor()) {
-            throw new InvalidMoveException("Move Not allowed", "You want to move the wrong marble color");
+            throw new InvalidMoveException("WRONG_COLOR_MARBLE", "You want to move the wrong marble color");
         }
 
 
         if (!playerWantToMove.isCardAvailable(move.get_card())){
-            throw new InvalidMoveException("Move Not allowed", "Selected card is not in hand");
+            throw new InvalidMoveException("WRONG_CARD", "Selected card is not in hand");
         }
 
         // check if someone has a valid turn
@@ -166,12 +166,12 @@ public class Game {
 
             }
             else {
-                throw new InvalidMoveException("Move Not allowed", "Move is Invalid: Check the rules");
+                throw new InvalidMoveException("RULE_VIOLATION", "Move is Invalid: Check the rules");
             }
         }else
         {
             //should not happen
-            throw new InvalidMoveException("Move Not allowed", "Unexpected: You cannot move");
+            throw new InvalidMoveException("UNEXPECTED", "Unexpected: You cannot move");
         }
 
         //if we reach this, a valid move was done
