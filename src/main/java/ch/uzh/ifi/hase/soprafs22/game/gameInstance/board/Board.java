@@ -103,7 +103,7 @@ public class Board implements IBoard {
      * (exclusive, inclusive)
      * IMPORTANT: NEVER USE THIS METHOD WHEN TRYING TO MOVE BACKWARDS
      */
-    protected ArrayList<Integer> getInbetweeners(int pos1, int pos2) throws IndexOutOfBoundsException {
+    private ArrayList<Integer> getInbetweeners(int pos1, int pos2) throws IndexOutOfBoundsException {
         ArrayList<Integer> importantInbetweeners = new ArrayList<>();
         if (pos1 < 0 || pos1 >= 64 || pos2 < 0 || pos2 >= 64)
             throw new IndexOutOfBoundsException("the positions have to be in range 0-63 (inclusive)");
@@ -206,7 +206,7 @@ public class Board implements IBoard {
      *
      * @throws NoMarbleException if there is no marble at x
      */
-    protected COLOR getColorFromPosition(int pos) throws NoMarbleException {
+    private COLOR getColorFromPosition(int pos) throws NoMarbleException {
         if (pos < 0 || pos >= 64)
             throw new IndexOutOfBoundsException("the position has to be in range 0-63 (inclusive)");
         MARBLE m = _mainCircle.get(pos);
@@ -358,7 +358,7 @@ public class Board implements IBoard {
      * gets the next position when moving forward a certain distance on the main
      * field
      */
-    protected int getDistanceInBetween(int startPosition, int endPosition) throws IndexOutOfBoundsException {
+    private int getDistanceInBetween(int startPosition, int endPosition) throws IndexOutOfBoundsException {
         return getDistanceInBetween(startPosition, endPosition, true);
     }
 
@@ -366,7 +366,7 @@ public class Board implements IBoard {
      * gets the next position when moving a certain distance on the main field,
      * either forward or backwards
      */
-    protected int getDistanceInBetween(int startPosition, int endPosition, boolean forward)
+    private int getDistanceInBetween(int startPosition, int endPosition, boolean forward)
             throws IndexOutOfBoundsException {
         if (startPosition < 0 || startPosition >= 64 || endPosition < 0 || endPosition >= 64)
             throw new IndexOutOfBoundsException(
@@ -404,7 +404,7 @@ public class Board implements IBoard {
      * @param startInGoal   if the marble already starts in its respective goal (eg:
      *                      moving 1 forward in the goal)
      */
-    protected int getDistanceInBetween(int startPosition, int endPosition, COLOR goalColor, boolean startInGoal)
+    private int getDistanceInBetween(int startPosition, int endPosition, COLOR goalColor, boolean startInGoal)
             throws IndexOutOfBoundsException {
         if (!startInGoal) // normal move into a goal from outside
         {
@@ -1164,7 +1164,7 @@ public class Board implements IBoard {
     }
 
 
-    private boardValidation createMoveValidation(){
+    public boardValidation createMoveValidation(){
         return new boardValidation(
             copyList(_mainCircle),
             copyList(_redGoal),
@@ -1186,9 +1186,24 @@ public class Board implements IBoard {
     private ArrayList<MARBLE> copyList(ArrayList<MARBLE> list){
         ArrayList<MARBLE> newList = new ArrayList<>();
         for(int i = 0; i < list.size(); i++){
-            newList.add(list.get(i));
+            newList.add(copyMarble(list.get(i)));
         }
         return newList;
+    }
+
+    private MARBLE copyMarble(MARBLE m){
+        switch(m){
+            case BLUE:
+                return MARBLE.BLUE;
+            case GREEN:
+                return MARBLE.GREEN;
+            case RED:
+                return MARBLE.RED;
+            case YELLOW:
+                return MARBLE.YELLOW;
+            default:
+                return MARBLE.NONE;
+        }
     }
 
     //for Test
@@ -1209,7 +1224,6 @@ public class Board implements IBoard {
 
     @Override
     public boolean isValidMove(Move move) throws InvalidMoveException {
-        // TODO Auto-generated method stub
         boardValidation validator = createMoveValidation();
         return validator.isValidMove(move);
     }

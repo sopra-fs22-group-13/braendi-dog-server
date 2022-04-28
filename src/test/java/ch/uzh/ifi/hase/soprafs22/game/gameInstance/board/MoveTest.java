@@ -133,8 +133,8 @@ public class MoveTest {
             toPosInGoal = new ArrayList<>(Arrays.asList(false));
             move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
             assertTrue(board.isValidMove(move));
-        } catch (InvalidMoveException e) {
-            fail("Should not throw exception");
+        } catch (Exception e) {
+            fail(String.format("Should not throw exception | startPos: %s, endPos: %s", fromPos, toPos));
         }
     }
 
@@ -880,4 +880,7 @@ public class MoveTest {
             fail(e + "Should not throw exception");
         }
     }
+
+    //@Test
+    
 }
