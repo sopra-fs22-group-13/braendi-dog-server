@@ -1307,6 +1307,77 @@ public class MoveTest {
     }
 
     @Test
+    void cannotSwitchBlockedOfOthers()
+    {
+        try{
+            _color = COLOR.RED;
+            board.makeStartingMove(COLOR.RED);
+            board.makeStartingMove(COLOR.YELLOW);
+
+            //move back
+            moveMarble(0, 2, false, false);
+
+            //this should not be possible
+            _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(2));
+            toPos = new ArrayList<>(Arrays.asList(48));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            moveMarble(48, 50, false, false);
+
+            //this should now be possible
+            _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(2));
+            toPos = new ArrayList<>(Arrays.asList(50));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+        }catch (Exception e)
+        {
+            fail("Should not throw here.");
+        }
+    }
+
+    @Test
+    void canSwitchBlockedOfMe()
+    {
+        try{
+            _color = COLOR.RED;
+            board.makeStartingMove(COLOR.RED);
+            board.makeStartingMove(COLOR.YELLOW);
+
+
+            //this should not be possible
+            _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(48));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            moveMarble(48, 50, false, false);
+
+            //this should be possible
+            _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(50));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+
+        }catch (Exception e)
+        {
+            fail("Should not throw here.");
+        }
+    }
+
+    @Test
     void cannotRunDirectlyIntoGoal()
     {
         try{
