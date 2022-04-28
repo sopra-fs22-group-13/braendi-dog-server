@@ -627,6 +627,11 @@ public class MoveTest {
         }
     }
 
+    //@Test
+    void validFourBack(){
+        //TODO: test for valid backwards move with four
+    }
+
     @Test
     void validFourToGoal() {
         _card = new Card(CARDVALUE.FOUR, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
@@ -882,5 +887,37 @@ public class MoveTest {
     }
 
     //@Test
-    
+    void blockedAce(){
+        //TODO: test for blocked intersection with ace move
+    }
+
+    //@Test
+    void blockedKing(){
+        //TODO: test for blocked intersection with king move
+    }
+
+    //@Test
+    void blockedJack(){
+        //TODO: test for blocked intersection with jack move
+    }
+
+    //@Test
+    void blockedJoker(){
+        //TODO: test for blocked intersection with joker move
+    }
+
+    //@Test
+    void blockedSeven(){
+        //TODO: test for blocked intersection with seven move
+    }
+
+    //@Test
+    void blockedFour(){
+        //TODO: test for blocked intersection with four move
+    }
+
+    //@Test
+    void blockedRegular(){
+        //TODO: test for blocked intersection with regular move
+    }
 }

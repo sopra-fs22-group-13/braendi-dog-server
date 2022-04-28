@@ -565,7 +565,9 @@ public class boardValidation {
         // validate for goal move
         if (move.isGoalMove()) {
             boolean startInGoal = move.get_fromPosInGoal().get(0);
-            return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
+            if(!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)){
+                return false;
+            }
         }
         int moveDist = getDistanceInBetween(startPos, endPos);
         if (moveDist != 1 && moveDist != 11) {
@@ -622,7 +624,9 @@ public class boardValidation {
         // validate for goal move
         if (move.isGoalMove()) {
             boolean startInGoal = move.get_fromPosInGoal().get(0);
-            return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
+            if(!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)){
+                return false;
+            }
         }
         // TODO joker behaviour unclear yet, can be any card: need to define behaviour
         // in front-end
@@ -650,7 +654,9 @@ public class boardValidation {
         // validate for goal move
         if (move.isGoalMove()) {
             boolean startInGoal = move.get_fromPosInGoal().get(0);
-            return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
+            if(!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)){
+                return false;
+            }
         }
         // check if distance is valid for the card
         int moveDist = getDistanceInBetween(startPos, endPos);
@@ -782,7 +788,9 @@ public class boardValidation {
         // validate for goal move
         if (move.isGoalMove()) {
             boolean startInGoal = move.get_fromPosInGoal().get(0);
-            return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
+            if(!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)){
+                return false;
+            }
         }
 
         // checking for blocked intersect
@@ -816,26 +824,52 @@ public class boardValidation {
         }
         switch (moveCard.getValue()) {
             case TWO:
-                return moveDist == 2;
+                if(moveDist != 2){
+                    return false;
+                }
+                break;
             case THREE:
-                return moveDist == 3;
+                if(moveDist != 3){
+                    return false;
+                }
+                break;
             case FIVE:
-                return moveDist == 5;
+                if(moveDist != 5){
+                    return false;
+                }
+                break;
             case SIX:
-                return moveDist == 6;
+                if(moveDist != 6){
+                    return false;
+                }
+                break;
             case EIGHT:
-                return moveDist == 8;
+                if(moveDist != 8){
+                    return false;
+                }
+                break;
             case NINE:
-                return moveDist == 9;
+                if(moveDist != 9){
+                    return false;
+                }
+                break;
             case TEN:
-                return moveDist == 10;
+                if(moveDist != 10){
+                    return false;
+                }
+                break;
             case QUEEN:
-                return moveDist == 12;
+                if(moveDist != 12){
+                    return false;
+                }
+                break;
         }
         // validate for goal move
         if (move.isGoalMove()) {
             boolean startInGoal = move.get_fromPosInGoal().get(0);
-            return isValidGoalMove(startPos, endPos, startInGoal, marbleColor);
+            if(!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)){
+                return false;
+            }
         }
 
         // checking for blocked intersect
