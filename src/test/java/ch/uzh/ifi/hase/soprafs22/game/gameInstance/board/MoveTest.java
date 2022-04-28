@@ -494,9 +494,16 @@ public class MoveTest {
             move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
             board.makeMove(move); // move second marble into position
 
+            fromPos = new ArrayList<>(Arrays.asList(16));
+            toPos = new ArrayList<>(Arrays.asList(35));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", COLOR.BLUE);
+            board.makeMove(move); // move second marble into position
+
             // switch the two marbles
             fromPos = new ArrayList<>(Arrays.asList(20));
-            toPos = new ArrayList<>(Arrays.asList(16));
+            toPos = new ArrayList<>(Arrays.asList(35));
             fromPosInGoal = new ArrayList<>(Arrays.asList(false));
             toPosInGoal = new ArrayList<>(Arrays.asList(false));
             move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
