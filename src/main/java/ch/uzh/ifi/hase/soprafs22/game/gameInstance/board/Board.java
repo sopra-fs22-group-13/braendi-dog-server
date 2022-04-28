@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class Board implements IBoard {
     private ArrayList<MARBLE> _mainCircle = new ArrayList<>();
@@ -637,53 +639,11 @@ public class Board implements IBoard {
     }
 
     /**
-     * This method is a mess. Keep your sanity and do not even try to look at this.
-     * It checks if for a color and a card, any move is possible given the current
-     * board state.
+     * Returns a list of move distances valid for a card, ignores JOKER and SEVEN
+     * USE WITH CAUTION
      */
-    public boolean isAnyMovePossible(Card card, COLOR col) {
-        // marble color
-        MARBLE searchedMarbleCol = MARBLE.NONE;
-        ArrayList<MARBLE> colGoal = new ArrayList<>();
-
-        switch (col) {
-            case YELLOW:
-                searchedMarbleCol = MARBLE.YELLOW;
-                colGoal = new ArrayList<>(_yellowGoal);
-                break;
-            case GREEN:
-                searchedMarbleCol = MARBLE.GREEN;
-                colGoal = new ArrayList<>(_greenGoal);
-                break;
-            case RED:
-                searchedMarbleCol = MARBLE.RED;
-                colGoal = new ArrayList<>(_redGoal);
-                break;
-            case BLUE:
-                searchedMarbleCol = MARBLE.BLUE;
-                colGoal = new ArrayList<>(_blueGoal);
-                break;
-        }
-
-        // get the marbles of card
-        ArrayList<Integer> marblesOnMain = new ArrayList<>();
-        ArrayList<Integer> marblesInGoal = new ArrayList<>();
-
-        for (int i = 0; i < _mainCircle.size(); i++) {
-            if (_mainCircle.get(i) == searchedMarbleCol)
-                marblesOnMain.add(i);
-        }
-
-        for (int i = 0; i < colGoal.size(); i++) {
-            if (colGoal.get(i) == searchedMarbleCol)
-                marblesInGoal.add(i);
-        }
-
-        // make a new move with the card
-        Move m = new Move();
-        m.set_card(card);
-        m.set_color(col);
-
+    private List<Integer> getMoveValuesBasedOnCard(Card card)
+    {
         ArrayList<Integer> allMoveValues = new ArrayList<>();
 
         switch (card.getValue()) {
@@ -722,17 +682,166 @@ public class Board implements IBoard {
                 allMoveValues.add(1);
                 allMoveValues.add(11);
                 break;
+            default:
+                break; //the 7 and Joker are differently tested
         }
+
+        return allMoveValues;
+    }
+
+    private boolean isGenericMovePossible(List<Integer> marblesOnMain, List<Integer> moveValues, Card card, COLOR color)
+    {
+        // make a new move with the card
+        Move m = new Move();
+        m.set_card(card);
+        m.set_color(color);
 
         // try normal moves
         for (int i = 0; i < marblesOnMain.size(); i++) {
 
-            for (int j = 0; j < allMoveValues.size(); j++) {
+            for (int j = 0; j < moveValues.size(); j++) {
 
                 // try a normal move
                 m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
                 m.set_toPos(new ArrayList<>(
-                        Arrays.asList(getIndexAfterDistance(marblesOnMain.get(i), allMoveValues.get(j)))));
+                        Arrays.asList(getIndexAfterDistance(marblesOnMain.get(i), moveValues.get(j)))));
+                m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
+                m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
+
+                // always early return, saves this O(scary) algorithm to terminate a lot earlier
+                // most of the time
+                try {
+                    if (isValidMove(m))
+                        return true;
+                }
+                catch (InvalidMoveException e) {
+                    // do nothing here
+                    // ik this is terrible, but our move is always well-formed in this case
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isGenericGoalMovePossible(List<Integer> marblesOnMain, List<Integer> moveValues, Card card, COLOR color)
+    {
+        // make a new move with the card
+        Move m = new Move();
+        m.set_card(card);
+        m.set_color(color);
+
+        // try goal moves
+        for (int i = 0; i < marblesOnMain.size(); i++) {
+
+            for (int j = 0; j < moveValues.size(); j++) {
+
+                // try to construct the valid indices, this should always succeed
+                m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
+                try {
+                    //this will return {-1} as a goal position, which will be validated as wrong.
+                    int goalPos =  getIndexInGoalAfterDistance(marblesOnMain.get(i), moveValues.get(j), color);
+                    if(goalPos == -1)
+                    {
+                        continue;
+                    }
+                    m.set_toPos(new ArrayList<>(Arrays.asList(goalPos)));
+                }
+                catch (IndexOutOfBoundsException e) {
+                    //a 4 cannot move backwards in a goal (distance has to be positive), so we catch this in this exception
+                    continue; //will be empty, so fail 100%
+                }
+
+                m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
+                m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
+
+                //now try the move
+                try {
+                    if (isValidMove(m))
+                        return true;
+                } catch (InvalidMoveException e) {
+                    // do nothing here
+                    // ik this is terrible, but our move is always well-formed in this case
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isGoalToGoalMovePossible(List<Integer> marblesInGoal, List<Integer> moveValues, Card card, COLOR color)
+    {
+        // make a new move with the card
+        Move m = new Move();
+        m.set_card(card);
+        m.set_color(color);
+
+        // try goal to goal moves
+        for (int i = 0; i < marblesInGoal.size(); i++) {
+            for (int j = 0; j < moveValues.size(); j++) {
+
+                if(moveValues.get(j) < 1 || moveValues.get(j) > 3) //will fail %100 percent since its too large
+                {
+                    continue;
+                }
+
+                // try a goal move from a goal
+                int toPos = marblesInGoal.get(i) + moveValues.get(j);
+
+                if(toPos < 0 || toPos >= 3)
+                {
+                    //index out of bounds anyway
+                    continue;
+                }
+
+                m.set_fromPos(new ArrayList<>(Arrays.asList(marblesInGoal.get(i))));
+                m.set_toPos(new ArrayList<>(Arrays.asList(toPos)));
+                m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(true)));
+                m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
+
+                // try the move
+                // always early return, saves this O(scary) algorithm to terminate a lot earlier
+                // most of the time
+                try {
+                    if (isValidMove(m))
+                        return true;
+                } catch (InvalidMoveException e) {
+                    // do nothing here
+                    // ik this is terrible, but our move is always well-formed in this case
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isJackMovePossible(List<Integer> marblesOnMain, List<Integer> moveValues, Card card, COLOR color, MARBLE searchedMarbleCol)
+    {
+        // make a new move with the card
+        Move m = new Move();
+        m.set_card(card);
+        m.set_color(color);
+
+        // try jack move
+        if(card.getValue() != CARDVALUE.JACK)
+        {
+            return false;
+        }
+
+        ArrayList<Integer> otherMarbles = new ArrayList<>();
+        //get all other marbles on the main board
+        for (int i = 0; i < _mainCircle.size(); i++) {
+            if (_mainCircle.get(i) != searchedMarbleCol && _mainCircle.get(i) != MARBLE.NONE)
+                otherMarbles.add(i);
+        }
+
+        // can we make any switch?
+        for (int i = 0; i < marblesOnMain.size(); i++) {
+            for (int j = 0; j < otherMarbles.size(); j++) {
+
+                // try the switch move for each combination
+                m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
+                m.set_toPos(new ArrayList<>(Arrays.asList(otherMarbles.get(j))));
                 m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
                 m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
 
@@ -743,165 +852,77 @@ public class Board implements IBoard {
                         return true;
                 } catch (InvalidMoveException e) {
                     // do nothing here
-                    // ik this is terrible, but our move is always well formed in this case
-                }
-
-                // try a goal move
-                m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
-                try {
-                    m.set_toPos(new ArrayList<>(Arrays
-                            .asList(getIndexInGoalAfterDistance(marblesOnMain.get(i), allMoveValues.get(j), col))));
-                } catch (IndexOutOfBoundsException e) {
-                    // a four cannot move in a goal backwards.
-                    m.set_toPos(new ArrayList<>());
-                }
-                m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
-                m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
-
-                // goal reachable:
-                if (m.get_toPos().size() > 0 && m.get_toPos().get(0) != -1) {
-                    // always early return, saves this O(scary) algorithm to terminate a lot earlier
-                    // most of the time
-                    try {
-                        if (isValidMove(m))
-                            return true;
-                    } catch (InvalidMoveException e) {
-                        // do nothing here
-                        // ik this is terrible, but our move is always well-formed in this case
-                    }
-                }
-
-            }
-
-        }
-
-        // try goal to goal moves
-        for (int i = 0; i < marblesInGoal.size(); i++) {
-            for (int j = 0; j < allMoveValues.size(); j++) {
-
-                // try a goal move from a goal
-                if (allMoveValues.get(j) == 1 || allMoveValues.get(j) == 2 || allMoveValues.get(j) == 3) {
-                    int toPos = marblesInGoal.get(i) + allMoveValues.get(j);
-                    if (toPos < 3) {
-                        m.set_fromPos(new ArrayList<>(Arrays.asList(marblesInGoal.get(i))));
-                        m.set_toPos(new ArrayList<>(Arrays.asList(toPos)));
-                        m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(true)));
-                        m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
-
-                        // try the move
-                        // always early return, saves this O(scary) algorithm to terminate a lot earlier
-                        // most of the time
-                        try {
-                            if (isValidMove(m))
-                                return true;
-                        } catch (InvalidMoveException e) {
-                            // do nothing here
-                            // ik this is terrible, but our move is always well-formed in this case
-                        }
-                    }
+                    // ik this is terrible, but our move is always well-formed in this case
                 }
             }
         }
-
-        // try jack move
-        if (card.getValue() == CARDVALUE.JACK) {
-            ArrayList<Integer> otherMarbles = new ArrayList<>();
-            for (int i = 0; i < _mainCircle.size(); i++) {
-                if (_mainCircle.get(i) != searchedMarbleCol && _mainCircle.get(i) != MARBLE.NONE)
-                    otherMarbles.add(i);
-            }
-            // can we make any switch?
-            for (int i = 0; i < marblesOnMain.size(); i++) {
-                for (int j = 0; j < otherMarbles.size(); j++) {
-
-                    // try the switch move for each combination
-                    m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
-                    m.set_toPos(new ArrayList<>(Arrays.asList(otherMarbles.get(j))));
-                    m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
-                    m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
-
-                    // always early return, saves this O(scary) algorithm to terminate a lot earlier
-                    // most of the time
-                    try {
-                        if (isValidMove(m))
-                            return true;
-                    } catch (InvalidMoveException e) {
-                        // do nothing here
-                        // ik this is terrible, but our move is always well-formed in this case
-                    }
-                }
-            }
-        }
-
-        // try start move
-        if (card.getValue() == CARDVALUE.ACE || card.getValue() == CARDVALUE.KING) {
-            int intersect = 0;
-            switch (col) {
-                case YELLOW:
-                    intersect = YELLOWINTERSECT;
-                    break;
-                case GREEN:
-                    intersect = GREENINTERSECT;
-                    break;
-                case RED:
-                    intersect = REDINTERSECT;
-                    break;
-                case BLUE:
-                    intersect = BLUEINTERSECT;
-                    break;
-            }
-
-            m.set_fromPos(new ArrayList<>(Arrays.asList(-1)));
-            m.set_toPos(new ArrayList<>(Arrays.asList(intersect)));
-            m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
-            m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
-
-            try {
-                if (isValidMove(m))
-                    return true;
-            } catch (InvalidMoveException e) {
-                // do nothing here
-                // ik this is terrible, but our move is always well-formed in this case
-            }
-        }
-
-        // try 7 move. OH, GOD
-        if (card.getValue() == CARDVALUE.SEVEN) {
-            if (isAnySevenMovePossible(marblesOnMain, marblesInGoal, col))
-                return true;
-        }
-
-        // try joker move
-        //TODO debug: this is false
-/*        if (card.getValue() == CARDVALUE.JOKER) {
-
-            ArrayList<CARDVALUE> allValues = new ArrayList<>(Arrays.asList(CARDVALUE.values()));
-            allValues.remove(CARDVALUE.JOKER);
-
-            for (CARDVALUE value : allValues) {
-                Card c = new Card(value, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
-                if (isAnyMovePossible(c, col))
-                    return true; // THIS IS RECURSIVE: MAKE SURE THERE IS NO JOKER IN THE LIST!!!
-                // oh great, O(5n^6) just turned into O(scary)
-            }
-        }*/
 
         return false;
     }
 
-    /**
-     * This method is an utter mess. Keep your sanity and do not even try to look at
-     * this.
-     * The complexity is about O(5n^6), so if you want to improve this, feel free.
-     * For better overview just add your hours wasted here
-     * HoursWasted = 4;
-     */
-    private boolean isAnySevenMovePossible(ArrayList<Integer> marblesOnMain, ArrayList<Integer> marblesInGoal,
-            COLOR col) {
-        // try all possible splits
-        ArrayList<Integer[]> allPossibilites = new ArrayList<>();
+    private boolean isStartMovePossible(Card card, COLOR color)
+    {
+        // make a new move with the card
+        Move m = new Move();
+        m.set_card(card);
+        m.set_color(color);
 
-        // DONT EVEN SAY A WORD.
+        // try start move
+        if(card.getValue() != CARDVALUE.ACE && card.getValue() != CARDVALUE.KING)
+        {
+            return false;
+        }
+
+        int intersect = 0;
+        switch (color) {
+            case YELLOW:
+                intersect = YELLOWINTERSECT;
+                break;
+            case GREEN:
+                intersect = GREENINTERSECT;
+                break;
+            case RED:
+                intersect = REDINTERSECT;
+                break;
+            case BLUE:
+                intersect = BLUEINTERSECT;
+                break;
+        }
+
+        m.set_fromPos(new ArrayList<>(Arrays.asList(-1)));
+        m.set_toPos(new ArrayList<>(Arrays.asList(intersect)));
+        m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
+        m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
+
+        try {
+            if (isValidMove(m))
+                return true;
+        } catch (InvalidMoveException e) {
+            // do nothing here
+            // ik this is terrible, but our move is always well-formed in this case
+        }
+
+        return false;
+    }
+
+    private boolean isJokerMovePossible(COLOR color)
+    {
+        ArrayList<CARDVALUE> allValues = new ArrayList<>(Arrays.asList(CARDVALUE.values()));
+        allValues.remove(CARDVALUE.JOKER);
+
+        for (CARDVALUE value : allValues) {
+            Card c = new Card(value, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
+            if (isAnyMovePossible(c, color))
+                return true; // THIS IS RECURSIVE: MAKE SURE THERE IS NO JOKER IN THE LIST!!!
+            // oh great, O(5n^6) just turned into O(scary)
+        }
+
+        return false;
+    }
+
+    private List<Integer[]> getMoveComboPermutations()
+    {
+        List<Integer[]> allPossibilites = new ArrayList<>();
 
         // pyramid of dooooooooom.
         for (int i = 0; i < 7; i++) {
@@ -918,195 +939,225 @@ public class Board implements IBoard {
             }
         }
 
+        return allPossibilites;
+    }
+
+    private boolean makeSevenMoveAndTest(Integer[] movecombo, List<Integer> marblesOnMain, List<Integer> marblesInGoal, COLOR color, Integer countToGoal, Integer maincount, Integer offcount)
+    {
+        // move init
+        Move sevenmove = new Move();
+        sevenmove.set_color(color);
+        Card c = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
+        sevenmove.set_card(c);
+
+        ArrayList<Integer> fromPos = new ArrayList<>();
+        ArrayList<Integer> toPos = new ArrayList<>();
+        ArrayList<Boolean> fromInGoal = new ArrayList<>();
+        ArrayList<Boolean> toInGoal = new ArrayList<>();
+
+        //count to goal destructor
+        if(countToGoal != 0 && countToGoal != 1 && countToGoal != 2)
+        {
+            countToGoal = 0;
+        }
+
+        int marbleCount = 0;
+        // assign to all marbles
+        for (int i = 0; i < marblesOnMain.size(); i++) {
+            fromPos.add(marblesOnMain.get(i));
+
+            //countToGoal destructor
+            int toPosValue = -1;
+            boolean toPosGoal = false;
+            switch (countToGoal)
+            {
+                case 0:
+                    toPosValue = getIndexAfterDistance(marblesOnMain.get(i), movecombo[marbleCount]);
+                    toPosGoal = false;
+                    break;
+                case 1:
+                    toPosValue = i == maincount ? getIndexInGoalAfterDistance(marblesOnMain.get(i), movecombo[marbleCount], color) : getIndexAfterDistance(marblesOnMain.get(i), movecombo[marbleCount]);
+                    toPosGoal = i == maincount ? true : false;
+                    break;
+                case 2:
+                    toPosValue = i == maincount || i == offcount ? getIndexInGoalAfterDistance(marblesOnMain.get(i), movecombo[marbleCount], color) : getIndexAfterDistance(marblesOnMain.get(i), movecombo[marbleCount]);
+                    toPosGoal = i == maincount || i == offcount ? true : false;
+                    break;
+            }
+
+            //if it ends up OOB, that's fine. The validMove check will then just return false.
+            toPos.add(toPosValue);
+            fromInGoal.add(false);
+            toInGoal.add(toPosGoal);
+            marbleCount++;
+        }
+        //don't forget the goal, if it ends up OOB, that's fine. The validMove check will then just return false.
+        for (int i = 0; i < marblesInGoal.size(); i++) {
+            fromPos.add(marblesInGoal.get(i));
+            toPos.add(marblesInGoal.get(i) + movecombo[marbleCount]);
+            fromInGoal.add(true);
+            toInGoal.add(true);
+            marbleCount++;
+        }
+
+        boolean addsTo7 = true;
+
+        for (int i = marbleCount; i < 4; i++) {
+            if (movecombo[i] != 0) {
+                // invalid, as it does not sum up to 7 then.
+                addsTo7 = false;
+            }
+        }
+
+        if(!addsTo7) return false;
+
+        sevenmove.set_fromPos(fromPos);
+        sevenmove.set_toPos(toPos);
+        sevenmove.set_fromPosInGoal(fromInGoal);
+        sevenmove.set_toPosInGoal(toInGoal);
+
+        // try the move
+        try {
+            if (isValidMove(sevenmove))
+                return true;
+        } catch (InvalidMoveException e) {
+            // do nothing here
+            // ik this is terrible, but our move is always well-formed in this case
+        }
+        return false;
+    }
+
+    private boolean isSevenMovePossibleZeroGoal(List<Integer> marblesOnMain, List<Integer> marblesInGoal, List<Integer[]> moveCombos, COLOR color)
+    {
+        for (Integer[] movecombo : moveCombos) {
+            if(makeSevenMoveAndTest(movecombo, marblesOnMain, marblesInGoal, color, 0, 0, 0)) return true;
+        }
+        return false;
+    }
+
+    private boolean isSevenMovePossibleOneGoal(List<Integer> marblesOnMain, List<Integer> marblesInGoal, List<Integer[]> moveCombos, COLOR color)
+    {
+        for (Integer[] movecombo : moveCombos) {
+            for (int maincount = 0; maincount < marblesOnMain.size(); maincount++) { //try every one on main to get into a goal
+                if(makeSevenMoveAndTest(movecombo, marblesOnMain, marblesInGoal, color, 1, maincount, 0)) return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isSevenMovePossibleTwoGoal(List<Integer> marblesOnMain, List<Integer> marblesInGoal, List<Integer[]> moveCombos, COLOR color)
+    {
+        if(marblesOnMain.size() < 2) return false;
+
+        for (Integer[] movecombo : moveCombos) {
+
+            // permutations of what 2 marbles should go in a goal state
+            // yes, you see correctly. more for loops
+            for (int maincount = 0; maincount < marblesOnMain.size(); maincount++) {
+                for (int offcount = maincount + 1; offcount < marblesOnMain.size(); offcount++) {
+                    if(makeSevenMoveAndTest(movecombo, marblesOnMain, marblesInGoal, color, 2, maincount, offcount)) return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * This method is pretty heavy, try to call it as little as possible
+     * It checks if for a color and a card, any move is possible given the current
+     * board state.
+     */
+    public boolean isAnyMovePossible(Card card, COLOR col) {
+        // marble color
+        MARBLE searchedMarbleCol = MARBLE.NONE;
+        ArrayList<MARBLE> colGoal = new ArrayList<>();
+
+        //set the goal array correctly
+        switch (col) {
+            case YELLOW:
+                searchedMarbleCol = MARBLE.YELLOW;
+                colGoal = new ArrayList<>(_yellowGoal);
+                break;
+            case GREEN:
+                searchedMarbleCol = MARBLE.GREEN;
+                colGoal = new ArrayList<>(_greenGoal);
+                break;
+            case RED:
+                searchedMarbleCol = MARBLE.RED;
+                colGoal = new ArrayList<>(_redGoal);
+                break;
+            case BLUE:
+                searchedMarbleCol = MARBLE.BLUE;
+                colGoal = new ArrayList<>(_blueGoal);
+                break;
+        }
+
+        // get the marbles of color
+        ArrayList<Integer> marblesOnMain = new ArrayList<>();
+        ArrayList<Integer> marblesInGoal = new ArrayList<>();
+
+        for (int i = 0; i < _mainCircle.size(); i++) {
+            if (_mainCircle.get(i) == searchedMarbleCol)
+                marblesOnMain.add(i);
+        }
+
+        for (int i = 0; i < colGoal.size(); i++) {
+            if (colGoal.get(i) == searchedMarbleCol)
+                marblesInGoal.add(i);
+        }
+
+        // make a new move with the card
+        Move m = new Move();
+        m.set_card(card);
+        m.set_color(col);
+
+        List<Integer> allMoveValues = getMoveValuesBasedOnCard(card); //all except Joker and 7, since they are not fixed
+
+        if(allMoveValues.size() != 0) //maybe some valid generic move
+        {
+            if(isGenericMovePossible(marblesOnMain, allMoveValues, card, col)) return true;
+            if(isGenericGoalMovePossible(marblesOnMain, allMoveValues, card, col)) return true;
+            if(isGoalToGoalMovePossible(marblesInGoal, allMoveValues, card, col)) return true;
+            if(isJackMovePossible(marblesOnMain, allMoveValues, card, col, searchedMarbleCol)) return true;
+            if(isStartMovePossible(card, col)) return true;
+        }
+
+        // try 7 move. OH, GOD
+        if (card.getValue() == CARDVALUE.SEVEN) {
+            if (isAnySevenMovePossible(marblesOnMain, marblesInGoal, col)) return true;
+        }
+
+        // try joker move
+        if (card.getValue() == CARDVALUE.JOKER) {
+            if(isJokerMovePossible(col)) return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * These submethods are an utter mess. Keep your sanity and do not even try to look at them.
+     * The complexity is about O(5n^6), so if you want to improve this, feel free.
+     * For better overview just add your hours wasted here
+     * HoursWasted = 7;
+     */
+    private boolean isAnySevenMovePossible(ArrayList<Integer> marblesOnMain, ArrayList<Integer> marblesInGoal, COLOR col) {
+        // try all possible splits
+        List<Integer[]> allPossibilites = getMoveComboPermutations();
+
         // now we have all possible splits in all permutations possible
 
         // 0 moves into a goal
-        for (Integer[] movecombo : allPossibilites) {
-
-            // move init
-            Move sevenmove = new Move();
-            sevenmove.set_color(col);
-            Card c = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
-            sevenmove.set_card(c);
-
-            ArrayList<Integer> fromPos = new ArrayList<>();
-            ArrayList<Integer> toPos = new ArrayList<>();
-            ArrayList<Boolean> fromInGoal = new ArrayList<Boolean>();
-            ArrayList<Boolean> toInGoal = new ArrayList<Boolean>();
-
-            int marbleCount = 0;
-            // assign to all marbles
-            for (int i = 0; i < marblesOnMain.size(); i++) {
-                fromPos.add(marblesOnMain.get(i));
-                toPos.add(getIndexAfterDistance(marblesOnMain.get(i), movecombo[marbleCount]));
-                fromInGoal.add(false);
-                toInGoal.add(false);
-                marbleCount++;
-            }
-            for (int i = 0; i < marblesInGoal.size(); i++) {
-                fromPos.add(marblesInGoal.get(i));
-                toPos.add(marblesInGoal.get(i) + movecombo[marbleCount]);
-                fromInGoal.add(true);
-                toInGoal.add(true);
-                marbleCount++;
-            }
-
-            boolean addsTo7 = true;
-
-            for (int i = marbleCount; i < 4; i++) {
-                if (movecombo[i] != 0) {
-                    // invalid, as it does not sum up to 7 then.
-                    addsTo7 = false;
-                }
-            }
-
-            if (addsTo7) {
-                sevenmove.set_fromPos(fromPos);
-                sevenmove.set_toPos(toPos);
-                sevenmove.set_fromPosInGoal(fromInGoal);
-                sevenmove.set_toPosInGoal(toInGoal);
-
-                // try the move
-                try {
-                    if (isValidMove(sevenmove))
-                        return true;
-                } catch (InvalidMoveException e) {
-                    // do nothing here
-                    // ik this is terrible, but our move is always well-formed in this case
-                }
-            }
-        }
+        if(isSevenMovePossibleZeroGoal(marblesOnMain, marblesInGoal, allPossibilites, col)) return true;
 
         // 1 move into a goal
-        for (Integer[] movecombo : allPossibilites) {
-
-            for (int maincount = 0; maincount < marblesOnMain.size(); maincount++) {
-
-                // move init
-                Move sevenmove = new Move();
-                sevenmove.set_color(col);
-                Card c = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
-                sevenmove.set_card(c);
-
-                ArrayList<Integer> fromPos = new ArrayList<>();
-                ArrayList<Integer> toPos = new ArrayList<>();
-                ArrayList<Boolean> fromInGoal = new ArrayList<Boolean>();
-                ArrayList<Boolean> toInGoal = new ArrayList<Boolean>();
-
-                int marbleCount = 0;
-
-                // assign to all marbles
-                for (int i = 0; i < marblesOnMain.size(); i++) {
-                    fromPos.add(marblesOnMain.get(i));
-                    toPos.add(getIndexAfterDistance(marblesOnMain.get(i), movecombo[marbleCount]));
-                    fromInGoal.add(false);
-                    toInGoal.add(i == maincount ? true : false);
-                    marbleCount++;
-                }
-                for (int i = 0; i < marblesInGoal.size(); i++) {
-                    fromPos.add(marblesInGoal.get(i));
-                    toPos.add(marblesInGoal.get(i) + movecombo[marbleCount]);
-                    fromInGoal.add(true);
-                    toInGoal.add(true);
-                    marbleCount++;
-                }
-
-                boolean addsTo7 = true;
-
-                for (int i = marbleCount; i < 4; i++) {
-                    if (movecombo[i] != 0) {
-                        // invalid, as it does not sum up to 7 then.
-                        addsTo7 = false;
-                    }
-                }
-
-                if (addsTo7) {
-                    sevenmove.set_fromPos(fromPos);
-                    sevenmove.set_toPos(toPos);
-                    sevenmove.set_fromPosInGoal(fromInGoal);
-                    sevenmove.set_toPosInGoal(toInGoal);
-
-                    // try the move
-                    try {
-                        if (isValidMove(sevenmove))
-                            return true;
-                    } catch (InvalidMoveException e) {
-                        // do nothing here
-                        // ik this is terrible, but our move is always well-formed in this case
-                    }
-                }
-            }
-
-        }
+        if(isSevenMovePossibleOneGoal(marblesOnMain, marblesInGoal, allPossibilites, col)) return true;
 
         // 2 moves into a goal
-        if (marblesOnMain.size() >= 2) {
-            for (Integer[] movecombo : allPossibilites) {
+        if(isSevenMovePossibleTwoGoal(marblesOnMain, marblesInGoal, allPossibilites, col)) return true;
 
-                // permutations of what 2 marbles should go in a goal state
-                // yes, you see correctly. more for loops
-                for (int maincount = 0; maincount < marblesOnMain.size(); maincount++) {
-                    for (int offcount = maincount + 1; offcount < marblesInGoal.size(); offcount++) {
-
-                        // move init
-                        Move sevenmove = new Move();
-                        sevenmove.set_color(col);
-                        Card c = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
-                        sevenmove.set_card(c);
-
-                        ArrayList<Integer> fromPos = new ArrayList<>();
-                        ArrayList<Integer> toPos = new ArrayList<>();
-                        ArrayList<Boolean> fromInGoal = new ArrayList<Boolean>();
-                        ArrayList<Boolean> toInGoal = new ArrayList<Boolean>();
-
-                        int marbleCount = 0;
-
-                        // assign to all marbles
-                        for (int i = 0; i < marblesOnMain.size(); i++) {
-                            fromPos.add(marblesOnMain.get(i));
-                            toPos.add(getIndexAfterDistance(marblesOnMain.get(i), movecombo[marbleCount]));
-                            fromInGoal.add(false);
-                            toInGoal.add(i == maincount || i == offcount ? true : false);
-                            marbleCount++;
-                        }
-                        for (int i = 0; i < marblesInGoal.size(); i++) {
-                            fromPos.add(marblesInGoal.get(i));
-                            toPos.add(marblesInGoal.get(i) + movecombo[marbleCount]);
-                            fromInGoal.add(true);
-                            toInGoal.add(true);
-                            marbleCount++;
-                        }
-
-                        boolean addsTo7 = true;
-
-                        for (int i = marbleCount; i < 4; i++) {
-                            if (movecombo[i] != 0) {
-                                // invalid, as it does not sum up to 7 then.
-                                addsTo7 = false;
-                            }
-                        }
-
-                        if (addsTo7) {
-                            sevenmove.set_fromPos(fromPos);
-                            sevenmove.set_toPos(toPos);
-                            sevenmove.set_fromPosInGoal(fromInGoal);
-                            sevenmove.set_toPosInGoal(toInGoal);
-
-                            // try the move
-                            try {
-                                if (isValidMove(sevenmove))
-                                    return true;
-                            } catch (InvalidMoveException e) {
-                                // do nothing here
-                                // ik this is terrible, but our move is always well-formed in this case
-                            }
-                        }
-                    }
-                }
-            }
-        }
         // more than 2 moves into a goal with a 7 is not possible
-
         return false;
     }
 
