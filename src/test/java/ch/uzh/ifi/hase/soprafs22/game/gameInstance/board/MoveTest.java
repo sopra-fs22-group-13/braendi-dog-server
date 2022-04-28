@@ -13,6 +13,8 @@ import ch.uzh.ifi.hase.soprafs22.game.constants.CARDVALUE;
 import ch.uzh.ifi.hase.soprafs22.game.constants.CARDSUITE;
 import ch.uzh.ifi.hase.soprafs22.game.constants.MARBLE;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.RepetitionInfo;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -209,6 +211,7 @@ public class MoveTest {
         try {
             board.makeStartingMove(COLOR.RED); // move marble to start
 
+            //todo @Shitao, this should fail, but because you cannot reach a goal from a blocked
             // goal too far --> wrong move distance
             fromPos = new ArrayList<>(Arrays.asList(0));
             toPos = new ArrayList<>(Arrays.asList(2));
@@ -261,7 +264,7 @@ public class MoveTest {
         }
     }
 
-    //@Test
+    @Test
     void invalidAceFromToGoal() {
         _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -398,7 +401,7 @@ public class MoveTest {
         }
     }
 
-    //@Test
+    @Test
     void invalidKingToGoal() {
         _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -426,12 +429,13 @@ public class MoveTest {
             toPosInGoal = new ArrayList<>(Arrays.asList(true));
             move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
             assertFalse(board.isValidMove(move));
+
         } catch (Exception e) {
             System.out.println(e + " | should not throw this exception");
         }
     }
 
-    //@Test
+    @Test
     void invalidKingFromToGoal() {
         _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -450,8 +454,17 @@ public class MoveTest {
             fromPosInGoal = new ArrayList<>(Arrays.asList(true));
             toPosInGoal = new ArrayList<>(Arrays.asList(true));
             move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
-            assertFalse(board.isValidMove(move));
-        } catch (InvalidMoveException e) {
+
+            try{
+                board.isValidMove(move);
+                //or if it does catch the error, we should at least have a false
+                assertFalse(board.isValidMove(move));
+
+            } catch (IndexOutOfBoundsException | InvalidMoveException e)
+            {
+                //good
+            }
+        } catch (Exception e) {
             fail("Should not throw exception");
         }
     }
@@ -724,6 +737,153 @@ public class MoveTest {
             toPosInGoal = new ArrayList<>(Arrays.asList(false));
             move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
             assertTrue(board.isValidMove(move));
+
+            // test for ace 1
+            _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(1));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+
+            // test for ace 2
+            _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(11));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+
+            // test for king
+            _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(13));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+
+        } catch (InvalidMoveException e) {
+            fail("Should not throw exception");
+        }
+    }
+
+    @Test
+    void invalidRegularBackwardsMove() {
+        _color = COLOR.RED;
+        try {
+            board.makeStartingMove(COLOR.RED); // move first marble to start
+
+            // test for 2
+            _card = new Card(CARDVALUE.TWO, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(62));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            // test for 3
+            _card = new Card(CARDVALUE.THREE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(61));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            // test for 5
+            _card = new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(59));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            // test for 6
+            _card = new Card(CARDVALUE.SIX, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(58));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            // test for 8
+            _card = new Card(CARDVALUE.EIGHT, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(56));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            // test for 9
+            _card = new Card(CARDVALUE.NINE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(55));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            // test for 10
+            _card = new Card(CARDVALUE.TEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(54));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            // test for queen
+            _card = new Card(CARDVALUE.QUEEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(52));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            // test for ace 1
+            _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(63));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            // test for ace 2
+            _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(53));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            // test for king
+            _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(51));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            // test for wrong distance
+            _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(52));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
         }
@@ -881,6 +1041,349 @@ public class MoveTest {
         }
     }
 
-    //@Test
+    // testing awkward moves
+
+    boolean createBasicMove(CARDVALUE cardvalue,Integer startIndex, Integer endIndex, boolean toGoal)
+    {
+        return createBasicMove(cardvalue, startIndex, endIndex, toGoal, false);
+    }
+
+    boolean createBasicMove(CARDVALUE cardvalue,Integer startIndex, Integer endIndex, boolean toGoal, boolean fromGoal)
+    {
+        _card = new Card(cardvalue, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+        fromPos = new ArrayList<>(Arrays.asList(startIndex));
+        toPos = new ArrayList<>(Arrays.asList(endIndex));
+        fromPosInGoal = new ArrayList<>(Arrays.asList(fromGoal));
+        toPosInGoal = new ArrayList<>(Arrays.asList(toGoal));
+        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+
+        boolean success = false;
+        try{
+            success = board.isValidMove(move);
+        }catch (InvalidMoveException e)
+        {
+            fail("Should not throw an exception");
+        }
+
+        return success;
+    }
+
+    void moveMarble(Integer from, Integer to, boolean fromGoal, boolean toGoal)
+    {
+        fromPos = new ArrayList<>(Arrays.asList(from));
+        toPos = new ArrayList<>(Arrays.asList(to));
+        fromPosInGoal = new ArrayList<>(Arrays.asList(fromGoal));
+        toPosInGoal = new ArrayList<>(Arrays.asList(toGoal));
+        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, null, "token", _color);
+        try{
+            board.makeMove(move);
+        } catch (Exception e)
+        {
+            fail("Exception while making a move");
+        }
+    }
+
+    int getCardDistance(CARDVALUE cardvalue){
+        switch (cardvalue) {
+            case TWO:
+                return 2;
+            case THREE:
+                return 3;
+            case FIVE:
+                return 5;
+            case SIX:
+                return 6;
+            case EIGHT:
+                return 8;
+            case NINE:
+                return 9;
+            case TEN:
+                return 10;
+            case QUEEN:
+                return 12;
+            case KING:
+                return 13;
+            case ACE:
+                return 1;
+            default:
+                return -1;
+                //the 7, 4 and Joker are differently tested) {
+        }
+    }
+
+    //Blocked
+    @Test
+    void testCannotOvertakeBlocked()
+    {
+        try{
+            _color = COLOR.RED;
+            board.makeStartingMove(COLOR.RED);
+
+            //move back
+            moveMarble(0, 60, false, false);
+
+            //block again
+            board.makeStartingMove(COLOR.RED);
+
+
+            //move should not be possible now
+            boolean success = createBasicMove(CARDVALUE.KING, 60, 9, false);
+            assertFalse(success);
+
+            //unblock
+            moveMarble(0, 1, false, false);
+
+            //now the move should work
+            boolean successUnblocked = createBasicMove(CARDVALUE.KING, 60, 9, false);
+            assertTrue(successUnblocked);
+        }catch (Exception e)
+        {
+            fail("Should not throw here.");
+        }
+    }
+
+    @Test
+    void testCannotOvertakeBlockedBackwards()
+    {
+        try{
+            _color = COLOR.RED;
+            board.makeStartingMove(COLOR.RED);
+
+            //move back
+            moveMarble(0, 2, false, false);
+
+            //block again
+            board.makeStartingMove(COLOR.RED);
+
+            //move should not be possible now
+            boolean success = createBasicMove(CARDVALUE.FOUR, 2, 62, false);
+            assertFalse(success);
+
+            //unblock
+            moveMarble(0, 1, false, false);
+
+            //now the move should work
+            boolean successUnblocked = createBasicMove(CARDVALUE.FOUR, 2, 62, false);
+            assertTrue(successUnblocked);
+
+            //this block should not impair
+            board.makeStartingMove(COLOR.GREEN);
+            //move should still work
+            boolean successUnblockedIrrelevant = createBasicMove(CARDVALUE.KING, 2, 62, false);
+            assertTrue(successUnblockedIrrelevant);
+
+        }catch (Exception e)
+        {
+            fail("Should not throw here.");
+        }
+    }
+
+    @Test
+    void testCannotOvertakeBlockedToGoal()
+    {
+        try{
+            _color = COLOR.RED;
+            board.makeStartingMove(COLOR.RED);
+
+            //move back
+            moveMarble(0, 60, false, false);
+
+            //block again
+            board.makeStartingMove(COLOR.RED);
+
+
+            //move should not be possible now
+            boolean success = createBasicMove(CARDVALUE.EIGHT, 60, 3, true);
+            assertFalse(success);
+
+            //unblock
+            moveMarble(0, 1, false, false);
+
+            //now the move should work
+            boolean successUnblocked = createBasicMove(CARDVALUE.EIGHT, 60, 3, true);
+            assertTrue(successUnblocked);
+        }catch (Exception e)
+        {
+            fail("Should not throw here.");
+        }
+    }
+
+    @Test
+    void testCannotLandOnBlocked()
+    {
+        try{
+            _color = COLOR.GREEN;
+            board.makeStartingMove(COLOR.GREEN);
+
+            //move back
+            moveMarble(32, 30, false, false);
+
+            //block again
+            board.makeStartingMove(COLOR.GREEN);
+
+            //this should not impair
+            board.makeStartingMove(COLOR.BLUE);
+
+            //move should not be possible now
+            boolean success = createBasicMove(CARDVALUE.TWO, 30, 32, false);
+            assertFalse(success);
+
+            //unblock
+            moveMarble(0, 1, false, false);
+
+            //now the move should work
+            boolean successUnblocked = createBasicMove(CARDVALUE.TWO, 30, 32, false);
+            assertTrue(successUnblocked);
+        }catch (Exception e)
+        {
+            fail("Should not throw here.");
+        }
+    }
+
+    @Test
+    void cannotRunBackwardsIntoGoal()
+    {
+        try{
+            _color = COLOR.RED;
+            board.makeStartingMove(COLOR.RED);
+
+            //move back
+            moveMarble(0, 2, false, false);
+
+            //just doubleCheck, this should work
+            board.makeStartingMove(COLOR.RED);
+            moveMarble(0, 62, false, false);
+            boolean successPre1 = createBasicMove(CARDVALUE.FOUR, 62, 2, true); //wrong index
+            assertFalse(successPre1);
+            boolean successPre2 = createBasicMove(CARDVALUE.FOUR, 62, 1, true);
+            assertTrue(successPre2);
+
+            //but this should not be possible
+            boolean success = createBasicMove(CARDVALUE.FOUR, 2, 1, true);
+            assertFalse(success);
+        }catch (Exception e)
+        {
+            fail("Should not throw here.");
+        }
+    }
+
+    @Test
+    void cannotRunDirectlyIntoGoal()
+    {
+        try{
+            _color = COLOR.RED;
+            board.makeStartingMove(COLOR.RED);
+
+            //do NOT move back
+            //moveMarble(0, 2, false, false);
+
+            //this should not be possible
+            boolean success1 = createBasicMove(CARDVALUE.ACE, 0, 0, true);
+            assertFalse(success1);
+
+            boolean success2 = createBasicMove(CARDVALUE.TWO, 0, 1, true);
+            assertFalse(success2);
+
+            boolean success3 = createBasicMove(CARDVALUE.FOUR, 0, 3, true);
+            assertFalse(success3);
+
+        }catch (Exception e)
+        {
+            fail("Should not throw here.");
+        }
+    }
+
+    //Overtaking in goal
+    @Test
+    void cannotOvertakeInGoal()
+    {
+        try{
+            _color = COLOR.RED;
+
+            //move back
+            board.makeStartingMove(COLOR.RED);
+            moveMarble(0, 62, false, false);
+
+            //move should be possible
+            boolean success = createBasicMove(CARDVALUE.SIX, 62, 3, true);
+            assertTrue(success);
+
+            //move blocker to goal
+            board.makeStartingMove(COLOR.RED);
+            moveMarble(0, 2, false, true);
+
+            //now the move should not work
+            boolean successBlocked = createBasicMove(CARDVALUE.SIX, 62, 3, true);
+            assertFalse(successBlocked);
+        }catch (Exception e)
+        {
+            fail("Should not throw here.");
+        }
+    }
+
+    @Test
+    void cannotMoveBackInGoal()
+    {
+        try{
+            _color = COLOR.RED;
+
+            //move back
+            board.makeStartingMove(COLOR.RED);
+            moveMarble(0, 3, false, true);
+
+            //move should not be possible
+            boolean success = createBasicMove(CARDVALUE.FOUR, 3, 0, true, true);
+            assertFalse(success);
+        }catch (Exception e)
+        {
+            fail("Should not throw here.");
+        }
+    }
+
+    //Joker
+
+    //not so sure about this here
+    @RepeatedTest(13)
+    void validAllMovesForAJoker(RepetitionInfo repetitionInfo)
+    {
+        CARDVALUE c = CARDVALUE.values()[repetitionInfo.getCurrentRepetition()];
+
+        int dist = getCardDistance(c);
+        if(dist != -1)
+        {
+            //just a generic move should work
+            boolean success = createBasicMove(c, 0, getCardDistance(c), false);
+            assertTrue(success);
+
+            //just a generic goal move should also work
+
+            dist = dist - 1;
+            //now go back
+            int start = 64 - dist;
+            if(start == 64) start = 0;
+
+            boolean successGoal = createBasicMove(c, start, 0, true);
+            assertTrue(successGoal);
+        }
+    }
+
+    @Test
+    void validJokerStartMove()
+    {
+        _card = new Card(CARDVALUE.JOKER, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+        _color = COLOR.RED;
+
+        try {
+            fromPos = new ArrayList<>(Arrays.asList(-1));
+            toPos = new ArrayList<>(Arrays.asList(0));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            // test starting move
+            assertTrue(board.isValidMove(move));
+        } catch (InvalidMoveException e) {
+            fail("Should not throw exception");
+        }
+    }
     
 }
