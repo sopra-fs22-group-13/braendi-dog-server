@@ -815,7 +815,7 @@ public class Board implements IBoard {
         return false;
     }
 
-    private boolean isJackMovePossible(List<Integer> marblesOnMain, List<Integer> moveValues, Card card, COLOR color, MARBLE searchedMarbleCol)
+    private boolean isJackMovePossible(List<Integer> marblesOnMain, Card card, COLOR color, MARBLE searchedMarbleCol)
     {
         // make a new move with the card
         Move m = new Move();
@@ -1119,9 +1119,12 @@ public class Board implements IBoard {
             if(isGenericMovePossible(marblesOnMain, allMoveValues, card, col)) return true;
             if(isGenericGoalMovePossible(marblesOnMain, allMoveValues, card, col)) return true;
             if(isGoalToGoalMovePossible(marblesInGoal, allMoveValues, card, col)) return true;
-            if(isJackMovePossible(marblesOnMain, allMoveValues, card, col, searchedMarbleCol)) return true;
             if(isStartMovePossible(card, col)) return true;
         }
+
+        //jack
+        if(isJackMovePossible(marblesOnMain, card, col, searchedMarbleCol)) return true;
+
 
         // try 7 move. OH, GOD
         if (card.getValue() == CARDVALUE.SEVEN) {

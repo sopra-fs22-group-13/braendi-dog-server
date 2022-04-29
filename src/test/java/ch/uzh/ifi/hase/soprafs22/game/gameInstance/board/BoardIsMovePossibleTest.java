@@ -206,7 +206,7 @@ public class BoardIsMovePossibleTest {
         try{
             _b.makeStartingMove(COLOR.RED);
             _b.makeStartingMove(COLOR.BLUE);
-            makeMove(0,13);
+            makeMove(0,14);
 
         }catch (InvalidMoveException e){
             fail();
