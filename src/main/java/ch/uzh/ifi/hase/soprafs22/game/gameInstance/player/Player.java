@@ -48,11 +48,11 @@ public class Player {
     }
 
     public Card getCartValueInIndexHand(int i){
-        return _hand.get(i);
-    }
-
-    public COLOR getTurn() {
-        return this._turn;
+        try {
+            return _hand.get(i);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
      public void removeAllCard(){

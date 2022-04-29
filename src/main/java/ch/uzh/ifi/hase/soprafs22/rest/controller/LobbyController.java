@@ -62,7 +62,6 @@ public class LobbyController {
     @ResponseBody
     public LobbyGetDTO createLobby(HttpServletRequest request) {
         User user = userService.checkIfLoggedIn(request);
-        if (user.isInLobby()) throw new ResponseStatusException(HttpStatus.CONFLICT, "You are already in a lobby.");
 
         int lobbyID = lobbyManager.openLobby(user.getToken());
 
@@ -104,7 +103,6 @@ public class LobbyController {
         User client = userService.checkIfLoggedIn(request);
         User invitee = userService.getUserById(invitationPutDTO.getInviteeID());
         if (invitee == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The player you're trying to invite doesn't exist");
-        if (invitee.isInLobby()) throw new ResponseStatusException(HttpStatus.CONFLICT, "This player is already in a lobby");
 
         lobbyManager.invitePlayer(lobbyID, client.getToken(), invitee.getToken());
     }

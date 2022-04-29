@@ -48,7 +48,6 @@ public class Lobby {
         for (int i=0; i < players.size(); i++) {
             if (players.get(i) == null) {
                 players.set(i, newPlayer);
-                newPlayer.setInLobby(true);
                 return i+1;
             }
         }
@@ -69,10 +68,6 @@ public class Lobby {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public User getOwner() {
