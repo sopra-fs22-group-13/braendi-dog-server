@@ -31,22 +31,24 @@ class LobbyManagerTest {
         owner = new User();
         owner.setUsername(RandomString.make(6));
         owner.setPassword(RandomString.make(10));
-        owner = userService.createUser(owner);
+        owner = userService.getUserByToken(userService.createUser(owner).getToken());
 
         invitee = new User();
         invitee.setUsername(RandomString.make(6));
         invitee.setPassword(RandomString.make(10));
-        invitee = userService.createUser(invitee);
+        invitee = userService.getUserByToken(userService.createUser(invitee).getToken());
     }
 
 
     @Test
     public void creationTest() {
         Lobby newLobby = lobbyManager.getLobbyByID(lobbyManager.openLobby(owner.getToken()));
-        owner.setInLobby(true);
 
         assertThat(owner).usingRecursiveComparison().isEqualTo(newLobby.getOwner());
         assertEquals(newLobby, lobbyManager.getLobbyByID(newLobby.getId()));
+        assertTrue(lobbyManager.isInLobby(owner));
+
+        assertThrows(ResponseStatusException.class, () -> lobbyManager.openLobby(owner.getToken()));
     }
 
     @Test
@@ -73,28 +75,33 @@ class LobbyManagerTest {
         Lobby newLobby = lobbyManager.getLobbyByID(lobbyID);
         lobbyManager.invitePlayer(lobbyID, owner.getToken(), invitee.getToken());
         lobbyManager.inviteResponse(lobbyID, invitee.getToken(), true);
-        invitee.setInLobby(true);
-        owner.setInLobby(true);
 
         assertEquals(2, newLobby.getPlayers().size());
         assertSameUserList(List.of(owner, invitee), newLobby.getPlayers());
         assertTrue(newLobby.getPendingInvites().isEmpty());
+        assertTrue(lobbyManager.isInLobby(invitee));
 
         //negative response
         User anotherInvitee = new User();
         anotherInvitee.setUsername(RandomString.make(6));
         anotherInvitee.setPassword(RandomString.make(10));
-        anotherInvitee = userService.createUser(anotherInvitee);
+        anotherInvitee = userService.getUserByToken(userService.createUser(anotherInvitee).getToken());
         lobbyManager.invitePlayer(lobbyID, owner.getToken(), anotherInvitee.getToken());
         lobbyManager.inviteResponse(lobbyID, anotherInvitee.getToken(), false);
 
         assertEquals(2, newLobby.getPlayers().size());
         assertSameUserList(List.of(owner, invitee), newLobby.getPlayers());
         assertTrue(newLobby.getPendingInvites().isEmpty());
+        assertFalse(lobbyManager.isInLobby(anotherInvitee));
 
         //user that isn't invited wants to accept an invite
         User nonInvitee = new User();
-        assertThrows(ResponseStatusException.class, () -> lobbyManager.inviteResponse(lobbyID, nonInvitee.getToken(), true));
+        nonInvitee.setUsername(RandomString.make(6));
+        nonInvitee.setPassword(RandomString.make(10));
+        nonInvitee = userService.getUserByToken(userService.createUser(nonInvitee).getToken());
+        String nonInvToken = nonInvitee.getToken();
+        assertThrows(ResponseStatusException.class, () -> lobbyManager.inviteResponse(lobbyID, nonInvToken, true));
+        assertFalse(lobbyManager.isInLobby(nonInvitee));
     }
 
     @Test
@@ -102,16 +109,9 @@ class LobbyManagerTest {
         Lobby newLobby = lobbyManager.getLobbyByID(lobbyManager.openLobby(owner.getToken()));
         Integer lobbyID = newLobby.getId();
 
-        //fill the lobby
-        User user2 = new User(); user2.setInLobby(true); newLobby.addPlayer(user2);
-        User user3 = new User(); user3.setInLobby(true); newLobby.addPlayer(user3);
-        User user4 = new User(); user4.setInLobby(true); newLobby.addPlayer(user4);
-
         lobbyManager.closeLobby(lobbyID);
         assertNull(lobbyManager.getLobbyByID(lobbyID));
-        for (User user: newLobby.getPlayers()) {
-            assertFalse(user.isInLobby());
-        }
+        assertFalse(lobbyManager.isInLobby(owner));
     }
 
     @Test

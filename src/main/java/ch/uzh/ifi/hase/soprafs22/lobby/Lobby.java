@@ -48,7 +48,6 @@ public class Lobby {
         for (int i=0; i < players.size(); i++) {
             if (players.get(i) == null) {
                 players.set(i, newPlayer);
-                newPlayer.setInLobby(true);
                 return i+1;
             }
         }

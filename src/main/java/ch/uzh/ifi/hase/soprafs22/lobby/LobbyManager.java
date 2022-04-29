@@ -27,14 +27,24 @@ public class LobbyManager {
 
 
     private final List<Lobby> openLobbies = new ArrayList<>();
+    private final List<User> playersInLobbies = new ArrayList<>();
+
+    protected boolean isInLobby(User user) {
+        for (User player: playersInLobbies) {
+            if (Objects.equals(player.getToken(), user.getToken())) return true;
+        }
+        return false;
+    }
 
 
     public Integer openLobby(String usertoken) {
         User owner = userRepository.findByToken(usertoken);
         if (owner == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't create lobby because couldn't find owner.");
+        if (isInLobby(owner)) throw new ResponseStatusException(HttpStatus.CONFLICT, "You are already in a lobby.");
 
         Lobby newLobby = new Lobby(owner);
         openLobbies.add(newLobby);
+        playersInLobbies.add(owner);
 
         updatePlayers(newLobby, UpdateType.LOBBY);
 
@@ -47,7 +57,7 @@ public class LobbyManager {
         openLobbies.remove(lobbyToBeDeleted);
 
         for (User user: lobbyToBeDeleted.getPlayers()) {
-            user.setInLobby(false);
+            playersInLobbies.remove(user);
         }
     }
 
@@ -75,7 +85,9 @@ public class LobbyManager {
             if (Objects.equals(player.getToken(), playertoken)) {
                 //adds the player who responded to the invite to the lobby if they accepted, removes them from the invites-list either way
                 if (response) {
+                    if (isInLobby(player)) throw new ResponseStatusException(HttpStatus.CONFLICT, "You are already in a lobby.");
                     lobby.addPlayer(player);
+                    playersInLobbies.add(player);
                     updatePlayers(lobby, UpdateType.LOBBY);
                 }
                 lobby.deleteInvite(player);
