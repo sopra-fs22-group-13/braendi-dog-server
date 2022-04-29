@@ -5,11 +5,10 @@ import ch.uzh.ifi.hase.soprafs22.game.constants.CARDTYPE;
 import ch.uzh.ifi.hase.soprafs22.game.constants.CARDVALUE;
 import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
-import org.assertj.core.util.Arrays;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +27,7 @@ class PlayerTest {
     @Test
     public void creationTest() {
         List<Player> players = List.of(player, new Player(COLOR.GREEN), new Player(COLOR.BLUE), new Player(COLOR.YELLOW));
-        for (int i=0; i<4; i++) assertEquals(COLOR.values()[i], players.get(i).getTurn());
+        for (int i=0; i<4; i++) assertEquals(COLOR.values()[i], players.get(i).getColor());
     }
 
     /**
@@ -87,5 +86,38 @@ class PlayerTest {
         player.addCard(new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS));
         player.addCard(new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS));
         assertEquals(3, player.getCardCount());
+    }
+
+    @Test
+    void handRemovalTest() {
+        player.addCard(new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS));
+        player.removeAllCard();
+        assertEquals(0, player.getCardCount());
+    }
+
+    @Test
+    void cardByIndexTest() {
+        Card card1 = new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
+        Card card2 = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
+        player.addCard(card1);
+        player.addCard(card2);
+
+        assertEquals(card1, player.getCartValueInIndexHand(0));
+        assertEquals(card2, player.getCartValueInIndexHand(1));
+        assertNull(player.getCartValueInIndexHand(2));
+        assertNull(player.getCartValueInIndexHand(-1));
+    }
+
+    @Test
+    void formattedHandTest() {
+        Card card1 = new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
+        Card card2 = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
+        player.addCard(card1);
+        player.addCard(card2);
+
+        ArrayList<String> formatted = new ArrayList<>();
+        formatted.add(card1.getFormatted());
+        formatted.add(card2.getFormatted());
+        assertEquals(player.getFormattedCards(), formatted);
     }
 }
