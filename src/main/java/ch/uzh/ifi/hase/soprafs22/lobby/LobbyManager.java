@@ -21,9 +21,9 @@ import java.util.Objects;
 
 public class LobbyManager {
 
-    private final GameCreator gameCreator = new GameCreator();
+    protected GameCreator gameCreator = new GameCreator();
     private final UserRepository userRepository = SpringContext.getBean(UserRepository.class);
-    private final IUpdateController updateController = SpringContext.getBean(UpdateController.class);
+    protected IUpdateController updateController = SpringContext.getBean(UpdateController.class);
 
 
     private final List<Lobby> openLobbies = new ArrayList<>();
@@ -43,17 +43,12 @@ public class LobbyManager {
 
     public void closeLobby(Integer lobbyID) {
         Lobby lobbyToBeDeleted = getLobbyByID(lobbyID);
-        List<User> players = lobbyToBeDeleted.getPlayers();
 
         openLobbies.remove(lobbyToBeDeleted);
 
-        /** TODO
-         * Not sure how this works in this case. Needs to be done before this method is actually usable.
-         */
-        /*
-        UpdateDTO updateDTO = new UpdateDTO(updateType, "");
-        for (User player: players) updateController.sendUpdateToUser(player.getToken(), updateDTO);
-         */
+        for (User user: lobbyToBeDeleted.getPlayers()) {
+            user.setInLobby(false);
+        }
     }
 
 
@@ -115,6 +110,8 @@ public class LobbyManager {
         String json = String.format("{\"gameToken\": \"%s\"}", newGameToken);
 
         updatePlayers(lobby, UpdateType.START, json);
+
+        closeLobby(lobbyID);
     }
 
 
