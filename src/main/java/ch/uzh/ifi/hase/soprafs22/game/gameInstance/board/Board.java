@@ -925,10 +925,10 @@ public class Board implements IBoard {
         List<Integer[]> allPossibilites = new ArrayList<>();
 
         // pyramid of dooooooooom.
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 7; j++) {
-                for (int k = 0; k < 7; k++) {
-                    for (int l = 0; l < 7; l++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                for (int k = 0; k < 8; k++) {
+                    for (int l = 0; l < 8; l++) {
                         if (i + j + k + l == 7) {
                             // theoretically valid, so add
                             Integer[] movecombo = { i, j, k, l };
@@ -964,7 +964,6 @@ public class Board implements IBoard {
         int marbleCount = 0;
         // assign to all marbles
         for (int i = 0; i < marblesOnMain.size(); i++) {
-            fromPos.add(marblesOnMain.get(i));
 
             //countToGoal destructor
             int toPosValue = -1;
@@ -986,17 +985,24 @@ public class Board implements IBoard {
             }
 
             //if it ends up OOB, that's fine. The validMove check will then just return false.
-            toPos.add(toPosValue);
-            fromInGoal.add(false);
-            toInGoal.add(toPosGoal);
+            if(toPosGoal != false || toPosValue != marblesOnMain.get(i))
+            {
+                fromPos.add(marblesOnMain.get(i));
+                toPos.add(toPosValue);
+                fromInGoal.add(false);
+                toInGoal.add(toPosGoal);
+            }
             marbleCount++;
         }
         //don't forget the goal, if it ends up OOB, that's fine. The validMove check will then just return false.
         for (int i = 0; i < marblesInGoal.size(); i++) {
-            fromPos.add(marblesInGoal.get(i));
-            toPos.add(marblesInGoal.get(i) + movecombo[marbleCount]);
-            fromInGoal.add(true);
-            toInGoal.add(true);
+            if(marblesInGoal.get(i) != marblesInGoal.get(i) + movecombo[marbleCount])
+            {
+                fromPos.add(marblesInGoal.get(i));
+                toPos.add(marblesInGoal.get(i) + movecombo[marbleCount]);
+                fromInGoal.add(true);
+                toInGoal.add(true);
+            }
             marbleCount++;
         }
 
@@ -1020,7 +1026,7 @@ public class Board implements IBoard {
         try {
             if (isValidMove(sevenmove))
                 return true;
-        } catch (InvalidMoveException e) {
+        } catch (InvalidMoveException | IndexOutOfBoundsException e) {
             // do nothing here
             // ik this is terrible, but our move is always well-formed in this case
         }
