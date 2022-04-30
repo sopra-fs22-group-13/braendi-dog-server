@@ -242,7 +242,7 @@ public class BoardIsMovePossibleTest {
 
     }
 
-    //@Test
+    @Test
     public void noStartingMovePossible()
     {
         try{
