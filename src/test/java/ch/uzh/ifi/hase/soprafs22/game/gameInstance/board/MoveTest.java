@@ -675,7 +675,15 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED); // move first marble to start
 
             fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(3));
+            toPos = new ArrayList<>(Arrays.asList(63));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            board.makeMove(move);
+
+
+            fromPos = new ArrayList<>(Arrays.asList(63));
+            toPos = new ArrayList<>(Arrays.asList(2));
             fromPosInGoal = new ArrayList<>(Arrays.asList(false));
             toPosInGoal = new ArrayList<>(Arrays.asList(true));
             move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
@@ -920,11 +928,18 @@ public class MoveTest {
         _color = COLOR.RED;
         try {
             board.makeStartingMove(COLOR.RED); // move first marble to start
+            _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(0));
+            toPos = new ArrayList<>(Arrays.asList(63));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            board.makeMove(move);
 
             // test for 2
             _card = new Card(CARDVALUE.TWO, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(1));
+            fromPos = new ArrayList<>(Arrays.asList(63));
+            toPos = new ArrayList<>(Arrays.asList(0));
             fromPosInGoal = new ArrayList<>(Arrays.asList(false));
             toPosInGoal = new ArrayList<>(Arrays.asList(true));
             move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
@@ -941,7 +956,7 @@ public class MoveTest {
 
             // test for 5
             _card = new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
+            fromPos = new ArrayList<>(Arrays.asList(63));
             toPos = new ArrayList<>(Arrays.asList(60));
             fromPosInGoal = new ArrayList<>(Arrays.asList(false));
             toPosInGoal = new ArrayList<>(Arrays.asList(false));
