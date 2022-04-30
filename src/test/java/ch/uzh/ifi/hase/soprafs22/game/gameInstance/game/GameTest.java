@@ -237,9 +237,9 @@ class GameTest {
             indexOfCurrentPlayer=3;
         }
         String _token=users.get(indexOfCurrentPlayer).getToken() ;
-        Integer noConte = null;
+        Integer noContent = null;
 
-        Move  _move= generateMove(_token, COLOR.BLUE, 2,noConte,false,false,CARDVALUE.FIVE,CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
+        Move  _move= generateMove(_token, COLOR.BLUE, 2, noContent,false,false,CARDVALUE.FIVE,CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
 
         InvalidMoveException exception = assertThrows(InvalidMoveException.class, () ->_g.playerMove(_move));
         assertEquals("WRONG_COLOR_TURN", exception.getCode());
