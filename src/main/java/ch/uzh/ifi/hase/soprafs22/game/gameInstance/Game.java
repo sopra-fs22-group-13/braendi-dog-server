@@ -176,6 +176,7 @@ public class Game {
 
         //if we reach this, a valid move was done
 
+
         // check if somebody won
         for (Player player:_players){
             if (_board.checkWinningCondition(player.getColor())) {
@@ -191,6 +192,7 @@ public class Game {
 
         // deal new cards until someone has a possible move
         updateValidTurnAllPlayers();
+        removeInvalidTurnCards();
         while(!someoneValidTurn()) {
             removeAndDealNewCards();
             updateValidTurnAllPlayers();
