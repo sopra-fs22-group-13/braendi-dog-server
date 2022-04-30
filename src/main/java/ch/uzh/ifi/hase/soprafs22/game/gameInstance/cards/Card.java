@@ -142,6 +142,7 @@ public class Card {
      * @return true if both cards are equal ignoring their references
      */
     public boolean equalsContent(Card card) {
+        if(this.value == CARDVALUE.JOKER && card.getValue() == CARDVALUE.JOKER) return true;
         return this.suite == card.getSuite() && this.type == card.getType() && this.value == card.getValue();
     }
 
