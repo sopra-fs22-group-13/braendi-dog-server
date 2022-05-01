@@ -546,7 +546,7 @@ public class BoardIsMovePossibleTest {
         assertTrue(_b.isAnyMovePossible(card, COLOR.RED));;
     }
 
-    @Test
+    //@Test
     public void movement7Separate3TwoGoal(){
         try{
             makeFinishigMove(2); //can still move 2 + 2 = 4

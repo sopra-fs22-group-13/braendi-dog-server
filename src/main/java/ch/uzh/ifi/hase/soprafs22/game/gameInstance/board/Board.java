@@ -1033,6 +1033,8 @@ public class Board implements IBoard {
 
         if(!addsTo7) return false;
 
+        //todo make every permutation of the move (since order can again be different) and try it.
+
         sevenmove.set_fromPos(fromPos);
         sevenmove.set_toPos(toPos);
         sevenmove.set_fromPosInGoal(fromInGoal);
