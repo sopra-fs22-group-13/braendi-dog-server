@@ -141,11 +141,6 @@ public class Game {
             throw new InvalidMoveException("WRONG_CARD", "Selected card is not in hand");
         }
 
-        // check if someone has a valid turn
-        updateValidTurnAllPlayers();
-        //remove the rest of the cards if someone does not have a valid turn left
-        removeInvalidTurnCards();
-
         // checks if the player can do something
         if  (_playersWithValidTurns.get(_indexWithCurrentTurn)) {
             //checks if move is logical right
@@ -161,7 +156,6 @@ public class Game {
                 }
                 //remove card from player hand
                 _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD,""));
                 _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.BOARD,""));
 
             }
@@ -192,7 +186,6 @@ public class Game {
 
         // deal new cards until someone has a possible move
         updateValidTurnAllPlayers();
-        removeInvalidTurnCards();
         while(!someoneValidTurn()) {
             removeAndDealNewCards();
             updateValidTurnAllPlayers();
@@ -205,7 +198,11 @@ public class Game {
 
         do{
            nextTurns();
+            //remove hand from this one if it cannot move
+            removeInvalidTurnCards();
         }while(!_playersWithValidTurns.get(_indexWithCurrentTurn));
+
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD,""));
 
         _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.TURN, String.format("{\"turn\": \"%s\"}", _players.get(_indexWithCurrentTurn).getColor())));
     }
@@ -351,12 +348,18 @@ public class Game {
 
     private void removeInvalidTurnCards()
     {
-        for (int i = 0; i < 4; i++) {
+/*        for (int i = 0; i < 4; i++) {
             if(_playersWithValidTurns.get(i) == false){
                 Player player= _players.get(i);
                 player.removeAllCard();
                 _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD,""));
             }
+        }*/
+
+        if(_playersWithValidTurns.get(_indexWithCurrentTurn) == false)
+        {
+            Player player = _players.get(_indexWithCurrentTurn);
+            player.removeAllCard();
         }
     }
 
