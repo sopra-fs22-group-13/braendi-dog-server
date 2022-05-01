@@ -1581,4 +1581,24 @@ public class MoveTest {
             fail("Should not throw this exception: " + e);
         }
     }
+    
+    @Test
+    void validSevenInbetween(){
+        _card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+        _color = COLOR.RED;
+
+        try{
+            board.makeStartingMove(COLOR.RED);
+            moveMarble(0, 1, false, false);
+            board.makeStartingMove(COLOR.RED);
+            fromPos = new ArrayList<>(Arrays.asList(1, 0));
+            toPos = new ArrayList<>(Arrays.asList(5, 3));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false, false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false, false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+        }catch(Exception e){
+            fail("Should not throw this exception: " + e);
+        }
+    }
 }
