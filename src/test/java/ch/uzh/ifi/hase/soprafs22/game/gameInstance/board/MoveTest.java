@@ -641,6 +641,66 @@ public class MoveTest {
         }
     }
 
+    @Test
+    void validSevenTwoInGoal() {
+        _card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+        _color = COLOR.RED;
+
+        try {
+            board.makeStartingMove(COLOR.RED); // move first marble to start
+            moveMarble(0, 1, false, true);
+            board.makeStartingMove(COLOR.RED); // move first marble to start
+            moveMarble(0, 0, false, true);
+            board.makeStartingMove(COLOR.BLUE);
+            board.makeStartingMove(COLOR.RED); // move first marble to start
+            moveMarble(0, 13, false, false);
+
+            fromPos = new ArrayList<>(Arrays.asList(1, 0, 13));
+            toPos = new ArrayList<>(Arrays.asList(3, 2, 15));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(true, true, false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(true, true, false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            moveMarble(13, 12, false, false); //this should work
+            fromPos = new ArrayList<>(Arrays.asList(1, 0, 12));
+            toPos = new ArrayList<>(Arrays.asList(3, 2, 15));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(true, true, false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(true, true, false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+
+        } catch (InvalidMoveException e) {
+            fail("Should not throw exception");
+        }
+    }
+
+    @Test
+    void validSevenOneInGoalOneToGoalOneNormal() {
+        _card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+        _color = COLOR.RED;
+
+        try {
+            board.makeStartingMove(COLOR.RED); // move first marble to start
+            moveMarble(0, 1, false, true);
+            board.makeStartingMove(COLOR.BLUE);
+            board.makeStartingMove(COLOR.RED); // move first marble to start
+            moveMarble(0, 13, false, false);
+            board.makeStartingMove(COLOR.RED); // move first marble to start
+            moveMarble(0, 62, false, false);
+
+            fromPos = new ArrayList<>(Arrays.asList(1, 62, 13));
+            toPos = new ArrayList<>(Arrays.asList(3, 0, 15));
+            fromPosInGoal = new ArrayList<>(Arrays.asList(true, false, false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(true, true, false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+
+        } catch (InvalidMoveException e) {
+            fail("Should not throw exception");
+        }
+    }
+
     // testing four moves
     @Test
     void validFourMove() {

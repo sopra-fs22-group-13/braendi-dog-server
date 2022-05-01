@@ -242,7 +242,7 @@ public class BoardIsMovePossibleTest {
 
     }
 
-    //@Test
+    @Test
     public void noStartingMovePossible()
     {
         try{
@@ -519,6 +519,51 @@ public class BoardIsMovePossibleTest {
         Card card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
         assertFalse(_b.isAnyMovePossible(card, COLOR.RED));
         makeMove(26,25);
+        assertTrue(_b.isAnyMovePossible(card, COLOR.RED));;
+    }
+
+
+    @Test
+    public void movement7Separate3OneGoal(){
+        try{
+            makeFinishigMove(1); //can still move 3
+            _b.makeStartingMove(COLOR.GREEN);
+            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.RED);
+            makeMove(0,15);
+            _b.makeStartingMove(COLOR.RED);
+            makeMove(0,14);
+            _b.makeStartingMove(COLOR.RED);
+            makeMove(0,29);
+
+        }
+        catch (InvalidMoveException e) {
+            fail();
+        }
+        Card card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
+        assertFalse(_b.isAnyMovePossible(card, COLOR.RED));
+        makeMove(29,28);
+        assertTrue(_b.isAnyMovePossible(card, COLOR.RED));;
+    }
+
+    @Test
+    public void movement7Separate3TwoGoal(){
+        try{
+            makeFinishigMove(2); //can still move 2 + 2 = 4
+            _b.makeStartingMove(COLOR.GREEN);
+            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.RED);
+            makeMove(0,14);
+            _b.makeStartingMove(COLOR.RED);
+            makeMove(0,30);
+
+        }
+        catch (InvalidMoveException e) {
+            fail();
+        }
+        Card card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
+        assertFalse(_b.isAnyMovePossible(card, COLOR.RED));
+        makeMove(30,29);
         assertTrue(_b.isAnyMovePossible(card, COLOR.RED));;
     }
 
