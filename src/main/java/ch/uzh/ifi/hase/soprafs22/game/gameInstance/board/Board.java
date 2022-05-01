@@ -804,7 +804,7 @@ public class Board implements IBoard {
                 // try a goal move from a goal
                 int toPos = marblesInGoal.get(i) + moveValues.get(j);
 
-                if(toPos < 0 || toPos >= 3)
+                if(toPos < 0 || toPos > 3)
                 {
                     //index out of bounds anyway
                     continue;

@@ -564,7 +564,7 @@ public class BoardIsMovePossibleTest {
         Card card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
         assertFalse(_b.isAnyMovePossible(card, COLOR.RED));
         makeMove(30,29);
-        assertTrue(_b.isAnyMovePossible(card, COLOR.RED));;
+        assertTrue(_b.isAnyMovePossible(card, COLOR.RED));
     }
 
     @Test
@@ -598,7 +598,7 @@ public class BoardIsMovePossibleTest {
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,13);
             _b.makeStartingMove(COLOR.RED);
-            makeMove(0,27);
+            makeMove(0,28);
 
         }
         catch (InvalidMoveException e) {
@@ -606,7 +606,7 @@ public class BoardIsMovePossibleTest {
         }
         Card card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT,CARDSUITE.CLUBS);
         assertFalse(_b.isAnyMovePossible(card, COLOR.RED));
-        makeMove(27,26);
+        makeMove(28,27);
         assertTrue(_b.isAnyMovePossible(card, COLOR.RED));;
     }
 
