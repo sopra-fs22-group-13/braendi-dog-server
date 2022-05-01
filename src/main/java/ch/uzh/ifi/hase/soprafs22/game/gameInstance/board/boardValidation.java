@@ -672,6 +672,11 @@ public class boardValidation {
         if (startPos == -1) {
             return false;
         }
+        if(move.get_toPosInGoal().get(0) == true || move.get_fromPosInGoal().get(0))
+        {
+            //cannot switch from or to goal
+            return false;
+        }
         // jack behaviour unclear yet: unclear on how front-end passes the move
         if (this._mainCircle.get(startPos) == MARBLE.NONE || this._mainCircle.get(endPos) == MARBLE.NONE
                 || marbleColor == this.getColorFromPosition(endPos)) {
@@ -816,13 +821,17 @@ public class boardValidation {
         for (int i = 0; i < startPos.size(); i++) {
             int start = startPos.get(i);
             int end = endPos.get(i);
-            if (blockedIntersect(move, start, end, true)) {
-                return false; // checking for blocked intersects
-            }
+
             if(move.get_toPosInGoal().get(i)){
+
                 if (!isValidGoalMove(startPos.get(i), endPos.get(i), move.get_fromPosInGoal().get(i), marbleColor.get(i))) {
                     return false; //checking for is valid goal move
                  }
+            }else
+            {
+                if (blockedIntersect(move, start, end, true)) {
+                    return false; // checking for blocked intersects
+                }
             }
             // make the move and check blocked again
             ArrayList<Integer> partStartPos = new ArrayList<>(Arrays.asList(start));
