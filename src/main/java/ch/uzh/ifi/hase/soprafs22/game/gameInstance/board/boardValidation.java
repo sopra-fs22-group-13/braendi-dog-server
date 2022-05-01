@@ -84,8 +84,8 @@ public class boardValidation {
             boolean startsInGoal = move.get_fromPosInGoal().get(i);
             boolean endsInGoal = move.get_toPosInGoal().get(i);
             // unblock if it was on an intersection
-            if(!startsInGoal){
-                switch(fromPos){
+            if (!startsInGoal) {
+                switch (fromPos) {
                     case REDINTERSECT:
                         REDBLOCKED = false;
                         break;
@@ -288,7 +288,6 @@ public class boardValidation {
         }
     }
 
-
     private COLOR getMarbleColor(Move move, int startPos) throws NoMarbleException {
         COLOR marbleColor;
         try {
@@ -322,25 +321,33 @@ public class boardValidation {
             COLOR marbleColor = getMarbleColor(move, startPos);
             switch (marbleColor) {
                 case RED:
-                    if (endPos == REDINTERSECT && !REDBLOCKED) {
+                    if (_redBase == 0) {
+                        return false;
+                    } else if (endPos == REDINTERSECT && !REDBLOCKED) {
                         return true;
                     } else {
                         return false;
                     }
                 case YELLOW:
-                    if (endPos == YELLOWINTERSECT && !YELLOWBLOCKED) {
+                    if (_yellowBase == 0) {
+                        return false;
+                    } else if (endPos == YELLOWINTERSECT && !YELLOWBLOCKED) {
                         return true;
                     } else {
                         return false;
                     }
                 case GREEN:
-                    if (endPos == GREENINTERSECT && !GREENBLOCKED) {
+                    if (_greenBase == 0) {
+                        return false;
+                    } else if (endPos == GREENINTERSECT && !GREENBLOCKED) {
                         return true;
                     } else {
                         return false;
                     }
                 case BLUE:
-                    if (endPos == BLUEINTERSECT && !BLUEBLOCKED) {
+                    if (_blueBase == 0) {
+                        return false;
+                    } else if (endPos == BLUEINTERSECT && !BLUEBLOCKED) {
                         return true;
                     } else {
                         return false;
@@ -353,22 +360,19 @@ public class boardValidation {
         }
     }
 
-    private ArrayList<Integer> getInbetweenersBackwards(int pos1, int pos2) throws IndexOutOfBoundsException
-    {
+    private ArrayList<Integer> getInbetweenersBackwards(int pos1, int pos2) throws IndexOutOfBoundsException {
         int newPos1 = pos2;
         int newPos2 = pos1;
 
-        //manage exclusive/inclusive correctly
+        // manage exclusive/inclusive correctly
         newPos1 = newPos1 - 1;
         newPos2 = newPos2 - 1;
 
-        //fix looping
-        if(newPos1 < 0)
-        {
+        // fix looping
+        if (newPos1 < 0) {
             newPos1 = 64 + newPos1;
         }
-        if(newPos2 < 0)
-        {
+        if (newPos2 < 0) {
             newPos2 = 64 + newPos2;
         }
 
@@ -376,7 +380,7 @@ public class boardValidation {
     }
 
     private boolean blockedIntersect(Move move, int startPos, int endPos, boolean forward) {
-        if(forward){
+        if (forward) {
             ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos);
             ArrayList<Integer> blockIntersect = new ArrayList<>();
             if (blockPos.size() > 0) {
@@ -411,7 +415,7 @@ public class boardValidation {
                     }
                 }
             }
-        }else{
+        } else {
             ArrayList<Integer> blockPos = getInbetweenersBackwards(startPos, endPos);
             ArrayList<Integer> blockIntersect = new ArrayList<>();
             if (blockPos.size() > 0) {
@@ -449,7 +453,6 @@ public class boardValidation {
         }
         return false;
     }
-
 
     private ArrayList<Integer> getInbetweeners(int pos1, int pos2) throws IndexOutOfBoundsException {
         ArrayList<Integer> importantInbetweeners = new ArrayList<>();
@@ -573,18 +576,18 @@ public class boardValidation {
         }
     }
 
-    private int getMoveDist(Move move){
+    private int getMoveDist(Move move) {
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
         COLOR marbleColor = move.get_color();
-        int moveDist = getDistanceInBetween(startPos, endPos);
+        int moveDist;
         // abstract the check for the goal move
-        if (move.isGoalMove()) {
-            if (move.get_fromPosInGoal().get(0)) {
-                moveDist = getDistanceInBetween(startPos, endPos, marbleColor, true);
-            } else {
-                moveDist = getDistanceInBetween(startPos, endPos, marbleColor, false);
-            }
+        if(move.get_fromPosInGoal().get(0)){
+            moveDist = getDistanceInBetween(startPos, endPos, marbleColor, true);
+        }else if(move.get_toPosInGoal().get(0)){
+            moveDist = getDistanceInBetween(startPos, endPos, marbleColor, false);
+        }else{
+            moveDist = getDistanceInBetween(startPos, endPos);
         }
         return moveDist;
     }
@@ -598,11 +601,7 @@ public class boardValidation {
         // checking if the move is valid based on the card
         switch (move.get_card().getValue()) {
             case ACE:
-                if(isValidAceMove(move)) {
-                    return true;
-                }else{
-                    return false;
-                }
+                return isValidAceMove(move);
             case KING:
                 return isValidKingMove(move);
             case JOKER:
@@ -641,7 +640,7 @@ public class boardValidation {
         // validate for goal move
         if (move.isGoalMove()) {
             boolean startInGoal = move.get_fromPosInGoal().get(0);
-            if(!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)){
+            if (!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)) {
                 return false;
             }
         }
@@ -680,24 +679,24 @@ public class boardValidation {
         }
         // TODO dont know if Jack can move when the other marble is on a blocked
         // check for blocked intersect
-        switch(endPos){
+        switch (endPos) {
             case REDINTERSECT:
-                if(REDBLOCKED){
+                if (REDBLOCKED) {
                     return false;
                 }
                 break;
             case YELLOWINTERSECT:
-                if(YELLOWBLOCKED){
+                if (YELLOWBLOCKED) {
                     return false;
                 }
                 break;
             case GREENINTERSECT:
-                if(GREENBLOCKED){
+                if (GREENBLOCKED) {
                     return false;
                 }
                 break;
             case BLUEINTERSECT:
-                if(BLUEBLOCKED){
+                if (BLUEBLOCKED) {
                     return false;
                 }
                 break;
@@ -710,7 +709,7 @@ public class boardValidation {
         // check if the move is a valid move for another card, check this recursively
         int startPos = move.get_fromPos().get(0);
         int endPos = move.get_toPos().get(0);
-        if(startPos == -1){
+        if (startPos == -1) {
             return validStart(move, startPos, endPos);
         }
         ArrayList<CARDVALUE> allValues = new ArrayList<>(Arrays.asList(CARDVALUE.values()));
@@ -718,12 +717,13 @@ public class boardValidation {
         boolean validMove = false;
         for (CARDVALUE value : allValues) {
             Card c = new Card(value, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
-            Move newMove = new Move(move.get_fromPos(), move.get_toPos(), move.get_fromPosInGoal(), move.get_toPosInGoal(), c, move.getToken(), move.get_color());
-            try{
-                if(isValidMove(newMove)){
+            Move newMove = new Move(move.get_fromPos(), move.get_toPos(), move.get_fromPosInGoal(),
+                    move.get_toPosInGoal(), c, move.getToken(), move.get_color());
+            try {
+                if (isValidMove(newMove)) {
                     validMove = true;
                 }
-            }catch(InvalidMoveException e){
+            } catch (InvalidMoveException e) {
                 System.out.println(e);
             }
         }
@@ -741,13 +741,13 @@ public class boardValidation {
             return false;
         }
         // validate for starting move
-        if(startPos == -1){
+        if (startPos == -1) {
             return validStart(move, startPos, endPos);
         }
         // validate for goal move
         if (move.isGoalMove()) {
             boolean startInGoal = move.get_fromPosInGoal().get(0);
-            if(!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)){
+            if (!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)) {
                 return false;
             }
         }
@@ -758,7 +758,7 @@ public class boardValidation {
         }
 
         // checking for blocked intersect
-        if(blockedIntersect(move, startPos, endPos, true)){
+        if (blockedIntersect(move, startPos, endPos, true)) {
             return false;
         }
         return true;
@@ -797,8 +797,10 @@ public class boardValidation {
             for (int i = 0; i < startPos.size(); i++) {
                 if (move.get_fromPosInGoal().get(i)) {
                     moveDist += getDistanceInBetween(startPos.get(i), endPos.get(i), marbleColor.get(i), true);
-                } else {
+                } else if (move.get_toPosInGoal().get(i)) {
                     moveDist += getDistanceInBetween(startPos.get(i), endPos.get(i), marbleColor.get(i), false);
+                } else {
+                    moveDist += getDistanceInBetween(startPos.get(i), endPos.get(i));
                 }
             }
         } else {
@@ -817,16 +819,15 @@ public class boardValidation {
                             marbleColor.get(i))) {
                         return false;
                     }
-
                 }
             }
         }
 
         // checking for blocked intersect
-        for(int i = 0; i < startPos.size(); i++){
+        for (int i = 0; i < startPos.size(); i++) {
             int start = startPos.get(i);
             int end = endPos.get(i);
-            if(blockedIntersect(move, start, end, true)){
+            if (blockedIntersect(move, start, end, true)) {
                 return false;
             }
             // make the move and check blocked again
@@ -835,23 +836,21 @@ public class boardValidation {
             ArrayList<Boolean> partStartInGoal = new ArrayList<>(Arrays.asList(move.get_fromPosInGoal().get(i)));
             ArrayList<Boolean> partEndInGoal = new ArrayList<>(Arrays.asList(move.get_toPosInGoal().get(i)));
             Move partMove = new Move(
-                partStartPos, 
-                partEndPos, 
-                partStartInGoal, 
-                partEndInGoal,
-                move.get_card(),
-                "token",
-                move.get_color()
-                );
-            try{
+                    partStartPos,
+                    partEndPos,
+                    partStartInGoal,
+                    partEndInGoal,
+                    move.get_card(),
+                    "token",
+                    move.get_color());
+            try {
                 makeMove(partMove);
-            }catch(InvalidMoveException e){
-                return false;
+            } catch (Exception e) {
+                System.out.println(e);
             }
-            
+
         }
-        
-        
+
         return true;
     }
 
@@ -874,22 +873,22 @@ public class boardValidation {
         if (moveDistForward != 4 && moveDistBackward != 4) {
             return false;
         }
-        if(moveDistBackward == 4 && moveDistForward != 4){
+        if (moveDistBackward == 4 && moveDistForward != 4) {
             isBackwardMove = true;
         }
         // validate for goal move
         if (move.isGoalMove()) {
-            if(isBackwardMove){
+            if (isBackwardMove) {
                 return false;
             }
             boolean startInGoal = move.get_fromPosInGoal().get(0);
-            if(!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)){
+            if (!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)) {
                 return false;
             }
         }
 
         // checking for blocked intersect
-        if(blockedIntersect(move, startPos, endPos, !isBackwardMove)){
+        if (blockedIntersect(move, startPos, endPos, !isBackwardMove)) {
             return false;
         }
         return true;
@@ -901,53 +900,53 @@ public class boardValidation {
         int endPos = move.get_toPos().get(0);
         Card moveCard = move.get_card();
         COLOR marbleColor = getMarbleColor(move, startPos);
-        
+
         // check if marble color is the same as move color
         if (marbleColor != move.get_color()) {
             return false;
         }
-        if(startPos == -1){
+        if (startPos == -1) {
             return false;
         }
         int moveDist = getMoveDist(move);
         switch (moveCard.getValue()) {
             case TWO:
-                if(moveDist != 2){
+                if (moveDist != 2) {
                     return false;
                 }
                 break;
             case THREE:
-                if(moveDist != 3){
+                if (moveDist != 3) {
                     return false;
                 }
                 break;
             case FIVE:
-                if(moveDist != 5){
+                if (moveDist != 5) {
                     return false;
                 }
                 break;
             case SIX:
-                if(moveDist != 6){
+                if (moveDist != 6) {
                     return false;
                 }
                 break;
             case EIGHT:
-                if(moveDist != 8){
+                if (moveDist != 8) {
                     return false;
                 }
                 break;
             case NINE:
-                if(moveDist != 9){
+                if (moveDist != 9) {
                     return false;
                 }
                 break;
             case TEN:
-                if(moveDist != 10){
+                if (moveDist != 10) {
                     return false;
                 }
                 break;
             case QUEEN:
-                if(moveDist != 12){
+                if (moveDist != 12) {
                     return false;
                 }
                 break;
@@ -955,13 +954,13 @@ public class boardValidation {
         // validate for goal move
         if (move.isGoalMove()) {
             boolean startInGoal = move.get_fromPosInGoal().get(0);
-            if(!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)){
+            if (!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)) {
                 return false;
             }
         }
 
         // checking for blocked intersect
-        if(blockedIntersect(move, startPos, endPos, true)){
+        if (blockedIntersect(move, startPos, endPos, true)) {
             return false;
         }
         return true;
@@ -978,34 +977,46 @@ public class boardValidation {
         // get intersect and goal depending on marble color
         int intersect = -1;
         ArrayList<MARBLE> goal = new ArrayList<>();
+        if (!startPosInGoal) {
+            switch (color) {
+                case RED:
+                    if (REDBLOCKED) {
+                        return false;
+                    }
+                    break;
+                case YELLOW:
+                    if (YELLOWBLOCKED) {
+                        return false;
+                    }
+                    break;
+                case GREEN:
+                    if (GREENBLOCKED) {
+                        return false;
+                    }
+                    break;
+                case BLUE:
+                    if (BLUEBLOCKED) {
+                        return false;
+                    }
+                    break;
+            }
+        }
         switch (color) {
             case RED:
                 intersect = REDINTERSECT;
                 goal = _redGoal;
-                if(REDBLOCKED){
-                    return false;
-                }
                 break;
             case YELLOW:
                 intersect = YELLOWINTERSECT;
                 goal = _yellowGoal;
-                if(YELLOWBLOCKED){
-                    return false;
-                }
                 break;
             case GREEN:
                 intersect = GREENINTERSECT;
                 goal = _greenGoal;
-                if(GREENBLOCKED){
-                    return false;
-                }
                 break;
             case BLUE:
                 intersect = BLUEINTERSECT;
                 goal = _blueGoal;
-                if(BLUEBLOCKED){
-                    return false;
-                }
                 break;
         }
         // check if intersect can be reached or startPos is in goal

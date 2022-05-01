@@ -570,7 +570,7 @@ public class MoveTest {
     }
 
     //todo revert this once it is implemented
-    //@Test
+    @Test
     void validSevenToGoal() {
         _card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -596,7 +596,13 @@ public class MoveTest {
             // test for two marbles
             board.makeStartingMove(COLOR.RED); // move second marble to start
             fromPos = new ArrayList<>(Arrays.asList(61, 0));
-            toPos = new ArrayList<>(Arrays.asList(2, 0));
+            toPos = new ArrayList<>(Arrays.asList(63, 61)); 
+            fromPosInGoal = new ArrayList<>(Arrays.asList(false, false));
+            toPosInGoal = new ArrayList<>(Arrays.asList(false, false));
+            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            board.makeMove(move); //move second marble into position
+            fromPos = new ArrayList<>(Arrays.asList(63, 61));
+            toPos = new ArrayList<>(Arrays.asList(1, 0));
             fromPosInGoal = new ArrayList<>(Arrays.asList(false, false));
             toPosInGoal = new ArrayList<>(Arrays.asList(true, true));
             move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
@@ -606,7 +612,7 @@ public class MoveTest {
         }
     }
 
-    // @Test
+    @Test
     void validSevenFromToGoal() {
         _card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
@@ -623,6 +629,7 @@ public class MoveTest {
             board.makeMove(move); // move first marble into goal
 
             board.makeStartingMove(COLOR.RED); // move second marble to start
+            
             fromPos = new ArrayList<>(Arrays.asList(0, 0));
             toPos = new ArrayList<>(Arrays.asList(3, 4));
             fromPosInGoal = new ArrayList<>(Arrays.asList(true, false));
@@ -1549,5 +1556,6 @@ public class MoveTest {
             fail("Should not throw exception");
         }
     }
+    
     
 }
