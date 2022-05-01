@@ -812,14 +812,11 @@ public class boardValidation {
             return false;
         }
         // validate for goal move
-        if (move.isGoalMove()) {
-            for (int i = 0; i < startPos.size(); i++) {
-                if (move.get_toPosInGoal().get(i)) {
-                    if (!isValidGoalMove(startPos.get(i), endPos.get(i), move.get_fromPosInGoal().get(i),
-                            marbleColor.get(i))) {
-                        return false;
-                    }
-                }
+        for(int i = 0; i < startPos.size(); i++){
+            if(move.get_toPosInGoal().get(i)){
+                if (!isValidGoalMove(startPos.get(i), endPos.get(i), move.get_fromPosInGoal().get(i), marbleColor.get(i))) {
+                    return false;
+                 }
             }
         }
 
