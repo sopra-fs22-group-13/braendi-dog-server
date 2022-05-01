@@ -26,7 +26,12 @@ public class GameCreator {
         for (User user: users){
             users1.add(user);
         }
-        Collections.shuffle(users1);
+        //todo presentation: revert after
+        //Collections.shuffle(users1);
+        User u1 = users.get(2);
+        users1.set(2, users1.get(0));
+        users1.set(0, u1);
+
         Game newGame =  new Game(users1);
         manager.addGame(newGame);
 
