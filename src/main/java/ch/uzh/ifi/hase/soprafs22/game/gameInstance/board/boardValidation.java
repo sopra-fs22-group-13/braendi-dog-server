@@ -792,6 +792,7 @@ public class boardValidation {
                 return false;
             }
         }
+        // checking for correct movedist
         int moveDist = 0;
         if (move.isGoalMove()) {
             for (int i = 0; i < startPos.size(); i++) {
@@ -811,24 +812,17 @@ public class boardValidation {
         if (moveDist != 7) {
             return false;
         }
-        // validate for goal move
-        if (move.isGoalMove()) {
-            for (int i = 0; i < startPos.size(); i++) {
-                if (move.get_toPosInGoal().get(i)) {
-                    if (!isValidGoalMove(startPos.get(i), endPos.get(i), move.get_fromPosInGoal().get(i),
-                            marbleColor.get(i))) {
-                        return false;
-                    }
-                }
-            }
-        }
 
-        // checking for blocked intersect
         for (int i = 0; i < startPos.size(); i++) {
             int start = startPos.get(i);
             int end = endPos.get(i);
             if (blockedIntersect(move, start, end, true)) {
-                return false;
+                return false; // checking for blocked intersects
+            }
+            if(move.get_toPosInGoal().get(i)){
+                if (!isValidGoalMove(startPos.get(i), endPos.get(i), move.get_fromPosInGoal().get(i), marbleColor.get(i))) {
+                    return false; //checking for is valid goal move
+                 }
             }
             // make the move and check blocked again
             ArrayList<Integer> partStartPos = new ArrayList<>(Arrays.asList(start));
