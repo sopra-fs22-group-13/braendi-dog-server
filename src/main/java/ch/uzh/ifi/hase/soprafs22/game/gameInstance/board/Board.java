@@ -631,6 +631,22 @@ public class Board implements IBoard {
      *                              move
      */
     public void makeSwitch(int start, int end) throws InvalidMoveException {
+        switch(start){
+            case REDINTERSECT:
+                REDBLOCKED = false;
+                break;
+            case YELLOWINTERSECT:
+                YELLOWBLOCKED = false;
+                break;
+            case GREENINTERSECT:
+                GREENBLOCKED = false;
+                break;
+            case BLUEINTERSECT:
+                BLUEBLOCKED = false;
+                break;
+            default:
+                break;
+        }
         try {
             changePositions(start, end);
         } catch (IndexOutOfBoundsException e) {
