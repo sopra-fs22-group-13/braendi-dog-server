@@ -10,10 +10,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class Board implements IBoard {
     private ArrayList<MARBLE> _mainCircle = new ArrayList<>();
@@ -1033,22 +1030,75 @@ public class Board implements IBoard {
 
         if(!addsTo7) return false;
 
-        //todo make every permutation of the move (since order can again be different) and try it.
-
         sevenmove.set_fromPos(fromPos);
         sevenmove.set_toPos(toPos);
         sevenmove.set_fromPosInGoal(fromInGoal);
         sevenmove.set_toPosInGoal(toInGoal);
 
-        // try the move
-        try {
-            if (isValidMove(sevenmove))
-                return true;
-        } catch (InvalidMoveException | IndexOutOfBoundsException e) {
-            // do nothing here
-            // ik this is terrible, but our move is always well-formed in this case
+        List<Move> allMoves = generatePermutations(sevenmove);
+        for (Move move : allMoves) {
+            // try the move
+            try {
+                if (isValidMove(move))
+                    return true;
+            } catch (InvalidMoveException | IndexOutOfBoundsException e) {
+                // do nothing here
+                // ik this is terrible, but our move is always well-formed in this case
+            }
         }
+
         return false;
+    }
+
+    private List<Move> generatePermutations(Move move)
+    {
+        //iterative Heap's algo
+
+        List<Move> finalList = new ArrayList<>();
+
+        List<Integer> fp = new ArrayList<>(move.get_fromPos());
+        List<Integer> tp = new ArrayList<>(move.get_toPos());
+        List<Boolean> fpb = new ArrayList<>(move.get_fromPosInGoal());
+        List<Boolean> tpb = new ArrayList<>(move.get_toPosInGoal());
+
+        int n = move.get_fromPos().size();
+
+        int[] indices = new int[n];
+        for (int i = 0; i < n; i++) {
+            indices[i] = 0;
+        }
+
+        //initial
+        finalList.add(new Move(new ArrayList<>(fp), new ArrayList<>(tp), new ArrayList<>(fpb), new ArrayList<>(tpb), move.get_card(), move.getToken(), move.get_color()));
+
+        int i = 0;
+        while(i < n)
+        {
+            if(indices[i] < i)
+            {
+                //swap
+                int swapindex1 = i % 2 == 0 ? 0 : indices[i];
+                int swapindex2 = i;
+                Collections.swap(fp, swapindex1, swapindex2);
+                Collections.swap(tp, swapindex1, swapindex2);
+                Collections.swap(fpb, swapindex1, swapindex2);
+                Collections.swap(tpb, swapindex1, swapindex2);
+
+                //momentary render out
+                Move m = new Move(new ArrayList<>(fp), new ArrayList<>(tp), new ArrayList<>(fpb), new ArrayList<>(tpb), move.get_card(), move.getToken(), move.get_color());
+                finalList.add(m);
+
+                //go on
+                indices[i]++;
+                i = 0;
+            }else
+            {
+                indices[i] = 0;
+                i++;
+            }
+        }
+
+        return finalList;
     }
 
     private boolean isSevenMovePossibleZeroGoal(List<Integer> marblesOnMain, List<Integer> marblesInGoal, List<Integer[]> moveCombos, COLOR color)
