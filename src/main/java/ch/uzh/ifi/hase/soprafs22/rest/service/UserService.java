@@ -160,4 +160,13 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong Auth method, expected BASIC");
         }
     }
+
+    public void updateUser(User reqUser) {
+        User storedUser = getUserById(reqUser.getId());
+
+        if (userRepository.findByUsername(reqUser.getUsername()) != null) { throw new ResponseStatusException(HttpStatus.CONFLICT, "The username you are trying to change to is already taken."); }
+        if (reqUser.getUsername() != null) { storedUser.setUsername(reqUser.getUsername()); }
+
+        if (reqUser.getPassword() != null) { storedUser.setPassword(reqUser.getPassword()); }
+    }
 }

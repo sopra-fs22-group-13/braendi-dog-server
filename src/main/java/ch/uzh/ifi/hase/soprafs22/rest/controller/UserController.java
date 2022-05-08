@@ -7,6 +7,7 @@ import ch.uzh.ifi.hase.soprafs22.rest.data.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,6 +64,20 @@ public class UserController {
 
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
+
+  @PutMapping("/users/{userID}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void updateUser(HttpServletRequest request, @PathVariable Long userID, @RequestBody UserPostDTO userPostDTO) {
+      User client = userService.checkIfLoggedIn(request);
+      if (client.getId() != userID) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You cannot edit someone else's profile.");
+
+      User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+      userInput.setId(userID);
+
+      userService.updateUser(userInput);
+  }
+
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
