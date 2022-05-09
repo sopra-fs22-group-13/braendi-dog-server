@@ -40,6 +40,11 @@ public class LobbyController {
         User client = userService.checkIfLoggedIn(request);
         Lobby lobby = lobbyManager.getLobbyByID(lobbyID);
 
+        if(lobby == null)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby with this id cannot be found");
+        }
+
         boolean inLobby = false;
         for (User user: lobby.getPlayers()) {
             if (Objects.equals(user.getToken(), client.getToken())) {
