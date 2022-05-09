@@ -34,6 +34,7 @@ public class LobbyManager {
     public int getLobbyIdFromPlayer(String playerToken){
         for(Lobby lobbies: openLobbies){
             for(User players: lobbies.getPlayers()){
+
                 if(players.getToken().equals(playerToken)){
                     return lobbies.getId();
                 }
@@ -68,6 +69,7 @@ public class LobbyManager {
         Lobby lobbyToBeDeleted = getLobbyByID(lobbyID);
 
         openLobbies.remove(lobbyToBeDeleted);
+        updatePlayers(lobbyToBeDeleted, UpdateType.LOBBY);
 
         for (User user: lobbyToBeDeleted.getPlayers()) {
             playersInLobbies.remove(user);
