@@ -1334,6 +1334,44 @@ public class Board implements IBoard {
         }
     }
 
+    public int getNumberInBase(COLOR color){
+        int numberOfMarble = 0;
+        switch (color){
+            case BLUE:
+                for (MARBLE marble: _blueGoal){
+                    if (marble!=null){
+                        numberOfMarble++;
+                    }
+                }
+                return numberOfMarble;
+
+            case GREEN:
+                for (MARBLE marble: _greenGoal){
+                    if (marble!=null){
+                        numberOfMarble++;
+                    }
+                }
+                return numberOfMarble;
+            case RED:
+                for (MARBLE marble: _redGoal){
+                    if (marble!=null){
+                        numberOfMarble++;
+                    }
+                }
+                return numberOfMarble;
+            case YELLOW:
+                for (MARBLE marble: _yellowGoal){
+                    if (marble!=null){
+                        numberOfMarble++;
+                    }
+                }
+                return numberOfMarble;
+            default:
+                return 0;
+        }
+
+    }
+
     //for Test
     public int getCountStartingMove(){
 

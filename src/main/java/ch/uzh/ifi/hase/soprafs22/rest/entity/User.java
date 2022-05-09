@@ -37,6 +37,12 @@ public class User implements Serializable {
   @Column(nullable = false)
   private UserStatus status;
 
+  @Column(nullable = false)
+  private Integer wins;
+
+  @Column(nullable = false)
+  private Integer gotInGoals;
+
 
   public Long getId() {
     return id;
@@ -77,4 +83,13 @@ public class User implements Serializable {
   public void setStatus(UserStatus status) {
     this.status = status;
   }
+
+  public Integer getWins(){ return  wins;}
+
+  public void setWins(Integer wins) { this.wins = wins;}
+
+  public Integer getGotInGoals() { return gotInGoals; }
+
+  public void setGotGoal(Integer gotInGoal) {this.gotInGoals= gotInGoal;}
+
 }

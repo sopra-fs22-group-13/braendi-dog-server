@@ -40,7 +40,7 @@ public class Game {
     private int _indexOfHowManyCardToDeal;
 
     @Autowired
-    private UserService _user;
+    private UserService _userService;
 
     public Game(ArrayList<User> users){
         setup(users);
@@ -174,9 +174,13 @@ public class Game {
         // check if somebody won
         for (Player player:_players){
             if (_board.checkWinningCondition(player.getColor())) {
+                _userService.addWins(_userManager.getUserFromPlayer(player));
+                for (Player playerGoal:_players){
+                    int numberOfMarbleInGoals=  _board.getNumberInBase(playerGoal.getColor());
+                   _userService.addNumberInGoal(_userManager.getUserFromPlayer(playerGoal), numberOfMarbleInGoals);
+                }
 
                 _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, String.format("{\"win\": \"%s\"}", player.getColor())));
-                //todo decusctruction Sandro
                 VoiceChatCreator.getInstance().destroyRoomWithPlayers(_gameToken);
                 _manager.deleteGame(_gameToken);
                 return;

@@ -45,6 +45,9 @@ public class UserService {
 
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
+    newUser.setWins(0);
+    newUser.setGotGoal(0);
+
     newUser.setStatus(UserStatus.OFFLINE);
 
     checkIfUserExists(newUser);
@@ -101,6 +104,17 @@ public class UserService {
     }
   }
 
+  public void addWins (User user){
+      User userWon= userRepository.findByUsername(user.getUsername());
+      Integer wins = userWon.getWins();
+      userWon.setWins(wins+1);
+  }
+
+  public void addNumberInGoal(User user, int marbleInGoal){
+      User userToAddGoals = userRepository.findByUsername(user.getUsername());
+      Integer goals= userToAddGoals.getGotInGoals();
+      userToAddGoals.setGotGoal(goals+marbleInGoal);
+  }
 
 
     private void checkIfPasswordIsCorrect(User userToLoggedIn ) throws ResponseStatusException {

@@ -17,5 +17,6 @@ public interface IBoard {
     int getCountStartingMove();
     int getCountJackMove();
     int getCountNormalMove();
+    int getNumberInBase(COLOR color);
 
 }
