@@ -35,6 +35,7 @@ hs_err_pid*
 
 /build
 *.DS_STORE
+*.db
 
 # don't track the local.properties -> contains secrets
 local.properties
