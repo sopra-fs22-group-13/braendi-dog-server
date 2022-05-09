@@ -30,15 +30,18 @@ public class HeartBeatInvoker {
                     {
                         //TODO
                         LobbyManager lm = SpringContext.getBean(LobbyController.class).getLobbyManagerInstance();
-                        lm.closeLobby(lm.getLobbyIdFromPlayer(token));
-                        hbm.updateOnlineStatus(token, false);
+                        System.out.println(lm.getLobbyIdFromPlayer(token));
+                        if(lm.getLobbyIdFromPlayer(token) != -1){
+                            lm.closeLobby(lm.getLobbyIdFromPlayer(token));
+                        }
                     }
                     if(heartBeats.get(HeartBeatType.GAME) == false)
                     {
                         //TODO
                         GameManager gm = GameManager.getInstance();
-                        gm.deleteGame(gm.getGameByPlayer(token).getGameToken());
-                        hbm.updateOnlineStatus(token, false);
+                        if(gm.getGameByPlayer(token) != null){
+                            gm.deleteGame(gm.getGameByPlayer(token).getGameToken());
+                        }
                     }
                 }
             }

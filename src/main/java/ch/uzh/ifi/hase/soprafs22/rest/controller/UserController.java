@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs22.rest.controller;
 
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.HeartBeatDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.mapper.DTOMapper;
@@ -8,6 +9,8 @@ import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ch.uzh.ifi.hase.soprafs22.heartbeat.HeartBeatManager;
+import ch.uzh.ifi.hase.soprafs22.heartbeat.HeartBeatType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -94,5 +97,14 @@ public class UserController {
 
 
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loginUser);
+    }
+
+    @PostMapping("/heartbeat")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void updateHeartbeat(HttpServletRequest request, @RequestBody HeartBeatDTO heartBeatDTO) {
+      HeartBeatManager hbm = HeartBeatManager.getInstance();
+      User client = userService.checkIfLoggedIn(request);
+      hbm.addHeartBeat(client.getToken(), heartBeatDTO.getType());
     }
 }

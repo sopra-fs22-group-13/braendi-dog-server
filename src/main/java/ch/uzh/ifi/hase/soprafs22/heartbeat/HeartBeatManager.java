@@ -42,6 +42,7 @@ public class HeartBeatManager {
         return playerHeartBeatMap.keySet().toArray(new String[0]);
     }
 
+    
     public Map<HeartBeatType, Boolean> getHeartBeatsOfPlayer(String playerToken)
     {
         PlayerHeartBeat phb = playerHeartBeatMap.get(playerToken);
@@ -58,9 +59,9 @@ public class HeartBeatManager {
         return res;
     }
 
-    private void updateOnlineStatus(String token, Boolean online)
+    public void updateOnlineStatus(String token, Boolean online)
     {
-        //todo implement this
+        
     }
 
     private boolean isAllFalse(Map<HeartBeatType, Boolean> map)
