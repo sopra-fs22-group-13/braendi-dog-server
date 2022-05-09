@@ -67,12 +67,13 @@ public class LobbyManager {
 
     synchronized public void closeLobby(Integer lobbyID) {
         Lobby lobbyToBeDeleted = getLobbyByID(lobbyID);
+        if(lobbyToBeDeleted != null){
+            updatePlayers(lobbyToBeDeleted, UpdateType.LOBBY);
+            openLobbies.remove(lobbyToBeDeleted);
 
-        openLobbies.remove(lobbyToBeDeleted);
-        updatePlayers(lobbyToBeDeleted, UpdateType.LOBBY);
-
-        for (User user: lobbyToBeDeleted.getPlayers()) {
-            playersInLobbies.remove(user);
+            for (User user: lobbyToBeDeleted.getPlayers()) {
+                playersInLobbies.remove(user);
+            }
         }
     }
 
