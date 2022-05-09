@@ -43,7 +43,7 @@ public class GameManager {
         return null;
     }
 
-    public void deleteGame(String tokenToDelete){
+    synchronized public void deleteGame(String tokenToDelete){
         for (Game game:_games){
             String token= game.getGameToken();
             if(tokenToDelete.equals(token)){

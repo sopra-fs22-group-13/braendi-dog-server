@@ -115,4 +115,9 @@ public class LobbyController {
 
         lobbyManager.inviteResponse(invitationResponsePutDTO.getLobbyID(), client.getToken(), invitationResponsePutDTO.getResponse());
     }
+
+    
+    public LobbyManager getLobbyManagerInstance(){
+        return lobbyManager;
+    }
 }

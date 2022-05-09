@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import ch.uzh.ifi.hase.soprafs22.heartbeat.HeartBeatInvoker;
 
 @RestController
 @SpringBootApplication
@@ -15,6 +16,8 @@ public class Application {
 
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
+    HeartBeatInvoker hbInvoker = new HeartBeatInvoker();
+    hbInvoker.startTesting();
   }
 
   @GetMapping(value = "/", produces = MediaType.TEXT_PLAIN_VALUE)

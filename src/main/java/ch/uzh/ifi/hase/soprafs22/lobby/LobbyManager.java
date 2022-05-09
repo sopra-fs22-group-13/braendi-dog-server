@@ -21,6 +21,7 @@ import java.util.Objects;
 
 public class LobbyManager {
 
+
     protected GameCreator gameCreator = new GameCreator();
     private final UserRepository userRepository = SpringContext.getBean(UserRepository.class);
     protected IUpdateController updateController = SpringContext.getBean(UpdateController.class);
@@ -28,6 +29,18 @@ public class LobbyManager {
 
     private final List<Lobby> openLobbies = new ArrayList<>();
     private final List<User> playersInLobbies = new ArrayList<>();
+
+    //returns lobby id from playertoken by looping through all of them
+    public int getLobbyIdFromPlayer(String playerToken){
+        for(Lobby lobbies: openLobbies){
+            for(User players: lobbies.getPlayers()){
+                if(players.getToken().equals(playerToken)){
+                    return lobbies.getId();
+                }
+            }
+        }
+        return -1;
+    }
 
     protected boolean isInLobby(User user) {
         for (User player: playersInLobbies) {
@@ -51,7 +64,7 @@ public class LobbyManager {
         return newLobby.getId();
     }
 
-    public void closeLobby(Integer lobbyID) {
+    synchronized public void closeLobby(Integer lobbyID) {
         Lobby lobbyToBeDeleted = getLobbyByID(lobbyID);
 
         openLobbies.remove(lobbyToBeDeleted);
