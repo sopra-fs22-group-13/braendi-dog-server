@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +26,7 @@ public class LobbyManager {
     protected GameCreator gameCreator = new GameCreator();
     private final UserRepository userRepository = SpringContext.getBean(UserRepository.class);
     protected IUpdateController updateController = SpringContext.getBean(UpdateController.class);
-
+    private final long creationTime = new Date().getTime();
 
     private final List<Lobby> openLobbies = new ArrayList<>();
     private final List<User> playersInLobbies = new ArrayList<>();
@@ -67,7 +68,7 @@ public class LobbyManager {
 
     synchronized public void closeLobby(Integer lobbyID) {
         Lobby lobbyToBeDeleted = getLobbyByID(lobbyID);
-        if(lobbyToBeDeleted != null){
+        if(lobbyToBeDeleted != null && creationTime + 5000 < new Date().getTime()){
             updatePlayers(lobbyToBeDeleted, UpdateType.LOBBY);
             openLobbies.remove(lobbyToBeDeleted);
 

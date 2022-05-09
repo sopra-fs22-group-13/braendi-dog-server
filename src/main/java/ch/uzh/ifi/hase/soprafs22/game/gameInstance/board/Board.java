@@ -33,9 +33,9 @@ public class Board implements IBoard {
     private Card _lastPlayedCard;
 
     private final int REDINTERSECT = 0;
-    private final int BLUEINTERSECT = 16;
+    private final int BLUEINTERSECT = 48;
     private final int GREENINTERSECT = 32;
-    private final int YELLOWINTERSECT = 48;
+    private final int YELLOWINTERSECT = 16;
 
     public Board() {
         // set all marbles to the start pos.

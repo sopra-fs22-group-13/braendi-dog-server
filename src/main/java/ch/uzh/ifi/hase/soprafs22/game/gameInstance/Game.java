@@ -40,6 +40,7 @@ public class Game {
     private UserManager _userManager;
     private int[] _numberOfCardsInTurns = {6,5,4,3,2};
     private int _indexOfHowManyCardToDeal;
+    private final long creationTime = new Date().getTime();
 
     private IUserService _userService = SpringContext.getBean(UserService.class);
 
@@ -48,12 +49,17 @@ public class Game {
         makeFirstMoveValid();
     }
 
+    public long getCreationTime()
+    {
+        return creationTime;
+    }
+
     private void setup(ArrayList<User> users){
         this._players= new ArrayList<>();
         this._players.add(new Player(COLOR.RED));
-        this._players.add(new Player(COLOR.BLUE));
-        this._players.add(new Player(COLOR.GREEN));
         this._players.add(new Player(COLOR.YELLOW));
+        this._players.add(new Player(COLOR.GREEN));
+        this._players.add(new Player(COLOR.BLUE));
         this._cardStack= new CardStack();
         this._board= new Board();
         this._indexOfHowManyCardToDeal =0;
@@ -220,7 +226,7 @@ public class Game {
 
         //the color mapping of the users
         Map<Long, COLOR> cMap = new HashMap<>();
-        ArrayList<COLOR> cols = new ArrayList<>(Arrays.asList(COLOR.RED, COLOR.BLUE, COLOR.GREEN, COLOR.YELLOW));
+        ArrayList<COLOR> cols = new ArrayList<>(Arrays.asList(COLOR.RED, COLOR.YELLOW, COLOR.GREEN, COLOR.BLUE));
 
         for (Player p: _players) {
             User u = _userManager.getUserFromPlayer(p);

@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.Game;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class GameManager {
 
@@ -46,7 +47,7 @@ public class GameManager {
     synchronized public void deleteGame(String tokenToDelete){
         for (Game game:_games){
             String token= game.getGameToken();
-            if(tokenToDelete.equals(token)){
+            if(tokenToDelete.equals(token) && game.getCreationTime() + 5000 < new Date().getTime()){
                 _games.remove(game);
                 return;
             }

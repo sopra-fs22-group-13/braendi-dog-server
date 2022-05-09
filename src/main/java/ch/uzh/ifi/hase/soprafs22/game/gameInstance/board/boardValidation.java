@@ -35,9 +35,9 @@ public class boardValidation {
     private Card _lastPlayedCard;
 
     private final int REDINTERSECT = 0;
-    private final int BLUEINTERSECT = 16;
+    private final int BLUEINTERSECT = 48;
     private final int GREENINTERSECT = 32;
-    private final int YELLOWINTERSECT = 48;
+    private final int YELLOWINTERSECT = 16;
 
     public boardValidation(
             ArrayList<MARBLE> _mainCircle,

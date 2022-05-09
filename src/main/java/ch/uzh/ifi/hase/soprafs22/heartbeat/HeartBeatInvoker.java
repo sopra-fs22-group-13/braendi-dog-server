@@ -14,7 +14,7 @@ import java.util.Map;
 public class HeartBeatInvoker {
     public void startTesting()
     {
-        Timer timer = new Timer(2000, new ActionListener() {
+        Timer timer = new Timer(3000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 HeartBeatManager hbm = HeartBeatManager.getInstance();
@@ -30,6 +30,7 @@ public class HeartBeatInvoker {
                     {
                         //TODO
                         LobbyManager lm = SpringContext.getBean(LobbyController.class).getLobbyManagerInstance();
+                        System.out.println(lm.getLobbyIdFromPlayer(token));
                         if(lm.getLobbyIdFromPlayer(token) != -1){
                             lm.closeLobby(lm.getLobbyIdFromPlayer(token));
                         }
