@@ -31,6 +31,12 @@ public class User implements Serializable {
   @Column(nullable = false, unique = true)
   private String username;
 
+  @Column
+  private Integer avatar = 0;
+
+  @Column
+  private String description = "";
+
   @Column(nullable = false, unique = true)
   private String token;
 
@@ -67,6 +73,14 @@ public class User implements Serializable {
   public void setUsername(String username) {
     this.username = username;
   }
+
+  public Integer getAvatar() { return avatar; }
+
+  public void setAvatar(Integer avatar) { this.avatar = avatar; }
+
+  public Integer getDescription() { return avatar; }
+
+  public void setDescription(Integer avatar) { this.avatar = avatar; }
 
   public String getToken() {
     return token;

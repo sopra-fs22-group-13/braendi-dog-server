@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs22.rest.data.mapper;
 
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.MovePutDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserPutDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserPostDTO;
@@ -32,4 +33,10 @@ public interface DTOMapper {
   @Mapping(source = "username", target = "username")
   @Mapping(source = "status", target = "status")
   UserGetDTO convertEntityToUserGetDTO(User user);
+
+  @Mapping(source = "username", target = "username")
+  @Mapping(source = "password", target = "password")
+  @Mapping(source = "avatar", target = "avatar")
+  @Mapping(source = "description", target = "description")
+  User convertUserPutDTOtoEntity(UserPutDTO userPutDTO);
 }

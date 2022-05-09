@@ -182,5 +182,7 @@ public class UserService implements IUserService {
         if (reqUser.getUsername() != null) { storedUser.setUsername(reqUser.getUsername()); }
 
         if (reqUser.getPassword() != null) { storedUser.setPassword(reqUser.getPassword()); }
+        if (reqUser.getAvatar() != null) { storedUser.setAvatar(reqUser.getAvatar()); }
+        if (reqUser.getDescription() != null) { storedUser.setDescription(reqUser.getDescription()); }
     }
 }
