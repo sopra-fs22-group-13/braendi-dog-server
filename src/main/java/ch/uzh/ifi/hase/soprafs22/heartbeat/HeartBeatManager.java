@@ -28,7 +28,7 @@ public class HeartBeatManager {
         if(phb == null)
         {
             //create a new one
-            phb = new PlayerHeartBeat(7000L);
+            phb = new PlayerHeartBeat(3000L);
             playerHeartBeatMap.put(playerToken, phb);
             updateOnlineStatus(playerToken, true);
         }
