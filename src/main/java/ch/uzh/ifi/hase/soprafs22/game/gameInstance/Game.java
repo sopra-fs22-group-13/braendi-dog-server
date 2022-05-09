@@ -17,7 +17,9 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
+import ch.uzh.ifi.hase.soprafs22.rest.service.IUserService;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
+import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import ch.uzh.ifi.hase.soprafs22.voicechat.VoiceChatCreator;
 import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
@@ -39,8 +41,7 @@ public class Game {
     private int[] _numberOfCardsInTurns = {6,5,4,3,2};
     private int _indexOfHowManyCardToDeal;
 
-    @Autowired
-    private UserService _userService;
+    private IUserService _userService = SpringContext.getBean(UserService.class);
 
     public Game(ArrayList<User> users){
         setup(users);
