@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.rest.controller;
 
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserPutDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.HeartBeatDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserGetDTO;
@@ -71,11 +72,11 @@ public class UserController {
   @PutMapping("/users/{userID}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public void updateUser(HttpServletRequest request, @PathVariable Long userID, @RequestBody UserPostDTO userPostDTO) {
+  public void updateUser(HttpServletRequest request, @PathVariable Long userID, @RequestBody UserPutDTO userPutDTO) {
       User client = userService.checkIfLoggedIn(request);
       if (client.getId() != userID) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You cannot edit someone else's profile.");
 
-      User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+      User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
       userInput.setId(userID);
 
       userService.updateUser(userInput);

@@ -10,12 +10,10 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.IBoard;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
-import ch.uzh.ifi.hase.soprafs22.mocks.MockBoard;
-import ch.uzh.ifi.hase.soprafs22.mocks.MockSpringContext;
-import ch.uzh.ifi.hase.soprafs22.mocks.MockUpdateController;
-import ch.uzh.ifi.hase.soprafs22.mocks.MockUserRepo;
+import ch.uzh.ifi.hase.soprafs22.mocks.*;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
@@ -75,6 +73,11 @@ class GameTest {
                 return null ;
             }
         };
+
+        MockUserService mockUserService = new MockUserService() {
+        };
+
+        mockSpringContext.returnForClass(UserService.class, mockUserService);
 
         mockSpringContext.returnForClass(UserRepository.class, mockUserRepo);
 

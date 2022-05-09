@@ -27,7 +27,7 @@ import java.util.UUID;
  */
 @Service
 @Transactional
-public class UserService {
+public class UserService implements IUserService {
 
   private final Logger log = LoggerFactory.getLogger(UserService.class);
 
@@ -182,5 +182,7 @@ public class UserService {
         if (reqUser.getUsername() != null) { storedUser.setUsername(reqUser.getUsername()); }
 
         if (reqUser.getPassword() != null) { storedUser.setPassword(reqUser.getPassword()); }
+        if (reqUser.getAvatar() != null) { storedUser.setAvatar(reqUser.getAvatar()); }
+        if (reqUser.getDescription() != null) { storedUser.setDescription(reqUser.getDescription()); }
     }
 }
