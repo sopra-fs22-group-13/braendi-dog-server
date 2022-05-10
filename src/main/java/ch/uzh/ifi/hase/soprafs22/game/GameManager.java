@@ -44,13 +44,17 @@ public class GameManager {
         return null;
     }
 
-    synchronized public void deleteGame(String tokenToDelete){
+    synchronized public void deleteGame(String tokenToDelete, boolean fromHeartBeat){
         for (Game game:_games){
             String token= game.getGameToken();
-            if(tokenToDelete.equals(token) && game.getCreationTime() + 5000 < new Date().getTime()){
+            if(tokenToDelete.equals(token) && (game.getCreationTime() + 5000 < new Date().getTime() || !fromHeartBeat)){
                 _games.remove(game);
                 return;
             }
         }
+    }
+
+    synchronized public void deleteGame(String tokenToDelete){
+        deleteGame(tokenToDelete, false);
     }
 }

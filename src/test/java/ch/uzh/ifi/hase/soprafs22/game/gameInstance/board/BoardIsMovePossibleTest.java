@@ -205,7 +205,7 @@ public class BoardIsMovePossibleTest {
 
         try{
             _b.makeStartingMove(COLOR.RED);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             makeMove(0,14);
 
         }catch (InvalidMoveException e){
@@ -221,7 +221,7 @@ public class BoardIsMovePossibleTest {
     public void moveToTheSameMarble(){
 
         try{
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,13);
 
@@ -249,7 +249,7 @@ public class BoardIsMovePossibleTest {
             makeFinishigMove(3);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,10);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
         }
         catch (InvalidMoveException e) {
             fail("Cannot generate StartBoardState");
@@ -262,7 +262,7 @@ public class BoardIsMovePossibleTest {
     @Test
     public void movementAce11(){
         try{
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,5);
             makeFinishigMove(3);
@@ -276,7 +276,7 @@ public class BoardIsMovePossibleTest {
     @Test
     public void movementAce1() {
         try{
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,15);
             makeFinishigMove(3);
@@ -293,7 +293,7 @@ public class BoardIsMovePossibleTest {
     public void movement2(){
         try{
             makeFinishigMove(3); //red puts in goal 3 marbles
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,14);
 
@@ -311,7 +311,7 @@ public class BoardIsMovePossibleTest {
     public void movement3(){
         try{
             makeFinishigMove(3); //red puts in goal 3 marbles
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,13);
 
@@ -327,7 +327,7 @@ public class BoardIsMovePossibleTest {
     public void movement5(){
         try{
             makeFinishigMove(3); //red puts in goal 3 marbles
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,11);
 
@@ -343,7 +343,7 @@ public class BoardIsMovePossibleTest {
     public void movement6(){
         try{
             makeFinishigMove(3); //red puts in goal 3 marbles
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,10);
 
@@ -360,7 +360,7 @@ public class BoardIsMovePossibleTest {
     public void movement8(){
         try{
             makeFinishigMove(3); //red puts in goal 3 marbles
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,8);
 
@@ -376,7 +376,7 @@ public class BoardIsMovePossibleTest {
     public void movement9(){
         try{
             makeFinishigMove(3); //red puts in goal 3 marbles
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,7);
 
@@ -392,7 +392,7 @@ public class BoardIsMovePossibleTest {
     public void movement10(){
         try{
             makeFinishigMove(3); //red puts in goal 3 marbles
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,6);
 
@@ -409,7 +409,7 @@ public class BoardIsMovePossibleTest {
     public void movementQueen(){
         try{
             makeFinishigMove(3); //red puts in goal 3 marbles
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,4);
 
@@ -425,7 +425,7 @@ public class BoardIsMovePossibleTest {
     @Test
     public void movement7Normal(){
         try{
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,9);
 
@@ -440,7 +440,7 @@ public class BoardIsMovePossibleTest {
     public void movement7Separate2(){
         //the marble are putted behind other marbles so the sum is less the 7, then it should fail, moving one of the bloking marble whould then help
         try{
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.GREEN);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,9);
@@ -462,7 +462,7 @@ public class BoardIsMovePossibleTest {
     public void movement7Separate2SecondMarbleMoves(){
         //the marble are putted behind other marbles so the sum is less the 7, then it should fail, moving one of the bloking marble whould then help
         try{
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.GREEN);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,10);
@@ -484,7 +484,7 @@ public class BoardIsMovePossibleTest {
     public void movement7Separate2WithSameColorMarbleInFront(){
         //the marble are putted behind other marbles so the sum is less the 7, then it should fail, moving one of the bloking marble whould then help
         try{
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,9);
             _b.makeStartingMove(COLOR.RED);
@@ -504,7 +504,7 @@ public class BoardIsMovePossibleTest {
     public void movement7Separate3(){
         try{
             _b.makeStartingMove(COLOR.GREEN);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,15);
             _b.makeStartingMove(COLOR.RED);
@@ -528,7 +528,7 @@ public class BoardIsMovePossibleTest {
         try{
             makeFinishigMove(1); //can still move 3
             _b.makeStartingMove(COLOR.GREEN);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,15);
             _b.makeStartingMove(COLOR.RED);
@@ -551,7 +551,7 @@ public class BoardIsMovePossibleTest {
         try{
             makeFinishigMove(2); //can still move 2 + 2 = 4
             _b.makeStartingMove(COLOR.GREEN);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,14);
             _b.makeStartingMove(COLOR.RED);
@@ -571,7 +571,7 @@ public class BoardIsMovePossibleTest {
     public void movement7Separate3SecondMarbleMoves(){
         try{
             _b.makeStartingMove(COLOR.GREEN);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,15);
             _b.makeStartingMove(COLOR.RED);
@@ -592,7 +592,7 @@ public class BoardIsMovePossibleTest {
     public void movement7Separate3SecondAndThirdMarbleMoves(){
         try{
             _b.makeStartingMove(COLOR.GREEN);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,14);
             _b.makeStartingMove(COLOR.RED);
@@ -614,7 +614,7 @@ public class BoardIsMovePossibleTest {
     public void movement7Separate3WithSameMarbleInFront(){
         try{
             _b.makeStartingMove(COLOR.GREEN);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,15);
             _b.makeStartingMove(COLOR.RED);
@@ -636,8 +636,8 @@ public class BoardIsMovePossibleTest {
     @Test
     public void movement7Separate4(){
         try{
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.BLUE);
-            _b.makeStartingMove(COLOR.GREEN);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,15);
             _b.makeStartingMove(COLOR.RED);
@@ -661,7 +661,7 @@ public class BoardIsMovePossibleTest {
     @Test
     public void movement7Separate1Eat(){
         try{
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             makeMove(16,8);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,1);
@@ -677,13 +677,13 @@ public class BoardIsMovePossibleTest {
     @Test
     public void movement7Separate7Eat(){
         try{
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             makeMove(16,2);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             makeMove(16,3);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             makeMove(16,4);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             makeMove(16,5);
             _b.makeStartingMove(COLOR.GREEN);
             makeMove(32,6);
@@ -706,7 +706,7 @@ public class BoardIsMovePossibleTest {
     @Test
     public void movement4(){
         try{
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,20);
 
@@ -734,7 +734,7 @@ public class BoardIsMovePossibleTest {
         assertFalse(_b.isAnyMovePossible(card, COLOR.RED)); // no other marble in main circle
 
         try{
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.YELLOW);
 
         }catch (InvalidMoveException e){
             fail();

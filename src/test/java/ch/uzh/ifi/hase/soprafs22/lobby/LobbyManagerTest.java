@@ -142,7 +142,9 @@ class LobbyManagerTest {
         clearInvocations(updateController);
         lobbyManager.startGame(lobbyID, owner.getToken());
         assertNull(lobbyManager.getLobbyByID(lobbyID));
-        verify(updateController, times(4)).sendUpdateToUser(anyString(), any(UpdateDTO.class));
+
+        //why 8? because closing the lobby also sends an update (that is not actually listened to)
+        verify(updateController, times(8)).sendUpdateToUser(anyString(), any(UpdateDTO.class));
     }
 
     private void assertSameUserList(List<User> expected, List<User> actual) {

@@ -118,7 +118,7 @@ class BoardTest {
 
         ArrayList<String> newBoard = new ArrayList<>(actualBoard);
         newBoard.set(0, "RED");
-        newBoard.set(48, "YELLOW");
+        newBoard.set(16, "YELLOW");
 
         BoardData actual = _b.getFormattedBoardState();
 
@@ -237,8 +237,8 @@ class BoardTest {
         ArrayList<Boolean> from_base = new ArrayList<>();
         ArrayList<Boolean> to_base = new ArrayList<>();
 
-        from.add(48);
-        to.add(49);
+        from.add(16);
+        to.add(17);
         from_base.add(false);
         to_base.add(false);
 
@@ -266,7 +266,7 @@ class BoardTest {
 
         //new expected board state
         ArrayList<String> newBoard = new ArrayList<>(actualBoard);
-        newBoard.set(49, "YELLOW");
+        newBoard.set(17, "YELLOW");
 
         //actual
         BoardData bd = _b.getFormattedBoardState();
@@ -347,8 +347,8 @@ class BoardTest {
         ArrayList<Boolean> from_base = new ArrayList<>();
         ArrayList<Boolean> to_base = new ArrayList<>();
 
-        from.add(16);
-        to.add(17);
+        from.add(48);
+        to.add(49);
         from_base.add(false);
         to_base.add(false);
 
@@ -376,7 +376,7 @@ class BoardTest {
 
         //new expected board state
         ArrayList<String> newBoard = new ArrayList<>(actualBoard);
-        newBoard.set(17, "BLUE");
+        newBoard.set(49, "BLUE");
 
         //actual
         BoardData bd = _b.getFormattedBoardState();
@@ -454,7 +454,7 @@ class BoardTest {
         ArrayList<Boolean> from_base = new ArrayList<>();
         ArrayList<Boolean> to_base = new ArrayList<>();
 
-        from.add(48);
+        from.add(16);
         to.add(3);
         from_base.add(false);
         to_base.add(true); //move it into a goal
@@ -568,7 +568,7 @@ class BoardTest {
         ArrayList<Boolean> from_base = new ArrayList<>();
         ArrayList<Boolean> to_base = new ArrayList<>();
 
-        from.add(16);
+        from.add(48);
         to.add(3);
         from_base.add(false);
         to_base.add(true); //move it into a goal

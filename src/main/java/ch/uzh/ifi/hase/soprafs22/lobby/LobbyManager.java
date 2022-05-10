@@ -66,9 +66,9 @@ public class LobbyManager {
         return newLobby.getId();
     }
 
-    synchronized public void closeLobby(Integer lobbyID) {
+    synchronized public void closeLobby(Integer lobbyID, boolean fromHeartBeat) {
         Lobby lobbyToBeDeleted = getLobbyByID(lobbyID);
-        if(lobbyToBeDeleted != null && creationTime + 5000 < new Date().getTime()){
+        if(lobbyToBeDeleted != null && (creationTime + 5000 < new Date().getTime() || !fromHeartBeat)){
             updatePlayers(lobbyToBeDeleted, UpdateType.LOBBY);
             openLobbies.remove(lobbyToBeDeleted);
 
@@ -76,6 +76,10 @@ public class LobbyManager {
                 playersInLobbies.remove(user);
             }
         }
+    }
+
+    synchronized public void closeLobby(Integer lobbyID) {
+        closeLobby(lobbyID, false);
     }
 
 
