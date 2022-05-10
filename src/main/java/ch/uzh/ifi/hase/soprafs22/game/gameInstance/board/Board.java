@@ -516,6 +516,20 @@ public class Board implements IBoard {
                 movePositions(fromPos, toPos, move.get_color(), startsInGoal,
                         move.get_card() != null ? move.get_card().isSeven() : false);
             } else {
+                switch(toPos){
+                    case REDINTERSECT:
+                        REDBLOCKED = false;
+                        break;
+                    case GREENINTERSECT:
+                        GREENBLOCKED = false;
+                        break;
+                    case BLUEINTERSECT:
+                        BLUEBLOCKED = false;
+                        break;
+                    case YELLOWINTERSECT:
+                        YELLOWBLOCKED = false;
+                        break;
+                }
                 movePositions(fromPos, toPos, move.get_card() != null ? move.get_card().isSeven() : false);
             }
 
@@ -629,6 +643,22 @@ public class Board implements IBoard {
      */
     public void makeSwitch(int start, int end) throws InvalidMoveException {
         switch(start){
+            case REDINTERSECT:
+                REDBLOCKED = false;
+                break;
+            case YELLOWINTERSECT:
+                YELLOWBLOCKED = false;
+                break;
+            case GREENINTERSECT:
+                GREENBLOCKED = false;
+                break;
+            case BLUEINTERSECT:
+                BLUEBLOCKED = false;
+                break;
+            default:
+                break;
+        }
+        switch(end){
             case REDINTERSECT:
                 REDBLOCKED = false;
                 break;
