@@ -6,11 +6,14 @@ import ch.uzh.ifi.hase.soprafs22.game.exceptions.MoveBlockedByMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Board implements IBoard {
     private ArrayList<MARBLE> _mainCircle = new ArrayList<>();
@@ -732,189 +735,238 @@ public class Board implements IBoard {
         return allMoveValues;
     }
 
-    private boolean isGenericMovePossible(List<Integer> marblesOnMain, List<Integer> moveValues, Card card, COLOR color)
+    //Functions that calculate possible moves
+
+    /**
+     * Returns a list of all possible generic positions reachable from a given position and a card (+ color)
+     * @param startPos the position we start in
+     * @param earlyReturn if true, the method will return immediately after the first is found. The return List will ALWAYS have a length of 0 or 1.
+     */
+    private List<BoardPosition> reachableGenericMoves(BoardPosition startPos, Card card, COLOR color, boolean earlyReturn)
     {
+        List<Integer> moveValues = getMoveValuesBasedOnCard(card);
+
+        if(moveValues.size() == 0) return new ArrayList<BoardPosition>(); //not a generic card
+        if(startPos.isInGoal()) return new ArrayList<>(); //not a generic move. this is a goal to goal move
+        if(startPos.getIndex() == -1) return new ArrayList<>(); //not on field
+
         // make a new move with the card
         Move m = new Move();
         m.set_card(card);
         m.set_color(color);
+        List<BoardPosition> resultPositions = new ArrayList<>();
 
         // try normal moves
-        for (int i = 0; i < marblesOnMain.size(); i++) {
+        for (int j = 0; j < moveValues.size(); j++) {
 
-            for (int j = 0; j < moveValues.size(); j++) {
+            // try a normal move
+            m.set_fromPos(new ArrayList<>(Arrays.asList(startPos.getIndex())));
+            m.set_toPos(new ArrayList<>(
+                    Arrays.asList(getIndexAfterDistance(startPos.getIndex(), moveValues.get(j)))));
+            m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
+            m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
 
-                // try a normal move
-                m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
-                m.set_toPos(new ArrayList<>(
-                        Arrays.asList(getIndexAfterDistance(marblesOnMain.get(i), moveValues.get(j)))));
-                m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
-                m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
+            // always early return, saves this O(scary) algorithm to terminate a lot earlier
+            // most of the time
+            try {
+                if (isValidMove(m))
+                {
+                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0), false);
+                    resultPositions.add(bp);
 
-                // always early return, saves this O(scary) algorithm to terminate a lot earlier
-                // most of the time
-                try {
-                    if (isValidMove(m))
-                        return true;
+                    if(earlyReturn) return resultPositions; //early return to save time if possible
                 }
-                catch (InvalidMoveException e) {
-                    // do nothing here
-                    // ik this is terrible, but our move is always well-formed in this case
-                }
+            }
+            catch (InvalidMoveException e) {
+                // do nothing here
+                // ik this is terrible, but our move is always well-formed in this case
             }
         }
 
-        return false;
+        return resultPositions;
     }
 
-    private boolean isGenericGoalMovePossible(List<Integer> marblesOnMain, List<Integer> moveValues, Card card, COLOR color)
+    /**
+     * Returns a list of all possible generic goal positions reachable from a given position and a card (+ color)
+     * @param startPos the position we start in
+     * @param earlyReturn if true, the method will return immediately after the first is found. The return List will ALWAYS have a length of 0 or 1.
+     */
+    private List<BoardPosition> reachableGenericGoalMoves(BoardPosition startPos, Card card, COLOR color, boolean earlyReturn)
     {
-        // make a new move with the card
+        List<Integer> moveValues = getMoveValuesBasedOnCard(card);
+
+        if(moveValues.size() == 0) return new ArrayList<BoardPosition>(); //not a generic card
+        if(startPos.isInGoal()) return new ArrayList<>(); //not a generic move. this is a goal to goal move
+        if(startPos.getIndex() == -1) return new ArrayList<>(); //not on field
+
         Move m = new Move();
         m.set_card(card);
         m.set_color(color);
+        List<BoardPosition> resultPositions = new ArrayList<>();
 
-        // try goal moves
-        for (int i = 0; i < marblesOnMain.size(); i++) {
+        for (int j = 0; j < moveValues.size(); j++) {
 
-            for (int j = 0; j < moveValues.size(); j++) {
-
-                // try to construct the valid indices, this should always succeed
-                m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
-                try {
-                    //this will return {-1} as a goal position, which will be validated as wrong.
-                    int goalPos =  getIndexInGoalAfterDistance(marblesOnMain.get(i), moveValues.get(j), color);
-                    if(goalPos == -1)
-                    {
-                        continue;
-                    }
-                    m.set_toPos(new ArrayList<>(Arrays.asList(goalPos)));
-                }
-                catch (IndexOutOfBoundsException e) {
-                    //a 4 cannot move backwards in a goal (distance has to be positive), so we catch this in this exception
-                    continue; //will be empty, so fail 100%
-                }
-
-                m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
-                m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
-
-                //now try the move
-                try {
-                    if (isValidMove(m))
-                        return true;
-                } catch (InvalidMoveException e) {
-                    // do nothing here
-                    // ik this is terrible, but our move is always well-formed in this case
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private boolean isGoalToGoalMovePossible(List<Integer> marblesInGoal, List<Integer> moveValues, Card card, COLOR color)
-    {
-        // make a new move with the card
-        Move m = new Move();
-        m.set_card(card);
-        m.set_color(color);
-
-        // try goal to goal moves
-        for (int i = 0; i < marblesInGoal.size(); i++) {
-            for (int j = 0; j < moveValues.size(); j++) {
-
-                if(moveValues.get(j) < 1 || moveValues.get(j) > 3) //will fail %100 percent since its too large
+            // try to construct the valid indices, this should always succeed
+            m.set_fromPos(new ArrayList<>(Arrays.asList(startPos.getIndex())));
+            try {
+                //this will return {-1} as a goal position, which will be validated as wrong.
+                int goalPos =  getIndexInGoalAfterDistance(startPos.getIndex(), moveValues.get(j), color);
+                if(goalPos == -1)
                 {
                     continue;
                 }
+                m.set_toPos(new ArrayList<>(Arrays.asList(goalPos)));
+            }
+            catch (IndexOutOfBoundsException e) {
+                //a 4 cannot move backwards in a goal (distance has to be positive), so we catch this in this exception
+                continue; //will be empty, so fail 100%
+            }
 
-                // try a goal move from a goal
-                int toPos = marblesInGoal.get(i) + moveValues.get(j);
+            m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
+            m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
 
-                if(toPos < 0 || toPos > 3)
+            //now try the move
+            try {
+                if (isValidMove(m))
                 {
-                    //index out of bounds anyway
-                    continue;
-                }
+                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0), true);
+                    resultPositions.add(bp);
 
-                m.set_fromPos(new ArrayList<>(Arrays.asList(marblesInGoal.get(i))));
-                m.set_toPos(new ArrayList<>(Arrays.asList(toPos)));
-                m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(true)));
-                m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
-
-                // try the move
-                // always early return, saves this O(scary) algorithm to terminate a lot earlier
-                // most of the time
-                try {
-                    if (isValidMove(m))
-                        return true;
-                } catch (InvalidMoveException e) {
-                    // do nothing here
-                    // ik this is terrible, but our move is always well-formed in this case
+                    if(earlyReturn) return resultPositions; //early return to save time if possible
                 }
+            } catch (InvalidMoveException e) {
+                // do nothing here
+                // ik this is terrible, but our move is always well-formed in this case
             }
         }
 
-        return false;
+        return resultPositions;
     }
 
-    private boolean isJackMovePossible(List<Integer> marblesOnMain, Card card, COLOR color, MARBLE searchedMarbleCol)
+    /**
+     * Returns a list of all possible goal positions reachable from a given position in a goal and a card (+ color)
+     * @param startPos the position we start in
+     * @param earlyReturn if true, the method will return immediately after the first is found. The return List will ALWAYS have a length of 0 or 1.
+     */
+    private List<BoardPosition> reachableGoalToGoalMoves(BoardPosition startPos, Card card, COLOR color, boolean earlyReturn)
     {
+        List<Integer> moveValues = getMoveValuesBasedOnCard(card);
+
+        if(moveValues.size() == 0) return new ArrayList<BoardPosition>(); //not a generic card
+        if(!startPos.isInGoal()) return new ArrayList<>(); //not a goal to goal move.
+        if(startPos.getIndex() == -1) return new ArrayList<>(); //not on field, this should never trigger
+
+        Move m = new Move();
+        m.set_card(card);
+        m.set_color(color);
+        List<BoardPosition> resultPositions = new ArrayList<>();
+
+        for (int j = 0; j < moveValues.size(); j++) {
+
+            if(moveValues.get(j) < 1 || moveValues.get(j) > 3) //will fail %100 percent since its too large
+            {
+                continue;
+            }
+
+            // try a goal move from a goal
+            int toPos = startPos.getIndex() + moveValues.get(j);
+
+            if(toPos < 0 || toPos > 3)
+            {
+                //index out of bounds anyway
+                continue;
+            }
+
+            m.set_fromPos(new ArrayList<>(Arrays.asList(startPos.getIndex())));
+            m.set_toPos(new ArrayList<>(Arrays.asList(toPos)));
+            m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(true)));
+            m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
+
+            // try the move
+            // always early return, saves this O(scary) algorithm to terminate a lot earlier
+            // most of the time
+            try {
+                if (isValidMove(m))
+                {
+                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0), true);
+                    resultPositions.add(bp);
+
+                    if(earlyReturn) return resultPositions; //early return to save time if possible
+                }
+            } catch (InvalidMoveException e) {
+                // do nothing here
+                // ik this is terrible, but our move is always well-formed in this case
+            }
+        }
+
+        return resultPositions;
+    }
+
+    /**
+     * Returns a list of all possible positions reachable from a given position with a jack
+     * @param startPos the position we start in
+     * @param earlyReturn if true, the method will return immediately after the first is found. The return List will ALWAYS have a length of 0 or 1.
+     */
+    private List<BoardPosition> reachableJackMoves(BoardPosition startPos, Card card, COLOR color, MARBLE ownMarble, boolean earlyReturn)
+    {
+
+        if(card.getValue() != CARDVALUE.JACK) return new ArrayList<>();
+        if(startPos.isInGoal()) return new ArrayList<>();
+        if(startPos.getIndex() == -1) return new ArrayList<>(); //not on field
+
+
         // make a new move with the card
         Move m = new Move();
         m.set_card(card);
         m.set_color(color);
-
-        // try jack move
-        if(card.getValue() != CARDVALUE.JACK)
-        {
-            return false;
-        }
+        List<BoardPosition> resultPositions = new ArrayList<>();
 
         ArrayList<Integer> otherMarbles = new ArrayList<>();
         //get all other marbles on the main board
         for (int i = 0; i < _mainCircle.size(); i++) {
-            if (_mainCircle.get(i) != searchedMarbleCol && _mainCircle.get(i) != MARBLE.NONE)
+            if (_mainCircle.get(i) != ownMarble && _mainCircle.get(i) != MARBLE.NONE)
                 otherMarbles.add(i);
         }
 
-        // can we make any switch?
-        for (int i = 0; i < marblesOnMain.size(); i++) {
-            for (int j = 0; j < otherMarbles.size(); j++) {
+        for (int j = 0; j < otherMarbles.size(); j++) {
 
-                // try the switch move for each combination
-                m.set_fromPos(new ArrayList<>(Arrays.asList(marblesOnMain.get(i))));
-                m.set_toPos(new ArrayList<>(Arrays.asList(otherMarbles.get(j))));
-                m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
-                m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
+            // try the switch move for each combination
+            m.set_fromPos(new ArrayList<>(Arrays.asList(startPos.getIndex())));
+            m.set_toPos(new ArrayList<>(Arrays.asList(otherMarbles.get(j))));
+            m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
+            m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
 
-                // always early return, saves this O(scary) algorithm to terminate a lot earlier
-                // most of the time
-                try {
-                    if (isValidMove(m))
-                        return true;
-                } catch (InvalidMoveException e) {
-                    // do nothing here
-                    // ik this is terrible, but our move is always well-formed in this case
+            // always early return, saves this O(scary) algorithm to terminate a lot earlier
+            // most of the time
+            try {
+                if (isValidMove(m))
+                {
+                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0), false);
+                    resultPositions.add(bp);
+
+                    if(earlyReturn) return resultPositions; //early return to save time if possible
                 }
+            } catch (InvalidMoveException e) {
+                // do nothing here
+                // ik this is terrible, but our move is always well-formed in this case
             }
         }
 
-        return false;
+        return resultPositions;
     }
 
-    private boolean isStartMovePossible(Card card, COLOR color)
+    private List<BoardPosition> reachableStartMoves(BoardPosition startPos, Card card, COLOR color)
     {
+        if(startPos.getIndex() != -1) return new ArrayList<>();
+        if(startPos.isInGoal()) return new ArrayList<>();
+
         // make a new move with the card
         Move m = new Move();
         m.set_card(card);
         m.set_color(color);
 
         // try start move
-        if(card.getValue() != CARDVALUE.ACE && card.getValue() != CARDVALUE.KING)
-        {
-            return false;
-        }
+        if(card.getValue() != CARDVALUE.ACE && card.getValue() != CARDVALUE.KING) return new ArrayList<>();
 
         int intersect = 0;
         switch (color) {
@@ -932,17 +984,102 @@ public class Board implements IBoard {
                 break;
         }
 
-        m.set_fromPos(new ArrayList<>(Arrays.asList(-1)));
+        m.set_fromPos(new ArrayList<>(Arrays.asList(startPos.getIndex())));
         m.set_toPos(new ArrayList<>(Arrays.asList(intersect)));
-        m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
+        m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(startPos.isInGoal())));
         m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
+        List<BoardPosition> resultPositions = new ArrayList<>();
 
         try {
             if (isValidMove(m))
-                return true;
+            {
+                BoardPosition bp = new BoardPosition(m.get_toPos().get(0), false);
+                resultPositions.add(bp);
+            }
         } catch (InvalidMoveException e) {
             // do nothing here
             // ik this is terrible, but our move is always well-formed in this case
+        }
+
+        return resultPositions;
+    }
+
+
+    //Functions that evaluate if there is at least 1 possible move
+
+    private boolean isGenericMovePossible(List<Integer> marblesOnMain, List<Integer> moveValues, Card card, COLOR color)
+    {
+        // try normal moves
+        for (int i = 0; i < marblesOnMain.size(); i++) {
+
+            BoardPosition bp = new BoardPosition(marblesOnMain.get(i), false);
+
+            if(reachableGenericMoves(bp, card, color, true).size() == 1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isGenericGoalMovePossible(List<Integer> marblesOnMain, List<Integer> moveValues, Card card, COLOR color)
+    {
+
+        // try goal moves
+        for (int i = 0; i < marblesOnMain.size(); i++) {
+
+            BoardPosition bp = new BoardPosition(marblesOnMain.get(i), false);
+
+            if(reachableGenericGoalMoves(bp, card, color, true).size() == 1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isGoalToGoalMovePossible(List<Integer> marblesInGoal, List<Integer> moveValues, Card card, COLOR color)
+    {
+
+        // try goal to goal moves
+        for (int i = 0; i < marblesInGoal.size(); i++) {
+
+            BoardPosition bp = new BoardPosition(marblesInGoal.get(i), true);
+
+            if(reachableGoalToGoalMoves(bp, card, color, true).size() == 1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isJackMovePossible(List<Integer> marblesOnMain, Card card, COLOR color, MARBLE searchedMarbleCol)
+    {
+        // can we make any switch?
+        for (int i = 0; i < marblesOnMain.size(); i++) {
+
+            BoardPosition bp = new BoardPosition(marblesOnMain.get(i), false);
+
+            if(reachableJackMoves(bp, card, color, searchedMarbleCol, true).size() == 1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isStartMovePossible(Card card, COLOR color)
+    {
+        BoardPosition bp = new BoardPosition(-1, false);
+
+        if(reachableStartMoves(bp, card, color).size() == 1)
+        {
+            return true;
         }
 
         return false;
@@ -1268,6 +1405,44 @@ public class Board implements IBoard {
         return false;
     }
 
+    //Functions that evaluate all possible move destinations based on a position and card
+
+    /**
+     * Returns a list of all possible boardPositions that can be reached based on a position, card and color.
+     */
+    public List<BoardPosition> whatMovesPossible(BoardPosition bp, Card card, COLOR color)
+    {
+        List<BoardPosition> resultPositions = new ArrayList<>();
+
+        //for jack
+        MARBLE jackMarbleColor = MARBLE.NONE;
+        switch (color)
+        {
+            case RED:
+                jackMarbleColor = MARBLE.RED;
+                break;
+            case BLUE:
+                jackMarbleColor = MARBLE.BLUE;
+                break;
+            case GREEN:
+                jackMarbleColor = MARBLE.GREEN;
+                break;
+            case YELLOW:
+                jackMarbleColor = MARBLE.YELLOW;
+
+        }
+
+        resultPositions.addAll(reachableStartMoves(bp, card, color));
+        resultPositions.addAll(reachableGenericMoves(bp, card, color, false));
+        resultPositions.addAll(reachableGenericGoalMoves(bp, card, color, false));
+        resultPositions.addAll(reachableGoalToGoalMoves(bp, card, color, false));
+        resultPositions.addAll(reachableJackMoves(bp, card, color, jackMarbleColor, false));
+
+        return resultPositions;
+
+    }
+
+
     private int getIndexAfterDistance(int start, int distance) throws IndexOutOfBoundsException {
         if (start < 0 || start >= 64 || distance <= -64 || distance >= 64)
             throw new IndexOutOfBoundsException();
@@ -1317,7 +1492,7 @@ public class Board implements IBoard {
         if (restDistance < 1 || restDistance > 4)
             return -1;
 
-        return restDistance;
+        return restDistance - 1;
 
     }
 
