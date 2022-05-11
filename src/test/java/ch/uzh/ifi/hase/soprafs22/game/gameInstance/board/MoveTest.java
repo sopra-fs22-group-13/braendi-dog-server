@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs22.game.exceptions.MoveBlockedByMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.constants.CARDTYPE;
@@ -26,11 +27,8 @@ public class MoveTest {
 
     private Board board;
     private Move move;
-    private ArrayList<Integer> fromPos;
-    private ArrayList<Integer> toPos;
-    private ArrayList<Boolean> fromPosInGoal;
-    private ArrayList<Boolean> toPosInGoal;
-
+    private ArrayList<BoardPosition> fromPos;
+    private ArrayList<BoardPosition> toPos;
     private Card _card;
     private COLOR _color;
 
@@ -39,39 +37,35 @@ public class MoveTest {
         board = new Board();
         fromPos = new ArrayList<>();
         toPos = new ArrayList<>();
-        fromPosInGoal = new ArrayList<>();
-        toPosInGoal = new ArrayList<>();
     }
 
     void moveComplete() {
-        fromPos = new ArrayList<>(Arrays.asList(0));
-        toPos = new ArrayList<>(Arrays.asList(1));
-        fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-        toPosInGoal = new ArrayList<>(Arrays.asList(false));
         _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
-        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+
+        fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+        toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, false)));
+
+        move = new Move(fromPos, toPos, _card, "token", _color);
 
         assertTrue(move.isWellFormed());
         assertTrue(move.checkIfComplete());
 
         fromPos.remove(0);
-        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+        move = new Move(fromPos, toPos, _card, "token", _color);
         assertFalse(move.isWellFormed());
         assertFalse(move.checkIfComplete());
 
-        fromPos.add(0);
+        fromPos.add(new BoardPosition(0, false));
         _color = null;
-        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+        move = new Move(fromPos, toPos, _card, "token", _color);
         assertTrue(move.isWellFormed());
         assertFalse(move.checkIfComplete());
 
         _color = COLOR.RED;
         fromPos.remove(0);
         toPos.remove(0);
-        fromPosInGoal.remove(0);
-        toPosInGoal.remove(0);
-        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+        move = new Move(fromPos, toPos, _card, "token", _color);
         assertTrue(move.isWellFormed());
         assertFalse(move.checkIfComplete());
     }
@@ -81,11 +75,11 @@ public class MoveTest {
         _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
         _color = COLOR.RED;
 
-        fromPos = new ArrayList<>(Arrays.asList(-1));
-        toPos = new ArrayList<>(Arrays.asList(0));
-        fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-        toPosInGoal = new ArrayList<>(Arrays.asList(false));
-        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+        fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(-1, false)));
+        toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+
+
+        move = new Move(fromPos, toPos, _card, "token", _color);
         // test starting move
         try {
             assertTrue(board.isValidMove(move));
@@ -100,11 +94,10 @@ public class MoveTest {
         _color = COLOR.RED;
 
         // wrong intersect
-        fromPos = new ArrayList<>(Arrays.asList(-1));
-        toPos = new ArrayList<>(Arrays.asList(16));
-        fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-        toPosInGoal = new ArrayList<>(Arrays.asList(false));
-        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+        fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(-1, false)));
+        toPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
+
+        move = new Move(fromPos, toPos, _card, "token", _color);
         try {
             assertFalse(board.isValidMove(move));
         } catch (InvalidMoveException e) {
@@ -121,19 +114,17 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED); // move marble to start
 
             // test for 1
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(1));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 11
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(11));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(11, false)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         } catch (Exception e) {
             fail(String.format("Should not throw exception | startPos: %s, endPos: %s", fromPos, toPos));
@@ -149,19 +140,17 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED); // move marble to start
 
             // test for move too far
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(12));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(12, false)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for move too short
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -177,39 +166,35 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED); // move marble to start
 
             //move marble --> to unblock the intersect
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(1));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, false)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move);
-            fromPos = new ArrayList<>(Arrays.asList(1));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move);
 
             // test for 1
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 11
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(56));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(56, false)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble to right position
-            fromPos = new ArrayList<>(Arrays.asList(56));
-            toPos = new ArrayList<>(Arrays.asList(2));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(56, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
         } catch (InvalidMoveException e) {
@@ -227,25 +212,24 @@ public class MoveTest {
 
             //todo @Shitao, this should fail, but because you cannot reach a goal from a blocked
             // goal too far --> wrong move distance
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(2));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // goal too close --> wrong move distance
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(56));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(56, false)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble to right position
-            fromPos = new ArrayList<>(Arrays.asList(56));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(56, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -259,19 +243,16 @@ public class MoveTest {
 
         try {
             board.makeStartingMove(COLOR.RED); // move marble to start
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble into goal
 
             // test for 1
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(1));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(true));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         } catch (Exception e) {
             System.out.println(e + " | should not throw this exception");
@@ -285,19 +266,15 @@ public class MoveTest {
 
         try {
             board.makeStartingMove(COLOR.RED); // move marble to start
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble into goal
 
             // wrong move distance (test both too far and too short)
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(2));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(true));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -311,11 +288,9 @@ public class MoveTest {
         _color = COLOR.RED;
 
         try {
-            fromPos = new ArrayList<>(Arrays.asList(-1));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(-1, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             // test starting move
             assertTrue(board.isValidMove(move));
         } catch (InvalidMoveException e) {
@@ -330,11 +305,9 @@ public class MoveTest {
 
         try {
             // wrong intersect
-            fromPos = new ArrayList<>(Arrays.asList(-1));
-            toPos = new ArrayList<>(Arrays.asList(16));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(-1, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             // test starting move
             assertFalse(board.isValidMove(move));
         } catch (InvalidMoveException e) {
@@ -351,11 +324,9 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED); // move marble to start
 
             // test for 13
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(13));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(13, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -371,19 +342,15 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED); // move marble to start
 
             // test for distance below 13
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(6));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(6, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for distance above 13
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(16));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -397,18 +364,14 @@ public class MoveTest {
 
         try {
             board.makeStartingMove(COLOR.RED); // move marble to start
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(52));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(52, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble into position
 
-            fromPos = new ArrayList<>(Arrays.asList(52));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(52, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -422,26 +385,20 @@ public class MoveTest {
 
         try {
             board.makeStartingMove(COLOR.RED); // move marble to start
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(53));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(53, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble into position
 
             // goal too far
-            fromPos = new ArrayList<>(Arrays.asList(53));
-            toPos = new ArrayList<>(Arrays.asList(3));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(53, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
             // goal too close
-            fromPos = new ArrayList<>(Arrays.asList(53));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(53, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
         } catch (Exception e) {
@@ -456,18 +413,14 @@ public class MoveTest {
 
         try {
             board.makeStartingMove(COLOR.RED); // move marble to start
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble into position
 
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(4));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(true));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
 
             try{
                 board.isValidMove(move);
@@ -501,26 +454,20 @@ public class MoveTest {
         try {
             board.makeStartingMove(COLOR.RED); // move first marble to start
             board.makeStartingMove(COLOR.BLUE); // move second marble to start
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(20));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(20, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move second marble into position
 
-            fromPos = new ArrayList<>(Arrays.asList(16));
-            toPos = new ArrayList<>(Arrays.asList(35));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", COLOR.BLUE);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(35, false)));
+            move = new Move(fromPos, toPos, _card, "token", COLOR.BLUE);
             board.makeMove(move); // move second marble into position
 
             // switch the two marbles
-            fromPos = new ArrayList<>(Arrays.asList(20));
-            toPos = new ArrayList<>(Arrays.asList(35));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(20, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(35, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         } catch (Exception e) {
             System.out.println(e + " Should not throw exception");
@@ -542,27 +489,21 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED); // move first marble to start
 
             // test for one marble
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(7));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(7, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move)); // one move
 
             // test for two marbles
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(7));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(7, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move first marble into position
 
             board.makeStartingMove(COLOR.RED); // move second marble to start
-            fromPos = new ArrayList<>(Arrays.asList(0, 7));
-            toPos = new ArrayList<>(Arrays.asList(6, 8));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false, false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false, false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false), new BoardPosition(7, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(6, false), new BoardPosition(8, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move)); // two moves for two marbles
         } catch (Exception e) {
             fail(e +" Should not throw exception");
@@ -579,33 +520,25 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED); // move first marble to start
 
             // test for one marble
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(61));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(61, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move first marble into position
 
-            fromPos = new ArrayList<>(Arrays.asList(61));
-            toPos = new ArrayList<>(Arrays.asList(3));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(61, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for two marbles
             board.makeStartingMove(COLOR.RED); // move second marble to start
-            fromPos = new ArrayList<>(Arrays.asList(61, 0));
-            toPos = new ArrayList<>(Arrays.asList(63, 61)); 
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false, false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false, false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(61, false), new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false), new BoardPosition(61, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); //move second marble into position
-            fromPos = new ArrayList<>(Arrays.asList(63, 61));
-            toPos = new ArrayList<>(Arrays.asList(1, 0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false, false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true, true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false), new BoardPosition(61, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, true), new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -621,20 +554,16 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED); // move first marble to start
 
             // test for one marble in goal
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move first marble into goal
 
             board.makeStartingMove(COLOR.RED); // move second marble to start
 
-            fromPos = new ArrayList<>(Arrays.asList(0, 0));
-            toPos = new ArrayList<>(Arrays.asList(3, 4));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(true, false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true, false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true), new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true), new BoardPosition(4, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -655,19 +584,27 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED); // move first marble to start
             moveMarble(0, 13, false, false);
 
-            fromPos = new ArrayList<>(Arrays.asList(1, 0, 13));
-            toPos = new ArrayList<>(Arrays.asList(3, 2, 15));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(true, true, false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true, true, false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(
+                    new BoardPosition(1, true),
+                    new BoardPosition(0, true),
+                    new BoardPosition(13, false)));
+            toPos = new ArrayList<>(Arrays.asList(
+                    new BoardPosition(3, true),
+                    new BoardPosition(2, true),
+                    new BoardPosition(15, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             moveMarble(13, 12, false, false); //this should work
-            fromPos = new ArrayList<>(Arrays.asList(1, 0, 12));
-            toPos = new ArrayList<>(Arrays.asList(3, 2, 15));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(true, true, false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true, true, false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(
+                    new BoardPosition(1, true),
+                    new BoardPosition(0, true),
+                    new BoardPosition(12, false)));
+            toPos = new ArrayList<>(Arrays.asList(
+                    new BoardPosition(3, true),
+                    new BoardPosition(2, true),
+                    new BoardPosition(15, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
         } catch (InvalidMoveException e) {
@@ -689,11 +626,15 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED); // move first marble to start
             moveMarble(0, 62, false, false);
 
-            fromPos = new ArrayList<>(Arrays.asList(1, 62, 13));
-            toPos = new ArrayList<>(Arrays.asList(3, 0, 15));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(true, false, false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true, true, false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(
+                    new BoardPosition(1, true),
+                    new BoardPosition(62, false),
+                    new BoardPosition(13, false)));
+            toPos = new ArrayList<>(Arrays.asList(
+                    new BoardPosition(3, true),
+                    new BoardPosition(0, true),
+                    new BoardPosition(15, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
         } catch (InvalidMoveException e) {
@@ -710,18 +651,14 @@ public class MoveTest {
         try {
             board.makeStartingMove(COLOR.RED); // move first marble to start
 
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(4));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(4, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move)); // forward move
 
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(60));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(60, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move)); // backward move
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -741,19 +678,15 @@ public class MoveTest {
         try {
             board.makeStartingMove(COLOR.RED); // move first marble to start
 
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(63));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move);
 
 
-            fromPos = new ArrayList<>(Arrays.asList(63));
-            toPos = new ArrayList<>(Arrays.asList(2));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -769,101 +702,80 @@ public class MoveTest {
 
             // test for 2
             _card = new Card(CARDVALUE.TWO, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(2));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 3
             _card = new Card(CARDVALUE.THREE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(3));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 5
             _card = new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(5));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(5, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 6
             _card = new Card(CARDVALUE.SIX, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(6));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(6, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 8
             _card = new Card(CARDVALUE.EIGHT, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(8));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(8, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 9
             _card = new Card(CARDVALUE.NINE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(9));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(9, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 10
             _card = new Card(CARDVALUE.TEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(10));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(10, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for queen
             _card = new Card(CARDVALUE.QUEEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(12));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(12, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for ace 1
             _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(1));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for ace 2
             _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(11));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(11, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for king
             _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(13));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(13, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
         } catch (InvalidMoveException e) {
@@ -879,110 +791,86 @@ public class MoveTest {
 
             // test for 2
             _card = new Card(CARDVALUE.TWO, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(62));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(62, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for 3
             _card = new Card(CARDVALUE.THREE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(61));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(61, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for 5
             _card = new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(59));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(59, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for 6
             _card = new Card(CARDVALUE.SIX, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(58));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(58, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for 8
             _card = new Card(CARDVALUE.EIGHT, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(56));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(56, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for 9
             _card = new Card(CARDVALUE.NINE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(55));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(55, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for 10
             _card = new Card(CARDVALUE.TEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(54));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(54, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for queen
             _card = new Card(CARDVALUE.QUEEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(52));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(52, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for ace 1
             _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(63));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for ace 2
             _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(53));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(53, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for king
             _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(51));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(51, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             // test for wrong distance
             _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(52));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(52, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
         } catch (InvalidMoveException e) {
@@ -996,119 +884,90 @@ public class MoveTest {
         try {
             board.makeStartingMove(COLOR.RED); // move first marble to start
             _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(63));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move);
 
             // test for 2
             _card = new Card(CARDVALUE.TWO, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(63));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 3
             _card = new Card(CARDVALUE.THREE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(2));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 5
             _card = new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(63));
-            toPos = new ArrayList<>(Arrays.asList(60));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(60, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble to right position
-            fromPos = new ArrayList<>(Arrays.asList(60));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(60, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 6
             _card = new Card(CARDVALUE.SIX, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(60));
-            toPos = new ArrayList<>(Arrays.asList(59));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(60, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(59, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble to right position
-            fromPos = new ArrayList<>(Arrays.asList(59));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(59, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 8
             _card = new Card(CARDVALUE.EIGHT, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(59));
-            toPos = new ArrayList<>(Arrays.asList(57));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(59, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(57, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble to right position
-            fromPos = new ArrayList<>(Arrays.asList(57));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(57, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 9
             _card = new Card(CARDVALUE.NINE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(57));
-            toPos = new ArrayList<>(Arrays.asList(56));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(57, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(56, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble to right position
-            fromPos = new ArrayList<>(Arrays.asList(56));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(56, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 10
             _card = new Card(CARDVALUE.TEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(56));
-            toPos = new ArrayList<>(Arrays.asList(55));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(56, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(55, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble to right position
-            fromPos = new ArrayList<>(Arrays.asList(55));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(55, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for queen
             _card = new Card(CARDVALUE.QUEEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(55));
-            toPos = new ArrayList<>(Arrays.asList(54));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(55, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(54, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble to right position
-            fromPos = new ArrayList<>(Arrays.asList(54));
-            toPos = new ArrayList<>(Arrays.asList(1));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(54, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -1123,26 +982,20 @@ public class MoveTest {
 
             // test for 2
             _card = new Card(CARDVALUE.TWO, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             board.makeMove(move); // move marble to right position in goal
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(2));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(true));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
             // test for 3
             _card = new Card(CARDVALUE.THREE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(3));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(true));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         } catch (InvalidMoveException e) {
             fail(e + "Should not throw exception");
@@ -1193,11 +1046,9 @@ public class MoveTest {
     boolean createBasicMove(CARDVALUE cardvalue,Integer startIndex, Integer endIndex, boolean toGoal, boolean fromGoal)
     {
         _card = new Card(cardvalue, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-        fromPos = new ArrayList<>(Arrays.asList(startIndex));
-        toPos = new ArrayList<>(Arrays.asList(endIndex));
-        fromPosInGoal = new ArrayList<>(Arrays.asList(fromGoal));
-        toPosInGoal = new ArrayList<>(Arrays.asList(toGoal));
-        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+        fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(startIndex, fromGoal)));
+        toPos = new ArrayList<>(Arrays.asList(new BoardPosition(endIndex, toGoal)));
+        move = new Move(fromPos, toPos, _card, "token", _color);
 
         boolean success = false;
         try{
@@ -1212,11 +1063,9 @@ public class MoveTest {
 
     void moveMarble(Integer from, Integer to, boolean fromGoal, boolean toGoal)
     {
-        fromPos = new ArrayList<>(Arrays.asList(from));
-        toPos = new ArrayList<>(Arrays.asList(to));
-        fromPosInGoal = new ArrayList<>(Arrays.asList(fromGoal));
-        toPosInGoal = new ArrayList<>(Arrays.asList(toGoal));
-        move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, null, "token", _color);
+        fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(from, fromGoal)));
+        toPos = new ArrayList<>(Arrays.asList(new BoardPosition(to, toGoal)));
+        move = new Move(fromPos, toPos, null, "token", _color);
         try{
             board.makeMove(move);
         } catch (Exception e)
@@ -1422,22 +1271,18 @@ public class MoveTest {
 
             //this should not be possible
             _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(2));
-            toPos = new ArrayList<>(Arrays.asList(48));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(48, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             moveMarble(48, 50, false, false);
 
             //this should now be possible
             _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(2));
-            toPos = new ArrayList<>(Arrays.asList(50));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(50, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         }catch (Exception e)
         {
@@ -1456,22 +1301,18 @@ public class MoveTest {
 
             //this should not be possible
             _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(48));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(48, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
             moveMarble(48, 50, false, false);
 
             //this should be possible
             _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
-            fromPos = new ArrayList<>(Arrays.asList(0));
-            toPos = new ArrayList<>(Arrays.asList(50));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(50, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
         }catch (Exception e)
@@ -1605,11 +1446,9 @@ public class MoveTest {
         _color = COLOR.RED;
 
         try {
-            fromPos = new ArrayList<>(Arrays.asList(-1));
-            toPos = new ArrayList<>(Arrays.asList(0));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(-1, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             // test starting move
             assertTrue(board.isValidMove(move));
         } catch (InvalidMoveException e) {
@@ -1631,11 +1470,15 @@ public class MoveTest {
             moveMarble(0, 63, false, false);
             board.makeStartingMove(COLOR.RED);
             moveMarble(0, 1, false, false);
-            fromPos = new ArrayList<>(Arrays.asList(2, 63, 1));
-            toPos = new ArrayList<>(Arrays.asList(3, 2, 3));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(true, false, false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(true, true, false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(
+                    new BoardPosition(2, true),
+                    new BoardPosition(63, false),
+                    new BoardPosition(1, false)));
+            toPos = new ArrayList<>(Arrays.asList(
+                    new BoardPosition(3, true),
+                    new BoardPosition(2, true),
+                    new BoardPosition(3, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         }catch(Exception e){
             fail("Should not throw this exception: " + e);
@@ -1651,11 +1494,9 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED);
             moveMarble(0, 1, false, false);
             board.makeStartingMove(COLOR.RED);
-            fromPos = new ArrayList<>(Arrays.asList(1, 0));
-            toPos = new ArrayList<>(Arrays.asList(5, 3));
-            fromPosInGoal = new ArrayList<>(Arrays.asList(false, false));
-            toPosInGoal = new ArrayList<>(Arrays.asList(false, false));
-            move = new Move(fromPos, toPos, fromPosInGoal, toPosInGoal, _card, "token", _color);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, false), new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(5, false), new BoardPosition(3, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         }catch(Exception e){
             fail("Should not throw this exception: " + e);

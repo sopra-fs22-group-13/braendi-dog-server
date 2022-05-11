@@ -4,67 +4,59 @@ import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 
 import java.util.ArrayList;
+import java.util.List;
 
-    /*
+/*
     * Move
     * This class contains all information of a move
     * */
 
 public class Move {
-    private ArrayList<Integer> _fromPos = new ArrayList<>();
-    private ArrayList<Integer> _toPos = new ArrayList<>();
-
-    private ArrayList<Boolean> _fromPosInGoal = new ArrayList<>();
-    private ArrayList<Boolean> _toPosInGoal = new ArrayList<>();
+    private List<BoardPosition> _fromPos = new ArrayList<>();
+    private List<BoardPosition> _toPos = new ArrayList<>();
 
     private Card _card;
     private COLOR _color;
 
     private String _token;
+    private boolean _isJoker;
 
-    public Move(ArrayList<Integer> fromPos, ArrayList<Integer> toPos, ArrayList<Boolean> fromPosInGoal, ArrayList<Boolean> toPosInGoal, Card c, String token, COLOR color ){
+    public Move(List<BoardPosition> fromPos, List<BoardPosition> toPos, Card c, String token, COLOR color)
+    {
         this._fromPos = fromPos;
         this._toPos = toPos;
-        this._fromPosInGoal = fromPosInGoal;
-        this._toPosInGoal = toPosInGoal;
         this._card = c;
         this._token = token;
-        this._color=color;
+        this._color = color;
+        this._isJoker = false;
+    }
+    public Move(List<BoardPosition> fromPos, List<BoardPosition> toPos, Card c, String token, COLOR color, boolean isJoker)
+    {
+        this._fromPos = fromPos;
+        this._toPos = toPos;
+        this._card = c;
+        this._token = token;
+        this._color = color;
+        this._isJoker = isJoker;
     }
 
     // for testing purposes
     public Move(){}
 
-    public ArrayList<Integer> get_fromPos() {
+    public List<BoardPosition> get_fromPos() {
         return _fromPos;
     }
 
-    public void set_fromPos(ArrayList<Integer> _fromPos) {
+    public void set_fromPos(List<BoardPosition> _fromPos) {
         this._fromPos = _fromPos;
     }
 
-    public ArrayList<Integer> get_toPos() {
+    public List<BoardPosition> get_toPos() {
         return _toPos;
     }
 
-    public void set_toPos(ArrayList<Integer> _toPos) {
+    public void set_toPos(List<BoardPosition> _toPos) {
         this._toPos = _toPos;
-    }
-
-    public ArrayList<Boolean> get_fromPosInGoal() {
-        return _fromPosInGoal;
-    }
-
-    public void set_fromPosInGoal(ArrayList<Boolean> _fromPosInGoal) {
-        this._fromPosInGoal = _fromPosInGoal;
-    }
-
-    public ArrayList<Boolean> get_toPosInGoal() {
-        return _toPosInGoal;
-    }
-
-    public void set_toPosInGoal(ArrayList<Boolean> _toPosInGoal) {
-        this._toPosInGoal = _toPosInGoal;
     }
 
     public Card get_card() {
@@ -87,25 +79,35 @@ public class Move {
 
     public boolean isWellFormed()
     {
-        return _fromPos.size() == _toPos.size() && _toPos.size() == _fromPosInGoal.size() && _fromPosInGoal.size() == _toPosInGoal.size();
+        return _fromPos.size() == _toPos.size();
     }
 
     public boolean checkIfComplete(){
         if (isWellFormed()){
-            return !_fromPos.isEmpty() && !_toPos.isEmpty() && !_fromPosInGoal.isEmpty() && !_toPosInGoal.isEmpty() && _card != null && _color != null;
+            return !_fromPos.isEmpty() && !_toPos.isEmpty() && _card != null && _color != null;
         }
         return false;
     }
 
     public String getToken() {return _token;}
 
+    public boolean is_isJoker()
+    {
+        return _isJoker;
+    }
+
+    public void setIsJoker(boolean isJoker)
+    {
+        this._isJoker = isJoker;
+    }
+
     public boolean isGoalMove() {
         boolean isGoalMove = false;
-        for(int i = 0; i < _fromPosInGoal.size(); i++) {
-            isGoalMove = isGoalMove || _fromPosInGoal.get(i);
+        for(int i = 0; i < _fromPos.size(); i++) {
+            isGoalMove = isGoalMove || _fromPos.get(i).isInGoal();
         }
-        for(int i = 0; i < _toPosInGoal.size(); i++) {
-            isGoalMove = isGoalMove || _toPosInGoal.get(i);
+        for(int i = 0; i < _toPos.size(); i++) {
+            isGoalMove = isGoalMove || _toPos.get(i).isInGoal();
         }
         return isGoalMove;
     }

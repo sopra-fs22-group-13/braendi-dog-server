@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs22.game.constants.CARDVALUE;
 import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,21 +65,15 @@ public class BoardIsMovePossibleTest {
         try{
 
             //create a simple move
-            ArrayList<Integer> from = new ArrayList<>();
-            ArrayList<Integer> to = new ArrayList<>();
-            ArrayList<Boolean> from_base = new ArrayList<>();
-            ArrayList<Boolean> to_base = new ArrayList<>();
+            ArrayList<BoardPosition> from = new ArrayList<>();
+            ArrayList<BoardPosition> to = new ArrayList<>();
 
-            from.add(fromPos);
-            to.add(toPos);
-            from_base.add(false);
-            to_base.add(false);
+            from.add(new BoardPosition(fromPos, false));
+            to.add(new BoardPosition(toPos, false));
 
             Move move = new Move();
             move.set_fromPos(from);
             move.set_toPos(to);
-            move.set_fromPosInGoal(from_base);
-            move.set_toPosInGoal(to_base);
 
             _b.makeMove(move);
 
@@ -93,21 +88,15 @@ public class BoardIsMovePossibleTest {
             for (int j = 0;j<i; j++) {
                 _b.makeStartingMove(COLOR.RED);
                 //create a simple move
-                ArrayList<Integer> from = new ArrayList<>();
-                ArrayList<Integer> to = new ArrayList<>();
-                ArrayList<Boolean> from_base = new ArrayList<>();
-                ArrayList<Boolean> to_base = new ArrayList<>();
+                ArrayList<BoardPosition> from = new ArrayList<>();
+                ArrayList<BoardPosition> to = new ArrayList<>();
 
-                from.add(0);
-                to.add(j);
-                from_base.add(false);
-                to_base.add(true);
+                from.add(new BoardPosition(0, false));
+                to.add(new BoardPosition(j, true));
 
                 Move move = new Move();
                 move.set_fromPos(from);
                 move.set_toPos(to);
-                move.set_fromPosInGoal(from_base);
-                move.set_toPosInGoal(to_base);
                 move.set_color(COLOR.RED);
 
                 _b.makeMove(move);
@@ -128,38 +117,33 @@ public class BoardIsMovePossibleTest {
             _b.makeStartingMove(COLOR.BLUE);
 
             //create a simple move
-            ArrayList<Integer> from = new ArrayList<>();
-            ArrayList<Integer> to = new ArrayList<>();
+            ArrayList<BoardPosition> from = new ArrayList<>();
+            ArrayList<BoardPosition> to = new ArrayList<>();
 
-            ArrayList<Boolean> from_base = new ArrayList<>();
-            ArrayList<Boolean> to_base = new ArrayList<>();
-
-            from.add(0);
-            to.add(60);
-            from_base.add(false);
-            to_base.add(false);
+            from.add(new BoardPosition(0, false));
+            to.add(new BoardPosition(60, false));
 
             Move move = new Move();
             move.set_fromPos(from);
             move.set_toPos(to);
-            move.set_fromPosInGoal(from_base);
-            move.set_toPosInGoal(to_base);
 
             _b.makeMove(move);
 
             _b.makeStartingMove(COLOR.RED);
 
             from.clear();
-            from.add(0);
             to.clear();
-            to.add(63);
+
+            from.add(new BoardPosition(0, false));
+            to.add(new BoardPosition(63, false));
 
             _b.makeMove(move);
 
             from.clear();
-            from.add(16);
             to.clear();
-            to.add(13);
+
+            from.add(new BoardPosition(16, false));
+            to.add(new BoardPosition(13, false));
 
             _b.makeMove(move);
 
@@ -176,10 +160,8 @@ public class BoardIsMovePossibleTest {
         Move m = new Move();
         m.set_card(king);
         m.set_color(COLOR.RED);
-        m.set_fromPos(new ArrayList<>(Arrays.asList(-1)));
-        m.set_toPos(new ArrayList<>(Arrays.asList(0)));
-        m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
-        m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
+        m.set_fromPos(new ArrayList<>(Arrays.asList(new BoardPosition(-1, false))));
+        m.set_toPos(new ArrayList<>(Arrays.asList(new BoardPosition(0, false))));
 
         //should work
 

@@ -152,11 +152,11 @@ public class Game {
         if  (_playersWithValidTurns.get(_indexWithCurrentTurn)) {
             //checks if move is logical right
             if (_board.isValidMove(move)) {
-                if (move.get_fromPos().get(0) == -1) {
+                if (move.get_fromPos().get(0).getIndex() == -1) {
                     _board.makeStartingMove(move.get_color());
                 }
                 else if (move.get_card().getValue() == CARDVALUE.JACK) {
-                    _board.makeSwitch(move.get_fromPos().get(0), move.get_toPos().get(0));
+                    _board.makeSwitch(move.get_fromPos().get(0).getIndex(), move.get_toPos().get(0).getIndex());
                 }
                 else {
                     _board.makeMove(move);

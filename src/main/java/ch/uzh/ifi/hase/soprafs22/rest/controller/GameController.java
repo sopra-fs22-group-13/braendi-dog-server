@@ -10,6 +10,7 @@ import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.Game;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
@@ -78,7 +79,22 @@ public class GameController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void playMove(@PathVariable String gametoken, @RequestBody MovePutDTO movePutDTO) {
-        Move move = new Move(movePutDTO.get_fromPos(), movePutDTO.get_toPos(), movePutDTO.get_fromPosInGoal(), movePutDTO.get_toPosInGoal(), new Card(movePutDTO.getCard()), movePutDTO.getToken(), movePutDTO.getColor());
+
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
+
+        if(movePutDTO.get_fromPos().size() != movePutDTO.get_fromPosInGoal().size() || movePutDTO.get_toPos().size() != movePutDTO.get_toPosInGoal().size()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid move request: Malformed move");
+        }
+
+        for (int i = 0; i < movePutDTO.get_fromPos().size(); i++) {
+            from.add(new BoardPosition(movePutDTO.get_fromPos().get(i), movePutDTO.get_fromPosInGoal().get(i)));
+        }
+        for (int i = 0; i < movePutDTO.get_toPos().size(); i++) {
+            to.add(new BoardPosition(movePutDTO.get_toPos().get(i), movePutDTO.get_toPosInGoal().get(i)));
+        }
+        
+        Move move = new Move(from, to, new Card(movePutDTO.getCard()), movePutDTO.getToken(), movePutDTO.getColor());
 
         Game game = gameManager.getGameByToken(gametoken);
         if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");

@@ -40,21 +40,15 @@ public class BoardWhatMovesPossibleTest {
         try{
 
             //create a simple move
-            ArrayList<Integer> from = new ArrayList<>();
-            ArrayList<Integer> to = new ArrayList<>();
-            ArrayList<Boolean> from_base = new ArrayList<>();
-            ArrayList<Boolean> to_base = new ArrayList<>();
+            ArrayList<BoardPosition> from = new ArrayList<>();
+            ArrayList<BoardPosition> to = new ArrayList<>();
 
-            from.add(fromPos);
-            to.add(toPos);
-            from_base.add(false);
-            to_base.add(false);
+            from.add(new BoardPosition(fromPos, false));
+            to.add(new BoardPosition(toPos, false));
 
             Move move = new Move();
             move.set_fromPos(from);
             move.set_toPos(to);
-            move.set_fromPosInGoal(from_base);
-            move.set_toPosInGoal(to_base);
 
             _b.makeMove(move);
 
@@ -69,21 +63,15 @@ public class BoardWhatMovesPossibleTest {
             for (int j = 0;j<i; j++) {
                 _b.makeStartingMove(COLOR.RED);
                 //create a simple move
-                ArrayList<Integer> from = new ArrayList<>();
-                ArrayList<Integer> to = new ArrayList<>();
-                ArrayList<Boolean> from_base = new ArrayList<>();
-                ArrayList<Boolean> to_base = new ArrayList<>();
+                ArrayList<BoardPosition> from = new ArrayList<>();
+                ArrayList<BoardPosition> to = new ArrayList<>();
 
-                from.add(0);
-                to.add(j);
-                from_base.add(false);
-                to_base.add(true);
+                from.add(new BoardPosition(0, false));
+                to.add(new BoardPosition(j, true));
 
                 Move move = new Move();
                 move.set_fromPos(from);
                 move.set_toPos(to);
-                move.set_fromPosInGoal(from_base);
-                move.set_toPosInGoal(to_base);
                 move.set_color(COLOR.RED);
 
                 _b.makeMove(move);
@@ -230,6 +218,21 @@ public class BoardWhatMovesPossibleTest {
         BoardPosition startPos = new BoardPosition(14, false);
 
         assertTrue(boardPositionsEqual(expected, _b.whatMovesPossible(startPos, new Card("4D"), COLOR.YELLOW)));
+    }
+
+    @Test
+    public void goalToGoal()
+    {
+        //setup
+        makeFinishingMove(1);
+
+
+        List<BoardPosition> expected = new ArrayList<>();
+        expected.add(new BoardPosition(2, true));
+
+        BoardPosition startPos = new BoardPosition(0, true);
+
+        assertTrue(boardPositionsEqual(expected, _b.whatMovesPossible(startPos, new Card("2D"), COLOR.YELLOW)));
     }
 
     @Test

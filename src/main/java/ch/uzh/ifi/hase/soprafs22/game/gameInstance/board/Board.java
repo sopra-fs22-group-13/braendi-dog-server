@@ -493,10 +493,10 @@ public class Board implements IBoard {
 
         // For each move, make it
         for (int i = 0; i < move.get_fromPos().size(); i++) {
-            int fromPos = move.get_fromPos().get(i);
-            int toPos = move.get_toPos().get(i);
-            boolean startsInGoal = move.get_fromPosInGoal().get(i);
-            boolean endsInGoal = move.get_toPosInGoal().get(i);
+            int fromPos = move.get_fromPos().get(i).getIndex();
+            int toPos = move.get_toPos().get(i).getIndex();
+            boolean startsInGoal = move.get_fromPos().get(i).isInGoal();
+            boolean endsInGoal = move.get_toPos().get(i).isInGoal();
             // unblock if it was on an intersection
             if(!startsInGoal){
                 switch(fromPos){
@@ -760,18 +760,16 @@ public class Board implements IBoard {
         for (int j = 0; j < moveValues.size(); j++) {
 
             // try a normal move
-            m.set_fromPos(new ArrayList<>(Arrays.asList(startPos.getIndex())));
+            m.set_fromPos(new ArrayList<>(Arrays.asList(new BoardPosition(startPos.getIndex(), false))));
             m.set_toPos(new ArrayList<>(
-                    Arrays.asList(getIndexAfterDistance(startPos.getIndex(), moveValues.get(j)))));
-            m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
-            m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
+                    Arrays.asList(new BoardPosition(getIndexAfterDistance(startPos.getIndex(), moveValues.get(j)), false))));
 
             // always early return, saves this O(scary) algorithm to terminate a lot earlier
             // most of the time
             try {
                 if (isValidMove(m))
                 {
-                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0), false);
+                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0).getIndex(), false);
                     resultPositions.add(bp);
 
                     if(earlyReturn) return resultPositions; //early return to save time if possible
@@ -807,7 +805,7 @@ public class Board implements IBoard {
         for (int j = 0; j < moveValues.size(); j++) {
 
             // try to construct the valid indices, this should always succeed
-            m.set_fromPos(new ArrayList<>(Arrays.asList(startPos.getIndex())));
+            m.set_fromPos(new ArrayList<>(Arrays.asList(new BoardPosition(startPos.getIndex(), false))));
             try {
                 //this will return {-1} as a goal position, which will be validated as wrong.
                 int goalPos =  getIndexInGoalAfterDistance(startPos.getIndex(), moveValues.get(j), color);
@@ -815,21 +813,18 @@ public class Board implements IBoard {
                 {
                     continue;
                 }
-                m.set_toPos(new ArrayList<>(Arrays.asList(goalPos)));
+                m.set_toPos(new ArrayList<>(Arrays.asList(new BoardPosition(goalPos, true))));
             }
             catch (IndexOutOfBoundsException e) {
                 //a 4 cannot move backwards in a goal (distance has to be positive), so we catch this in this exception
                 continue; //will be empty, so fail 100%
             }
 
-            m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
-            m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
-
             //now try the move
             try {
                 if (isValidMove(m))
                 {
-                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0), true);
+                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0).getIndex(), true);
                     resultPositions.add(bp);
 
                     if(earlyReturn) return resultPositions; //early return to save time if possible
@@ -877,10 +872,8 @@ public class Board implements IBoard {
                 continue;
             }
 
-            m.set_fromPos(new ArrayList<>(Arrays.asList(startPos.getIndex())));
-            m.set_toPos(new ArrayList<>(Arrays.asList(toPos)));
-            m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(true)));
-            m.set_toPosInGoal(new ArrayList<>(Arrays.asList(true)));
+            m.set_fromPos(new ArrayList<>(Arrays.asList(new BoardPosition(startPos.getIndex(), true))));
+            m.set_toPos(new ArrayList<>(Arrays.asList(new BoardPosition(toPos, true))));
 
             // try the move
             // always early return, saves this O(scary) algorithm to terminate a lot earlier
@@ -888,7 +881,7 @@ public class Board implements IBoard {
             try {
                 if (isValidMove(m))
                 {
-                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0), true);
+                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0).getIndex(), true);
                     resultPositions.add(bp);
 
                     if(earlyReturn) return resultPositions; //early return to save time if possible
@@ -931,17 +924,15 @@ public class Board implements IBoard {
         for (int j = 0; j < otherMarbles.size(); j++) {
 
             // try the switch move for each combination
-            m.set_fromPos(new ArrayList<>(Arrays.asList(startPos.getIndex())));
-            m.set_toPos(new ArrayList<>(Arrays.asList(otherMarbles.get(j))));
-            m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(false)));
-            m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
+            m.set_fromPos(new ArrayList<>(Arrays.asList(new BoardPosition(startPos.getIndex(), false))));
+            m.set_toPos(new ArrayList<>(Arrays.asList(new BoardPosition(otherMarbles.get(j), false))));
 
             // always early return, saves this O(scary) algorithm to terminate a lot earlier
             // most of the time
             try {
                 if (isValidMove(m))
                 {
-                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0), false);
+                    BoardPosition bp = new BoardPosition(m.get_toPos().get(0).getIndex(), false);
                     resultPositions.add(bp);
 
                     if(earlyReturn) return resultPositions; //early return to save time if possible
@@ -984,16 +975,14 @@ public class Board implements IBoard {
                 break;
         }
 
-        m.set_fromPos(new ArrayList<>(Arrays.asList(startPos.getIndex())));
-        m.set_toPos(new ArrayList<>(Arrays.asList(intersect)));
-        m.set_fromPosInGoal(new ArrayList<>(Arrays.asList(startPos.isInGoal())));
-        m.set_toPosInGoal(new ArrayList<>(Arrays.asList(false)));
+        m.set_fromPos(new ArrayList<>(Arrays.asList(new BoardPosition(startPos.getIndex(), startPos.isInGoal()))));
+        m.set_toPos(new ArrayList<>(Arrays.asList(new BoardPosition(intersect, false))));
         List<BoardPosition> resultPositions = new ArrayList<>();
 
         try {
             if (isValidMove(m))
             {
-                BoardPosition bp = new BoardPosition(m.get_toPos().get(0), false);
+                BoardPosition bp = new BoardPosition(m.get_toPos().get(0).getIndex(), false);
                 resultPositions.add(bp);
             }
         } catch (InvalidMoveException e) {
@@ -1130,10 +1119,8 @@ public class Board implements IBoard {
         Card c = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS);
         sevenmove.set_card(c);
 
-        ArrayList<Integer> fromPos = new ArrayList<>();
-        ArrayList<Integer> toPos = new ArrayList<>();
-        ArrayList<Boolean> fromInGoal = new ArrayList<>();
-        ArrayList<Boolean> toInGoal = new ArrayList<>();
+        ArrayList<BoardPosition> fromPos = new ArrayList<>();
+        ArrayList<BoardPosition> toPos = new ArrayList<>();
 
         //count to goal destructor
         if(countToGoal != 0 && countToGoal != 1 && countToGoal != 2)
@@ -1164,13 +1151,18 @@ public class Board implements IBoard {
                     break;
             }
 
-            //if it ends up OOB, that's fine. The validMove check will then just return false.
+            //if it ends up OOB, that's fine. we just dont consider it then
             if(toPosGoal != false || toPosValue != marblesOnMain.get(i))
             {
-                fromPos.add(marblesOnMain.get(i));
-                toPos.add(toPosValue);
-                fromInGoal.add(false);
-                toInGoal.add(toPosGoal);
+                try{
+                    toPos.add(new BoardPosition(toPosValue, toPosGoal));
+                    fromPos.add(new BoardPosition(marblesOnMain.get(i), false));
+                }catch (IndexOutOfBoundsException e)
+                {
+                    //do nothing here
+                }
+
+
             }
             marbleCount++;
         }
@@ -1178,10 +1170,13 @@ public class Board implements IBoard {
         for (int i = 0; i < marblesInGoal.size(); i++) {
             if(marblesInGoal.get(i) != marblesInGoal.get(i) + movecombo[marbleCount])
             {
-                fromPos.add(marblesInGoal.get(i));
-                toPos.add(marblesInGoal.get(i) + movecombo[marbleCount]);
-                fromInGoal.add(true);
-                toInGoal.add(true);
+                try{
+                    toPos.add(new BoardPosition(marblesInGoal.get(i) + movecombo[marbleCount], true));
+                    fromPos.add(new BoardPosition(marblesInGoal.get(i), true));
+                }catch (IndexOutOfBoundsException e)
+                {
+                    //do nothing here
+                }
             }
             marbleCount++;
         }
@@ -1199,8 +1194,6 @@ public class Board implements IBoard {
 
         sevenmove.set_fromPos(fromPos);
         sevenmove.set_toPos(toPos);
-        sevenmove.set_fromPosInGoal(fromInGoal);
-        sevenmove.set_toPosInGoal(toInGoal);
 
         List<Move> allMoves = generatePermutations(sevenmove);
         for (Move move : allMoves) {
@@ -1223,10 +1216,8 @@ public class Board implements IBoard {
 
         List<Move> finalList = new ArrayList<>();
 
-        List<Integer> fp = new ArrayList<>(move.get_fromPos());
-        List<Integer> tp = new ArrayList<>(move.get_toPos());
-        List<Boolean> fpb = new ArrayList<>(move.get_fromPosInGoal());
-        List<Boolean> tpb = new ArrayList<>(move.get_toPosInGoal());
+        List<BoardPosition> fp = new ArrayList<>(move.get_fromPos());
+        List<BoardPosition> tp = new ArrayList<>(move.get_toPos());
 
         int n = move.get_fromPos().size();
 
@@ -1236,7 +1227,7 @@ public class Board implements IBoard {
         }
 
         //initial
-        finalList.add(new Move(new ArrayList<>(fp), new ArrayList<>(tp), new ArrayList<>(fpb), new ArrayList<>(tpb), move.get_card(), move.getToken(), move.get_color()));
+        finalList.add(new Move(new ArrayList<>(fp), new ArrayList<>(tp), move.get_card(), move.getToken(), move.get_color()));
 
         int i = 0;
         while(i < n)
@@ -1248,11 +1239,9 @@ public class Board implements IBoard {
                 int swapindex2 = i;
                 Collections.swap(fp, swapindex1, swapindex2);
                 Collections.swap(tp, swapindex1, swapindex2);
-                Collections.swap(fpb, swapindex1, swapindex2);
-                Collections.swap(tpb, swapindex1, swapindex2);
 
                 //momentary render out
-                Move m = new Move(new ArrayList<>(fp), new ArrayList<>(tp), new ArrayList<>(fpb), new ArrayList<>(tpb), move.get_card(), move.getToken(), move.get_color());
+                Move m = new Move(new ArrayList<>(fp), new ArrayList<>(tp), move.get_card(), move.getToken(), move.get_color());
                 finalList.add(m);
 
                 //go on
