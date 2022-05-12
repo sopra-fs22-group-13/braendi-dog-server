@@ -33,8 +33,6 @@ public class Board implements IBoard {
     private boolean BLUEBLOCKED = false;
     private boolean YELLOWBLOCKED = false;
 
-    private Card _lastPlayedCard;
-
     private final int REDINTERSECT = 0;
     private final int BLUEINTERSECT = 48;
     private final int GREENINTERSECT = 32;
@@ -599,6 +597,7 @@ public class Board implements IBoard {
                 }
                 break;
         }
+
     }
 
     public boolean checkWinningCondition(COLOR color) {
@@ -1500,8 +1499,7 @@ public class Board implements IBoard {
             this.REDBLOCKED,
             this.GREENBLOCKED,
             this.BLUEBLOCKED,
-            this.YELLOWBLOCKED,
-            this._lastPlayedCard
+            this.YELLOWBLOCKED
         );
     }
 

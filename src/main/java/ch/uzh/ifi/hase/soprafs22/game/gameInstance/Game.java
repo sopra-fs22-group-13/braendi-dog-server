@@ -42,6 +42,8 @@ public class Game {
     private int _indexOfHowManyCardToDeal;
     private final long creationTime = new Date().getTime();
 
+    private Card _lastPlayedCard;
+
     private IUserService _userService = SpringContext.getBean(UserService.class);
 
     public Game(ArrayList<User> users){
@@ -161,6 +163,8 @@ public class Game {
                 else {
                     _board.makeMove(move);
                 }
+                // last played card
+                _lastPlayedCard = move.get_card();
                 //remove card from player hand
                 _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
                 _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.BOARD,""));
@@ -233,7 +237,7 @@ public class Game {
             cMap.put(u.getId(), cols.remove(0));
         }
         bd.setColorMapping(cMap);
-
+        bd.setLastPlayedCard(_lastPlayedCard.getFormatted());
         return bd;
     }
 

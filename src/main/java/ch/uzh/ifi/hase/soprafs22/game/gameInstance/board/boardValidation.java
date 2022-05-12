@@ -34,8 +34,6 @@ public class boardValidation {
     private boolean BLUEBLOCKED = false;
     private boolean YELLOWBLOCKED = false;
 
-    private Card _lastPlayedCard;
-
     private final int REDINTERSECT = 0;
     private final int BLUEINTERSECT = 48;
     private final int GREENINTERSECT = 32;
@@ -54,8 +52,7 @@ public class boardValidation {
             boolean REDBLOCKED,
             boolean GREENBLOCKED,
             boolean BLUEBLOCKED,
-            boolean YELLOWBLOCKED,
-            Card _lastPlayedCard) {
+            boolean YELLOWBLOCKED) {
         super();
         this._mainCircle = _mainCircle;
         this._redGoal = _redGoal;
@@ -70,7 +67,6 @@ public class boardValidation {
         this.GREENBLOCKED = GREENBLOCKED;
         this.BLUEBLOCKED = BLUEBLOCKED;
         this.YELLOWBLOCKED = YELLOWBLOCKED;
-        this._lastPlayedCard = _lastPlayedCard;
     }
 
     public void makeMove(Move move) throws InvalidMoveException {
