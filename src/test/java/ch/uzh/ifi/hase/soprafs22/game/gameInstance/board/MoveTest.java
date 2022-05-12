@@ -978,7 +978,11 @@ public class MoveTest {
     void validRegularFromToGoal() {
         _color = COLOR.RED;
         try {
+            board.makeStartingMove(COLOR.YELLOW);
             board.makeStartingMove(COLOR.RED);
+            board.makeStartingMove(COLOR.BLUE);
+            board.makeStartingMove(COLOR.GREEN);
+
 
             // test for 2
             _card = new Card(CARDVALUE.TWO, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
@@ -1272,18 +1276,59 @@ public class MoveTest {
             //this should not be possible
             _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, false)));
-            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(48, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
-            moveMarble(48, 50, false, false);
+            moveMarble(16, 18, false, false);
 
             //this should now be possible
             _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, false)));
-            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(50, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(18, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
+        }catch (Exception e)
+        {
+            fail("Should not throw here.");
+        }
+    }
+
+    @Test
+    void resetsCorrectlyAfterSwitchFromBlocked()
+    {
+        try{
+            _color = COLOR.RED;
+            board.makeStartingMove(COLOR.RED);
+            board.makeStartingMove(COLOR.YELLOW);
+            moveMarble(0, 60, false, false);
+            board.makeStartingMove(COLOR.RED);
+            moveMarble(16, 18, false, false);
+
+
+            //this should not be possible
+            _card = new Card(CARDVALUE.EIGHT, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(60, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(4, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertFalse(board.isValidMove(move));
+
+            //this should work
+            _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(18, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+            board.makeSwitch(0, 18);
+
+
+            //this should now be possible
+            _card = new Card(CARDVALUE.EIGHT, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(60, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(4, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+
         }catch (Exception e)
         {
             fail("Should not throw here.");
@@ -1302,16 +1347,16 @@ public class MoveTest {
             //this should not be possible
             _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
-            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(48, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
             assertFalse(board.isValidMove(move));
 
-            moveMarble(48, 50, false, false);
+            moveMarble(16, 18, false, false);
 
             //this should be possible
             _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
-            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(50, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(18, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
 
@@ -1496,6 +1541,24 @@ public class MoveTest {
             board.makeStartingMove(COLOR.RED);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, false), new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(5, false), new BoardPosition(3, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move));
+        }catch(Exception e){
+            fail("Should not throw this exception: " + e);
+        }
+    }
+
+    @Test
+    void validSevenInbetween2(){
+        _card = new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+        _color = COLOR.RED;
+
+        try{
+            board.makeStartingMove(COLOR.RED);
+            moveMarble(0, 2, false, false);
+            board.makeStartingMove(COLOR.RED);
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, false), new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(5, false), new BoardPosition(4, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
             assertTrue(board.isValidMove(move));
         }catch(Exception e){
