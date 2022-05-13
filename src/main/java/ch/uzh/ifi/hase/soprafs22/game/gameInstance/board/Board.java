@@ -8,6 +8,9 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
+import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -16,6 +19,8 @@ import java.util.*;
 import java.util.List;
 
 public class Board implements IBoard {
+    private final Logger log = LoggerFactory.getLogger(UserService.class);
+
     private ArrayList<MARBLE> _mainCircle = new ArrayList<>();
 
     private ArrayList<MARBLE> _redGoal = new ArrayList<>();
@@ -535,6 +540,8 @@ public class Board implements IBoard {
             }
 
         }
+
+        log.info(String.format("CARD: %s: RED: %b, YELLOW %b, GREEN %b, BLUE %b", move.get_card() != null ? move.get_card().getFormatted() : "NOT SPECIFIED", REDBLOCKED, YELLOWBLOCKED, GREENBLOCKED, BLUEBLOCKED));
     }
 
     /**
@@ -598,6 +605,7 @@ public class Board implements IBoard {
                 break;
         }
 
+        log.info(String.format("CARD: START: RED: %b, YELLOW %b, GREEN %b, BLUE %b", REDBLOCKED, YELLOWBLOCKED, GREENBLOCKED, BLUEBLOCKED));
     }
 
     public boolean checkWinningCondition(COLOR color) {
@@ -681,6 +689,8 @@ public class Board implements IBoard {
         } catch (IndexOutOfBoundsException e) {
             throw new InvalidMoveException("OUT_OF_BOUNDS", "one of the positions was out of bounds (0-63)");
         }
+
+        log.info(String.format("CARD: SWITCH: RED: %b, YELLOW %b, GREEN %b, BLUE %b", REDBLOCKED, YELLOWBLOCKED, GREENBLOCKED, BLUEBLOCKED));
     }
 
     /**
