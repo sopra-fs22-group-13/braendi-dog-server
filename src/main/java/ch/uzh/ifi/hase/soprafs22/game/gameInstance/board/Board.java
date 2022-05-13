@@ -1202,7 +1202,7 @@ public class Board implements IBoard {
                     return true;
             } catch (InvalidMoveException | IndexOutOfBoundsException e) {
                 // do nothing here
-                // ik this is terrible, but our move is always well-formed in this case
+                // ik this is terrible
             }
         }
 
