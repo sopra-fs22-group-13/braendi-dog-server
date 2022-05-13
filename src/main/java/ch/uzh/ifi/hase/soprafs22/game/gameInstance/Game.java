@@ -237,7 +237,7 @@ public class Game {
             cMap.put(u.getId(), cols.remove(0));
         }
         bd.setColorMapping(cMap);
-        bd.setLastPlayedCard(_lastPlayedCard.getFormatted());
+        bd.setLastPlayedCard(_lastPlayedCard != null ? _lastPlayedCard.getFormatted() : null);
         return bd;
     }
 
