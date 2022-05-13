@@ -230,7 +230,7 @@ public class Game {
 
         //the color mapping of the users
         Map<Long, COLOR> cMap = new HashMap<>();
-        ArrayList<COLOR> cols = new ArrayList<>(Arrays.asList(COLOR.RED, COLOR.YELLOW, COLOR.GREEN, COLOR.BLUE));
+        ArrayList<COLOR> cols = new ArrayList<>(Arrays.asList(COLOR.RED, COLOR.BLUE, COLOR.GREEN, COLOR.YELLOW));
 
         for (Player p: _players) {
             User u = _userManager.getUserFromPlayer(p);
