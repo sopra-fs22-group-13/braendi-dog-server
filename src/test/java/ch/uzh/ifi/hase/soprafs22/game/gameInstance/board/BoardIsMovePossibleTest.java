@@ -166,7 +166,7 @@ public class BoardIsMovePossibleTest {
         //should work
 
         
-        assertTrue(_b.isValidMove(m));
+        assertTrue(_b.isValidMove(m).getValid());
         
     }
 

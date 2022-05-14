@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs22.mocks;
 import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.IBoard;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.ValidMove;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
@@ -42,8 +43,8 @@ public abstract class MockBoard implements IBoard {
     }
 
     @Override
-    public boolean isValidMove(Move move) throws InvalidMoveException {
-        return false;
+    public ValidMove isValidMove(Move move){
+        return new ValidMove(false);
     }
 
     @Override

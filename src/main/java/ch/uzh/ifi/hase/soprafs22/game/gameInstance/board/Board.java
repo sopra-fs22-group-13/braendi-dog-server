@@ -11,15 +11,12 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 public class Board implements IBoard {
-    private final Logger log = LoggerFactory.getLogger(UserService.class);
+    private final Logger log = LoggerFactory.getLogger(Board.class);
 
     private ArrayList<MARBLE> _mainCircle = new ArrayList<>();
 
@@ -776,7 +773,7 @@ public class Board implements IBoard {
             // always early return, saves this O(scary) algorithm to terminate a lot earlier
             // most of the time
             try {
-                if (isValidMove(m))
+                if (isValidMove(m).getValid())
                 {
                     BoardPosition bp = new BoardPosition(m.get_toPos().get(0).getIndex(), false);
                     resultPositions.add(bp);
@@ -831,7 +828,7 @@ public class Board implements IBoard {
 
             //now try the move
             try {
-                if (isValidMove(m))
+                if (isValidMove(m).getValid())
                 {
                     BoardPosition bp = new BoardPosition(m.get_toPos().get(0).getIndex(), true);
                     resultPositions.add(bp);
@@ -888,7 +885,7 @@ public class Board implements IBoard {
             // always early return, saves this O(scary) algorithm to terminate a lot earlier
             // most of the time
             try {
-                if (isValidMove(m))
+                if (isValidMove(m).getValid())
                 {
                     BoardPosition bp = new BoardPosition(m.get_toPos().get(0).getIndex(), true);
                     resultPositions.add(bp);
@@ -939,7 +936,7 @@ public class Board implements IBoard {
             // always early return, saves this O(scary) algorithm to terminate a lot earlier
             // most of the time
             try {
-                if (isValidMove(m))
+                if (isValidMove(m).getValid())
                 {
                     BoardPosition bp = new BoardPosition(m.get_toPos().get(0).getIndex(), false);
                     resultPositions.add(bp);
@@ -989,7 +986,7 @@ public class Board implements IBoard {
         List<BoardPosition> resultPositions = new ArrayList<>();
 
         try {
-            if (isValidMove(m))
+            if (isValidMove(m).getValid())
             {
                 BoardPosition bp = new BoardPosition(m.get_toPos().get(0).getIndex(), false);
                 resultPositions.add(bp);
@@ -1208,7 +1205,7 @@ public class Board implements IBoard {
         for (Move move : allMoves) {
             // try the move
             try {
-                if (isValidMove(move))
+                if (isValidMove(move).getValid())
                     return true;
             } catch (IndexOutOfBoundsException e) {
                 // do nothing here
@@ -1575,12 +1572,7 @@ public class Board implements IBoard {
     }
 
     @Override
-    public boolean isValidMove(Move move){
-        boardValidation validator = createMoveValidation();
-        return validator.isValidMove(move).getValid();
-    }
-
-    public validMove getValidMove(Move move){
+    public ValidMove isValidMove(Move move){
         boardValidation validator = createMoveValidation();
         return validator.isValidMove(move);
     }

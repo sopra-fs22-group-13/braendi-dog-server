@@ -2,16 +2,11 @@ package ch.uzh.ifi.hase.soprafs22.game.gameInstance.board;
 
 import ch.uzh.ifi.hase.soprafs22.game.constants.*;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
-import ch.uzh.ifi.hase.soprafs22.game.exceptions.MoveBlockedByMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
-import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
-import org.springframework.beans.factory.annotation.Autowired;
-import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.validMove;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -315,47 +310,47 @@ public class boardValidation {
     }
 
     // checks if the start move is valid
-    private validMove validStart(Move move, int startPos, int endPos){
+    private ValidMove validStart(Move move, int startPos, int endPos){
         try {
             COLOR marbleColor = getMarbleColor(move, startPos);
             switch (marbleColor) {
                 case RED:
                     if (_redBase == 0) {
-                        return new validMove(false, "no red marble on base");
+                        return new ValidMove(false, "no red marble on base");
                     } else if (endPos == REDINTERSECT && !REDBLOCKED) {
-                        return new validMove(true);
+                        return new ValidMove(true);
                     } else {
-                        return new validMove(false, "red at wrong end position or intersection blocked");
+                        return new ValidMove(false, "red at wrong end position or intersection blocked");
                     }
                 case YELLOW:
                     if (_yellowBase == 0) {
-                        return new validMove(false, "no yellow marble on base");
+                        return new ValidMove(false, "no yellow marble on base");
                     } else if (endPos == YELLOWINTERSECT && !YELLOWBLOCKED) {
-                        return new validMove(true);
+                        return new ValidMove(true);
                     } else {
-                        return new validMove(false, "yellow at wrong end position or intersection blocked");
+                        return new ValidMove(false, "yellow at wrong end position or intersection blocked");
                     }
                 case GREEN:
                     if (_greenBase == 0) {
-                        return new validMove(false, "no green marble on base");
+                        return new ValidMove(false, "no green marble on base");
                     } else if (endPos == GREENINTERSECT && !GREENBLOCKED) {
-                        return new validMove(true);
+                        return new ValidMove(true);
                     } else {
-                        return new validMove(false, "green at wrong end position or intersection blocked");
+                        return new ValidMove(false, "green at wrong end position or intersection blocked");
                     }
                 case BLUE:
                     if (_blueBase == 0) {
-                        return new validMove(false, "no blue marble on base");
+                        return new ValidMove(false, "no blue marble on base");
                     } else if (endPos == BLUEINTERSECT && !BLUEBLOCKED) {
-                        return new validMove(true);
+                        return new ValidMove(true);
                     } else {
-                        return new validMove(false, "blue at wrong end position or intersection blocked");
+                        return new ValidMove(false, "blue at wrong end position or intersection blocked");
                     }
                 default:
-                    return new validMove(false, "unknown error with starting marble");
+                    return new ValidMove(false, "unknown error with starting marble");
             }
         } catch (Exception e) {
-            return new validMove(false, "unknown error with starting marble:" + e);
+            return new ValidMove(false, "unknown error with starting marble:" + e);
         }
     }
 
@@ -591,10 +586,10 @@ public class boardValidation {
         return moveDist;
     }
 
-    public validMove isValidMove(Move move){
+    public ValidMove isValidMove(Move move){
         // throwing exceptions
         if (!move.checkIfComplete()) {
-            return new validMove(false, "Move is not complete");
+            return new ValidMove(false, "Move is not complete");
         }
 
         // checking if the move is valid based on the card
@@ -624,18 +619,18 @@ public class boardValidation {
      * @throws NoMarbleException if there are no marbles at the position
      * @return true if the move is valid
      */
-    private validMove isValidAceMove(Move move){
+    private ValidMove isValidAceMove(Move move){
         int startPos = move.get_fromPos().get(0).getIndex();
         int endPos = move.get_toPos().get(0).getIndex();
         COLOR marbleColor;
         try{
             marbleColor = getMarbleColor(move, startPos);
         }catch(Exception e){
-            return new validMove(false, "error at getMarbleColor: " + e);
+            return new ValidMove(false, "error at getMarbleColor: " + e);
         }
         // check if marble color is the same as move color
         if (marbleColor != move.get_color()) {
-            return new validMove(false, "move color != marble color");
+            return new ValidMove(false, "move color != marble color");
         }
         // validate for starting move
         if (startPos == -1) {
@@ -645,76 +640,76 @@ public class boardValidation {
         if (move.isGoalMove()) {
             boolean startInGoal = move.get_fromPos().get(0).isInGoal();
             if (!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)) {
-                return new validMove(false, "move is not valid for goal move");
+                return new ValidMove(false, "move is not valid for goal move");
             }
         }
         int moveDist = getMoveDist(move);
         if (moveDist != 1 && moveDist != 11) {
-            return new validMove(false, "wrong move distance for ace card: " + moveDist);
+            return new ValidMove(false, "wrong move distance for ace card: " + moveDist);
         }
 
         // checking for blocked intersect
         if (blockedIntersect(move, startPos, endPos, true)) {
-            return new validMove(false, "blocked intersect");
+            return new ValidMove(false, "blocked intersect");
         }
-        return new validMove(true);
+        return new ValidMove(true);
     }
 
     // check if the move is valid for a jack card
-    private validMove isValidJackMove(Move move){
+    private ValidMove isValidJackMove(Move move){
         int startPos = move.get_fromPos().get(0).getIndex();
         int endPos = move.get_toPos().get(0).getIndex();
         COLOR marbleColor;
         try{
             marbleColor = getMarbleColor(move, startPos);
         }catch(Exception e){
-            return new validMove(false, "error at getMarbleColor: " + e);
+            return new ValidMove(false, "error at getMarbleColor: " + e);
         }
         // validate for starting move
         if (startPos == -1) {
-            return new validMove(false, "jack cannot start");
+            return new ValidMove(false, "jack cannot start");
         }
         // check if marble color is the same as move color
         if (marbleColor != move.get_color()) {
-            return new validMove(false, "move color != marble color");
+            return new ValidMove(false, "move color != marble color");
         }
         if(move.get_toPos().get(0).isInGoal() == true || move.get_fromPos().get(0).isInGoal())
         {
             //cannot switch from or to goal
-            return new validMove(false, "cannot switch from or to goal");
+            return new ValidMove(false, "cannot switch from or to goal");
         }
         // jack behaviour unclear yet: unclear on how front-end passes the move
         if (this._mainCircle.get(startPos) == MARBLE.NONE || this._mainCircle.get(endPos) == MARBLE.NONE) {
-            return new validMove(false, "no marble at start or end position");
+            return new ValidMove(false, "no marble at start or end position");
         }
         // check for blocked intersect
         switch (endPos) {
             case REDINTERSECT:
                 if (REDBLOCKED) {
-                    return new validMove(false, "jack cannot switch to blocked red intersect");
+                    return new ValidMove(false, "jack cannot switch to blocked red intersect");
                 }
                 break;
             case YELLOWINTERSECT:
                 if (YELLOWBLOCKED) {
-                    return new validMove(false, "jack cannot switch to blocked yellow intersect");
+                    return new ValidMove(false, "jack cannot switch to blocked yellow intersect");
                 }
                 break;
             case GREENINTERSECT:
                 if (GREENBLOCKED) {
-                    return new validMove(false, "jack cannot switch to blocked green intersect");
+                    return new ValidMove(false, "jack cannot switch to blocked green intersect");
                 }
                 break;
             case BLUEINTERSECT:
                 if (BLUEBLOCKED) {
-                    return new validMove(false, "jack cannot switch to blocked blue intersect");
+                    return new ValidMove(false, "jack cannot switch to blocked blue intersect");
                 }
                 break;
         }
-        return new validMove(true);
+        return new ValidMove(true);
     }
 
     // check if the move is valid for a joker card
-    private validMove isValidJokerMove(Move move) {
+    private ValidMove isValidJokerMove(Move move) {
         // check if the move is a valid move for another card, check this recursively
         int startPos = move.get_fromPos().get(0).getIndex();
         int endPos = move.get_toPos().get(0).getIndex();
@@ -728,28 +723,28 @@ public class boardValidation {
             Move newMove = new Move(move.get_fromPos(), move.get_toPos(), c, move.getToken(), move.get_color());
             try {
                 if (isValidMove(newMove).getValid()) {
-                    return new validMove(true);
+                    return new ValidMove(true);
                 }
             } catch (Exception e) {
-                return new validMove(false, "unknown error with joker move: " + e);
+                return new ValidMove(false, "unknown error with joker move: " + e);
             }
         }
-        return new validMove(false, "no valid move for joker");
+        return new ValidMove(false, "no valid move for joker");
     }
 
     // check if the move is valid for a king card
-    private validMove isValidKingMove(Move move){
+    private ValidMove isValidKingMove(Move move){
         int startPos = move.get_fromPos().get(0).getIndex();
         int endPos = move.get_toPos().get(0).getIndex();
         COLOR marbleColor;
         try{
             marbleColor = getMarbleColor(move, startPos);
         }catch(Exception e){
-            return new validMove(false, "error at getMarbleColor: " + e);
+            return new ValidMove(false, "error at getMarbleColor: " + e);
         }
         // check if marble color is the same as move color
         if (marbleColor != move.get_color()) {
-            return new validMove(false, "move color != marble color");
+            return new ValidMove(false, "move color != marble color");
         }
         // validate for starting move
         if (startPos == -1) {
@@ -759,20 +754,20 @@ public class boardValidation {
         if (move.isGoalMove()) {
             boolean startInGoal = move.get_fromPos().get(0).isInGoal();
             if (!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)) {
-                return new validMove(false, "move is not valid for goal move");
+                return new ValidMove(false, "move is not valid for goal move");
             }
         }
         // check if distance is valid for the card
         int moveDist = getMoveDist(move);
         if (moveDist != 13) {
-            return new validMove(false, "wrong move distance for king card: " + moveDist);
+            return new ValidMove(false, "wrong move distance for king card: " + moveDist);
         }
 
         // checking for blocked intersect
         if (blockedIntersect(move, startPos, endPos, true)) {
-            return new validMove(false, "king cannot move to blocked intersect");
+            return new ValidMove(false, "king cannot move to blocked intersect");
         }
-        return new validMove(true);
+        return new ValidMove(true);
     }
 
     // check if the move is valid for a 7 card
@@ -783,24 +778,24 @@ public class boardValidation {
      * @return true if all moves are valid, a single invalid move will return false
      * @throws NoMarbleException
      */
-    private validMove isValidSevenMove(Move move) {
+    private ValidMove isValidSevenMove(Move move) {
         List<BoardPosition> startPos = move.get_fromPos();
         List<BoardPosition> endPos = move.get_toPos();
         ArrayList<COLOR> marbleColor = new ArrayList<>();
         try {
             for (int i = 0; i < startPos.size(); i++) {
                 if (startPos.get(i).getIndex() == -1) {
-                    return new validMove(false, "7 cannot start");
+                    return new ValidMove(false, "7 cannot start");
                 } // seven cant make a starting move
                 marbleColor.add(getMarbleColor(move, startPos.get(i).getIndex()));
             }
         } catch (Exception e) {
-            return new validMove(false, "unknown error with 7 move: " + e);
+            return new ValidMove(false, "unknown error with 7 move: " + e);
         }
         // check if marble color is the same as move color
         for (int i = 0; i < marbleColor.size(); i++) {
             if (marbleColor.get(i) != move.get_color()) {
-                return new validMove(false, "move color != marble color");
+                return new ValidMove(false, "move color != marble color");
             }
         }
         // checking for correct movedist
@@ -821,7 +816,7 @@ public class boardValidation {
             }
         }
         if (moveDist != 7) {
-            return new validMove(false, "wrong move distance for 7 card: " + moveDist);
+            return new ValidMove(false, "wrong move distance for 7 card: " + moveDist);
         }
 
         for (int i = 0; i < startPos.size(); i++) {
@@ -831,12 +826,12 @@ public class boardValidation {
             if(move.get_toPos().get(i).isInGoal()){
 
                 if (!isValidGoalMove(startPos.get(i).getIndex(), endPos.get(i).getIndex(), move.get_fromPos().get(i).isInGoal(), marbleColor.get(i))) {
-                    return new validMove(false, "wrong seven move for goal move"); //checking for is valid goal move
+                    return new ValidMove(false, "wrong seven move for goal move"); //checking for is valid goal move
                  }
             }else
             {
                 if (blockedIntersect(move, start, end, true)) {
-                    return new validMove(false, "seven cannot move to blocked intersect"); // checking for blocked intersects
+                    return new ValidMove(false, "seven cannot move to blocked intersect"); // checking for blocked intersects
                 }
             }
             // make the move and check blocked again
@@ -853,28 +848,28 @@ public class boardValidation {
             try {
                 makeMove(partMove);
             } catch (Exception e) {
-                return new validMove(false, "unknown error with 7 move: " + e);
+                return new ValidMove(false, "unknown error with 7 move: " + e);
             }
 
         }
 
-        return new validMove(true);
+        return new ValidMove(true);
     }
 
     // check if the move is valid for a 4 card
-    private validMove isValidFourMove(Move move) {
+    private ValidMove isValidFourMove(Move move) {
         int startPos = move.get_fromPos().get(0).getIndex();
         int endPos = move.get_toPos().get(0).getIndex();
         COLOR marbleColor;
         try{
             marbleColor = getMarbleColor(move, startPos);
         }catch(Exception e){
-            return new validMove(false, "error at getMarbleColor: " + e);
+            return new ValidMove(false, "error at getMarbleColor: " + e);
         }
         boolean isBackwardMove = false;
         // check if marble color is the same as move color
         if (marbleColor != move.get_color()) {
-            return new validMove(false, "move color != marble color");
+            return new ValidMove(false, "move color != marble color");
         }
         // check if distance is valid for the card
         int moveDistForward = getDistanceInBetween(startPos, endPos, true);
@@ -883,7 +878,7 @@ public class boardValidation {
             moveDistForward = getDistanceInBetween(startPos, endPos, marbleColor, false);
         }
         if (moveDistForward != 4 && moveDistBackward != 4) {
-            return new validMove(false, "wrong move distance for 4 card: " + moveDistForward + " " + moveDistBackward);
+            return new ValidMove(false, "wrong move distance for 4 card: " + moveDistForward + " " + moveDistBackward);
         }
         if (moveDistBackward == 4 && moveDistForward != 4) {
             isBackwardMove = true;
@@ -891,23 +886,23 @@ public class boardValidation {
         // validate for goal move
         if (move.isGoalMove()) {
             if (isBackwardMove) {
-                return new validMove(false, "move is not valid for goal move");
+                return new ValidMove(false, "move is not valid for goal move");
             }
             boolean startInGoal = move.get_fromPos().get(0).isInGoal();
             if (!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)) {
-                return new validMove(false, "move is not valid for goal move");
+                return new ValidMove(false, "move is not valid for goal move");
             }
         }
 
         // checking for blocked intersect
         if (blockedIntersect(move, startPos, endPos, !isBackwardMove)) {
-            return new validMove(false, "four cannot move to blocked intersect");
+            return new ValidMove(false, "four cannot move to blocked intersect");
         }
-        return new validMove(true);
+        return new ValidMove(true);
     }
 
     // check if the move is valid for a regular card
-    private validMove isValidRegularMove(Move move){
+    private ValidMove isValidRegularMove(Move move){
         int startPos = move.get_fromPos().get(0).getIndex();
         int endPos = move.get_toPos().get(0).getIndex();
         Card moveCard = move.get_card();
@@ -915,55 +910,55 @@ public class boardValidation {
         try{
             marbleColor = getMarbleColor(move, startPos);
         }catch(Exception e){
-            return new validMove(false, "error at getMarbleColor: " + e);
+            return new ValidMove(false, "error at getMarbleColor: " + e);
         }
         // check if marble color is the same as move color
         if (marbleColor != move.get_color()) {
-            return new validMove(false, "move color != marble color");
+            return new ValidMove(false, "move color != marble color");
         }
         if (startPos == -1) {
-            return new validMove(false, "regular move cannot start");
+            return new ValidMove(false, "regular move cannot start");
         }
         int moveDist = getMoveDist(move);
         switch (moveCard.getValue()) {
             case TWO:
                 if (moveDist != 2) {
-                    return new validMove(false, "wrong move distance for 2 card: " + moveDist);
+                    return new ValidMove(false, "wrong move distance for 2 card: " + moveDist);
                 }
                 break;
             case THREE:
                 if (moveDist != 3) {
-                    return new validMove(false, "wrong move distance for 3 card: " + moveDist);
+                    return new ValidMove(false, "wrong move distance for 3 card: " + moveDist);
                 }
                 break;
             case FIVE:
                 if (moveDist != 5) {
-                    return new validMove(false, "wrong move distance for 5 card: " + moveDist);
+                    return new ValidMove(false, "wrong move distance for 5 card: " + moveDist);
                 }
                 break;
             case SIX:
                 if (moveDist != 6) {
-                    return new validMove(false, "wrong move distance for 6 card: " + moveDist);
+                    return new ValidMove(false, "wrong move distance for 6 card: " + moveDist);
                 }
                 break;
             case EIGHT:
                 if (moveDist != 8) {
-                    return new validMove(false, "wrong move distance for 8 card: " + moveDist);
+                    return new ValidMove(false, "wrong move distance for 8 card: " + moveDist);
                 }
                 break;
             case NINE:
                 if (moveDist != 9) {
-                    return new validMove(false, "wrong move distance for 9 card: " + moveDist);
+                    return new ValidMove(false, "wrong move distance for 9 card: " + moveDist);
                 }
                 break;
             case TEN:
                 if (moveDist != 10) {
-                    return new validMove(false, "wrong move distance for 10 card: " + moveDist);
+                    return new ValidMove(false, "wrong move distance for 10 card: " + moveDist);
                 }
                 break;
             case QUEEN:
                 if (moveDist != 12) {
-                    return new validMove(false, "wrong move distance for queen card: " + moveDist);
+                    return new ValidMove(false, "wrong move distance for queen card: " + moveDist);
                 }
                 break;
         }
@@ -971,15 +966,15 @@ public class boardValidation {
         if (move.isGoalMove()) {
             boolean startInGoal = move.get_fromPos().get(0).isInGoal();
             if (!isValidGoalMove(startPos, endPos, startInGoal, marbleColor)) {
-                return new validMove(false, "regular move is not valid for goal move");
+                return new ValidMove(false, "regular move is not valid for goal move");
             }
         }
 
         // checking for blocked intersect
         if (blockedIntersect(move, startPos, endPos, true)) {
-            return new validMove(false, "regular cannot move to blocked intersect");
+            return new ValidMove(false, "regular cannot move to blocked intersect");
         }
-        return new validMove(true);
+        return new ValidMove(true);
     }
 
     /**

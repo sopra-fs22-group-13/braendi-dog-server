@@ -10,6 +10,7 @@ import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.Board;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.IBoard;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.ValidMove;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.CardStack;
@@ -155,7 +156,8 @@ public class Game {
         // checks if the player can do something
         if  (_playersWithValidTurns.get(_indexWithCurrentTurn)) {
             //checks if move is logical right
-            if (_board.isValidMove(move)) {
+            ValidMove validMove = _board.isValidMove(move);
+            if (validMove.getValid()) {
                 if (move.get_fromPos().get(0).getIndex() == -1) {
                     _board.makeStartingMove(move.get_color());
                 }
@@ -173,7 +175,7 @@ public class Game {
 
             }
             else {
-                throw new InvalidMoveException("RULE_VIOLATION", _board.getValidMove(move).getError());
+                throw new InvalidMoveException("RULE_VIOLATION", validMove.getError());
             }
         }else
         {

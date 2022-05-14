@@ -7,6 +7,7 @@ import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.Game;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.Board;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.IBoard;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.ValidMove;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
@@ -98,11 +99,11 @@ class GameTest {
              }
 
              @Override
-             public boolean isValidMove(Move move){
+             public ValidMove isValidMove(Move move){
                  if (move.get_card().getType().equals(CARDTYPE.JOKER)) {
-                     return false;
+                     return new ValidMove(false);
                  }
-                 return true;
+                 return new ValidMove(true);
              }
 
              @Override
