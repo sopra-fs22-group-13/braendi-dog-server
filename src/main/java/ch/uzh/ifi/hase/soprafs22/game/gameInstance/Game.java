@@ -78,7 +78,7 @@ public class Game {
         this._gameToken= UUID.randomUUID().toString();
         this._manager= GameManager.getInstance();
 
-        this._userManager= new UserManager(_players,users);
+        this._userManager= new UserManager(_players, users);
     }
 
     private void makeFirstMoveValid()
@@ -234,7 +234,7 @@ public class Game {
 
         //the color mapping of the users
         Map<Long, COLOR> cMap = new HashMap<>();
-        ArrayList<COLOR> cols = new ArrayList<>(Arrays.asList(COLOR.RED, COLOR.BLUE, COLOR.GREEN, COLOR.YELLOW));
+        ArrayList<COLOR> cols = new ArrayList<>(Arrays.asList(COLOR.RED, COLOR.YELLOW, COLOR.GREEN, COLOR.BLUE));
 
         for (Player p: _players) {
             User u = _userManager.getUserFromPlayer(p);
@@ -279,7 +279,7 @@ public class Game {
 
         List<Integer> correctHiddenCards = new ArrayList<>();
 
-        //fix hidden cards direction
+        //fix hidden cards split
         if((correctStartIndex + 1) < 4)
         {
             correctHiddenCards = hiddenCards.subList(correctStartIndex + 1, 4);
@@ -288,6 +288,9 @@ public class Game {
         for (int i = 0; i < correctStartIndex; i++) {
             correctHiddenCards.add(hiddenCards.get(i));
         }
+
+        //fix dir
+        Collections.reverse(correctHiddenCards);
 
         pd.setHiddenCardCount(new ArrayList<>(correctHiddenCards));
 
