@@ -173,7 +173,7 @@ public class Game {
 
             }
             else {
-                throw new InvalidMoveException("RULE_VIOLATION", "Move is Invalid: Check the rules");
+                throw new InvalidMoveException("RULE_VIOLATION", _board.getValidMove(move).getError());
             }
         }else
         {
