@@ -45,6 +45,12 @@ public class UserService implements IUserService {
 
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
+    long i =0;
+    while(userRepository.findById(i).isPresent()) {
+        i++;
+    }
+
+    newUser.setId(i);
     newUser.setWins(0);
     newUser.setGotGoal(0);
 
