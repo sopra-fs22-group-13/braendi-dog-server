@@ -42,4 +42,24 @@ public abstract class MockBoard implements IBoard {
     public boolean isValidMove(Move move) throws InvalidMoveException {
         return false;
     }
+
+    @Override
+    public int getNumberInBase(COLOR color){
+        return 0;
+    }
+
+    public int getCountStartingMove() {
+        return 0;
+    }
+
+
+    public int getCountJackMove() {
+        return 0;
+    }
+
+
+    public int getCountNormalMove() {
+        return 0;
+    }
+
 }
