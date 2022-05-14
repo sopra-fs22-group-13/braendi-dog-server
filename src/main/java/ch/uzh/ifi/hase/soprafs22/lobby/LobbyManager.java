@@ -82,9 +82,9 @@ public class LobbyManager {
             {
                 return;
             }
-        }
 
-        updatePlayers(lobbyToBeDeleted, UpdateType.LOBBY);
+            updatePlayers(lobbyToBeDeleted, UpdateType.LOBBY);
+        }
         openLobbies.remove(lobbyToBeDeleted);
 
         for (User user: lobbyToBeDeleted.getPlayers()) {
