@@ -16,6 +16,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.CardStack;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.PossibleMovesGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.IUserService;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
@@ -388,4 +389,17 @@ public class Game {
         return _userManager.getPlayerFromUserToken(token);
     }
 
+
+    /** TODO
+     *
+     * @param possibleMovesGetDTO partially filled file. should be filled by this method
+     * @return the filled out DTO
+     */
+    public PossibleMovesGetDTO getPossibleMovesForMarbleGivenCard(PossibleMovesGetDTO possibleMovesGetDTO) {
+
+        //calculate all possible moves given the selected card
+        //fill out the DTO
+
+        return possibleMovesGetDTO;
+    }
 }

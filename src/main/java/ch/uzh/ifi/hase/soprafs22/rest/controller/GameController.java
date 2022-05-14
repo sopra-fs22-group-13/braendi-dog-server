@@ -17,6 +17,7 @@ import ch.uzh.ifi.hase.soprafs22.lobby.Lobby;
 import ch.uzh.ifi.hase.soprafs22.lobby.LobbyManager;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.MovePutDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.PossibleMovesGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
@@ -88,5 +89,17 @@ public class GameController {
         } catch (InvalidMoveException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid move request: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/game/{gametoken}/moves")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public PossibleMovesGetDTO getPossibleMoves(HttpServletRequest request, @PathVariable String gametoken, @RequestBody PossibleMovesGetDTO possibleMovesGetDTO) {
+        userService.checkIfLoggedIn(request);
+
+        Game game = gameManager.getGameByToken(gametoken);
+        PossibleMovesGetDTO response = game.getPossibleMovesForMarbleGivenCard(possibleMovesGetDTO);
+
+        return response;
     }
 }
