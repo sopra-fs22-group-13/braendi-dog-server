@@ -649,7 +649,7 @@ public class boardValidation {
         }
 
         // checking for blocked intersect
-        if (blockedIntersect(move, startPos, endPos, true)) {
+        if (!move.isGoalMove() && blockedIntersect(move, startPos, endPos, true)) {
             return new ValidMove(false, "blocked intersect");
         }
         return new ValidMove(true);
@@ -764,7 +764,7 @@ public class boardValidation {
         }
 
         // checking for blocked intersect
-        if (blockedIntersect(move, startPos, endPos, true)) {
+        if (!move.isGoalMove() && blockedIntersect(move, startPos, endPos, true)) {
             return new ValidMove(false, "king cannot move to blocked intersect");
         }
         return new ValidMove(true);
@@ -895,7 +895,7 @@ public class boardValidation {
         }
 
         // checking for blocked intersect
-        if (blockedIntersect(move, startPos, endPos, !isBackwardMove)) {
+        if (!move.isGoalMove() && blockedIntersect(move, startPos, endPos, !isBackwardMove)) {
             return new ValidMove(false, "four cannot move to blocked intersect");
         }
         return new ValidMove(true);
@@ -971,7 +971,7 @@ public class boardValidation {
         }
 
         // checking for blocked intersect
-        if (blockedIntersect(move, startPos, endPos, true)) {
+        if (!move.isGoalMove() && blockedIntersect(move, startPos, endPos, true)) {
             return new ValidMove(false, "regular cannot move to blocked intersect");
         }
         return new ValidMove(true);
