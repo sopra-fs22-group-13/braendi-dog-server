@@ -13,6 +13,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.IBoard;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.CardStack;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
@@ -311,6 +312,10 @@ public class Game {
         return false;
     }
 
+    public List<BoardPosition> getPossibleMoves(BoardPosition bp, Card card, COLOR color) {
+        return _board.whatMovesPossible(bp, card, color);
+    }
+
     private void removeAndDealNewCards(){
         for (Player player: _players){
             player.removeAllCard();
@@ -393,17 +398,4 @@ public class Game {
         return _userManager.getPlayerFromUserToken(token);
     }
 
-
-    /** TODO
-     *
-     * @param possibleMovesGetDTO partially filled file. should be filled by this method
-     * @return the filled out DTO
-     */
-    public PossibleMovesGetDTO getPossibleMovesForMarbleGivenCard(PossibleMovesGetDTO possibleMovesGetDTO) {
-
-        //calculate all possible moves given the selected card
-        //fill out the DTO
-
-        return possibleMovesGetDTO;
-    }
 }

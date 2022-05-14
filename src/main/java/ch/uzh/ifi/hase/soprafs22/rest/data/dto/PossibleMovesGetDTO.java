@@ -5,33 +5,29 @@ import java.util.List;
 public class PossibleMovesGetDTO {
 
     //provided by the client
-    Integer marblePosition;
-    Boolean isInGoal;
+    Integer index;
+    Boolean inGoal;
     String card;
 
-    //this is filled out by the server
-    List<Integer> possiblePositions;
-    List<Boolean> positionIsInGoal;
-
-
-    /**
-     * These in theory shouldn't ever be used
-     */
-
-    public Integer getMarblePosition() {
-        return marblePosition;
+    public PossibleMovesGetDTO(int index, boolean inGoal) {
+        this.index = index;
+        this.inGoal = inGoal;
     }
 
-    public void setMarblePosition(Integer marblePosition) {
-        this.marblePosition = marblePosition;
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer marblePosition) {
+        this.index = marblePosition;
     }
 
     public Boolean getInGoal() {
-        return isInGoal;
+        return inGoal;
     }
 
     public void setInGoal(Boolean inGoal) {
-        isInGoal = inGoal;
+        inGoal = inGoal;
     }
 
     public String getCard() {
@@ -40,26 +36,5 @@ public class PossibleMovesGetDTO {
 
     public void setCard(String card) {
         this.card = card;
-    }
-
-
-    /**
-     * These are used by the server
-     */
-
-    public List<Integer> getPossiblePositions() {
-        return possiblePositions;
-    }
-
-    public void setPossiblePositions(List<Integer> possiblePositions) {
-        this.possiblePositions = possiblePositions;
-    }
-
-    public List<Boolean> getPositionIsInGoal() {
-        return positionIsInGoal;
-    }
-
-    public void setPositionIsInGoal(List<Boolean> positionIsInGoal) {
-        this.positionIsInGoal = positionIsInGoal;
     }
 }

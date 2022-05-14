@@ -110,12 +110,27 @@ public class GameController {
     @GetMapping("/game/{gametoken}/moves")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public PossibleMovesGetDTO getPossibleMoves(HttpServletRequest request, @PathVariable String gametoken, @RequestBody PossibleMovesGetDTO possibleMovesGetDTO) {
-        userService.checkIfLoggedIn(request);
+    public List<PossibleMovesGetDTO> getPossibleMoves(HttpServletRequest request, @PathVariable String gametoken, @RequestBody PossibleMovesGetDTO possibleMovesGetDTO) {
+        User user = userService.checkIfLoggedIn(request);
 
-        Game game = gameManager.getGameByToken(gametoken);
-        PossibleMovesGetDTO response = game.getPossibleMovesForMarbleGivenCard(possibleMovesGetDTO);
+        Game game = GameManager.getInstance().getGameByToken(gametoken);
+        if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
 
-        return response;
+        String auth = request.getHeader("Authorization");
+        String playerToken = auth.substring(6);
+        Player player = game.getPlayerByToken(playerToken);
+        if (player == null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not a player in this game.");
+        }
+
+
+        List<BoardPosition> possibleMoves = game.getPossibleMoves(
+                new BoardPosition(possibleMovesGetDTO.getIndex(), possibleMovesGetDTO.getInGoal()),
+                new Card(possibleMovesGetDTO.getCard()),
+                player.getColor()
+                );
+        List<PossibleMovesGetDTO> possibleMoveDTOs = (List<PossibleMovesGetDTO>) possibleMoves.stream().map(boardPosition -> new PossibleMovesGetDTO(boardPosition.getIndex(), boardPosition.isInGoal()));
+
+        return possibleMoveDTOs;
     }
 }
