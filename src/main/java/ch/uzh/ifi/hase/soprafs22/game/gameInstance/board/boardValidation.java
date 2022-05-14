@@ -222,7 +222,7 @@ public class boardValidation {
 
         // all good, make the move
 
-        if (removeInbetweeners) {
+        if (removeInbetweeners && !startInGoal) {
             resetInbetweeners(pos1, colorintersect);
         }
 

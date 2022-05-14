@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class Lobby {
@@ -22,6 +23,7 @@ public class Lobby {
      * owner still has its own entry, but will be added automatically to the list on creation.
      */
     private List<User> players = Arrays.asList(new User[4]);
+    private List<Long> joinDates = Arrays.asList(new Long[4]);
 
     private List<User> pendingInvites = new ArrayList<>();
 
@@ -48,6 +50,7 @@ public class Lobby {
         for (int i=0; i < players.size(); i++) {
             if (players.get(i) == null) {
                 players.set(i, newPlayer);
+                joinDates.set(i, new Date().getTime());
                 return i+1;
             }
         }
@@ -78,6 +81,15 @@ public class Lobby {
         List<User> playersCopy = new ArrayList<User>();
         for (User player: players) if (player != null) playersCopy.add(player);
         return playersCopy;
+    }
+
+    public Long getJoinDate(int idx) {
+        try{
+            return joinDates.get(idx);
+        }catch (IndexOutOfBoundsException e)
+        {
+            return -1L;
+        }
     }
 
     public List<User> getPendingInvites() {

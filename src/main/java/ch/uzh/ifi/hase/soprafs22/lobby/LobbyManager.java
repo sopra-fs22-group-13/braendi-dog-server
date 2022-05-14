@@ -26,7 +26,6 @@ public class LobbyManager {
     protected GameCreator gameCreator = new GameCreator();
     private final UserRepository userRepository = SpringContext.getBean(UserRepository.class);
     protected IUpdateController updateController = SpringContext.getBean(UpdateController.class);
-    private final long creationTime = new Date().getTime();
 
     private final List<Lobby> openLobbies = new ArrayList<>();
     private final List<User> playersInLobbies = new ArrayList<>();
@@ -66,20 +65,36 @@ public class LobbyManager {
         return newLobby.getId();
     }
 
-    synchronized public void closeLobby(Integer lobbyID, boolean fromHeartBeat) {
+    synchronized public void closeLobby(Integer lobbyID, boolean fromHeartBeat, String usertoken) {
         Lobby lobbyToBeDeleted = getLobbyByID(lobbyID);
-        if(lobbyToBeDeleted != null && (creationTime + 5000 < new Date().getTime() || !fromHeartBeat)){
-            updatePlayers(lobbyToBeDeleted, UpdateType.LOBBY);
-            openLobbies.remove(lobbyToBeDeleted);
 
-            for (User user: lobbyToBeDeleted.getPlayers()) {
-                playersInLobbies.remove(user);
+        if(lobbyToBeDeleted == null) return;
+
+        if(fromHeartBeat)
+        {
+            List<User> players = lobbyToBeDeleted.getPlayers();
+            int requestorIdx = -1;
+            for (int i = 0; i < players.size(); i++) {
+                if(Objects.equals(players.get(i).getToken(), usertoken)) requestorIdx = i;
+            }
+
+            if(requestorIdx == -1 || lobbyToBeDeleted.getJoinDate(requestorIdx) + 5000L > new Date().getTime())
+            {
+                return;
             }
         }
+
+        updatePlayers(lobbyToBeDeleted, UpdateType.LOBBY);
+        openLobbies.remove(lobbyToBeDeleted);
+
+        for (User user: lobbyToBeDeleted.getPlayers()) {
+            playersInLobbies.remove(user);
+        }
+
     }
 
     synchronized public void closeLobby(Integer lobbyID) {
-        closeLobby(lobbyID, false);
+        closeLobby(lobbyID, false, "");
     }
 
 

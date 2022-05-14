@@ -619,7 +619,7 @@ public class BoardIsMovePossibleTest {
     public void movement7Separate4(){
         try{
             _b.makeStartingMove(COLOR.YELLOW);
-            _b.makeStartingMove(COLOR.BLUE);
+            _b.makeStartingMove(COLOR.GREEN);
             _b.makeStartingMove(COLOR.RED);
             makeMove(0,15);
             _b.makeStartingMove(COLOR.RED);
