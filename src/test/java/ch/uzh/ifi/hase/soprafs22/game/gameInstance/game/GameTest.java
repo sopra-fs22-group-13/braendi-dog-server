@@ -22,6 +22,7 @@ import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GameTest {
 
     Game _g;
-    IBoard board;
+    MockBoard board;
 
     ArrayList<User> users;
 
@@ -86,9 +87,8 @@ class GameTest {
         SpringContext.setSpringContextObject(mockSpringContext);
         GameManager manager= GameManager.getInstance();
 
-
         //make a fake board
-         board = new Board() {
+         board = new MockBoard() {
              private int countStartingMove = 0;
              private int countJackMove = 0;
              private int countNormalMove = 0;
@@ -141,8 +141,6 @@ class GameTest {
              public int getCountNormalMove() {
                  return countNormalMove;
              }
-
-
 
         };
         _g = new Game(users, board);
