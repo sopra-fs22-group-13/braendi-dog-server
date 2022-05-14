@@ -18,6 +18,7 @@ import ch.uzh.ifi.hase.soprafs22.lobby.Lobby;
 import ch.uzh.ifi.hase.soprafs22.lobby.LobbyManager;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.MovePutDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.PossibleMovesGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
@@ -104,5 +105,32 @@ public class GameController {
         } catch (InvalidMoveException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid move request: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/game/{gametoken}/moves")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<PossibleMovesGetDTO> getPossibleMoves(HttpServletRequest request, @PathVariable String gametoken, @RequestBody PossibleMovesGetDTO possibleMovesGetDTO) {
+        User user = userService.checkIfLoggedIn(request);
+
+        Game game = GameManager.getInstance().getGameByToken(gametoken);
+        if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
+
+        String auth = request.getHeader("Authorization");
+        String playerToken = auth.substring(6);
+        Player player = game.getPlayerByToken(playerToken);
+        if (player == null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not a player in this game.");
+        }
+
+
+        List<BoardPosition> possibleMoves = game.getPossibleMoves(
+                new BoardPosition(possibleMovesGetDTO.getIndex(), possibleMovesGetDTO.getInGoal()),
+                new Card(possibleMovesGetDTO.getCard()),
+                player.getColor()
+                );
+        List<PossibleMovesGetDTO> possibleMoveDTOs = (List<PossibleMovesGetDTO>) possibleMoves.stream().map(boardPosition -> new PossibleMovesGetDTO(boardPosition.getIndex(), boardPosition.isInGoal()));
+
+        return possibleMoveDTOs;
     }
 }
