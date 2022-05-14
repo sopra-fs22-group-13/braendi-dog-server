@@ -1574,22 +1574,6 @@ public class Board implements IBoard {
 
     }
 
-    //for Test
-    public int getCountStartingMove(){
-
-        return 0;
-    }
-    //for Test
-    public int getCountJackMove(){
-
-        return 0;
-    }
-    //for Test
-    public int getCountNormalMove(){
-
-        return 0;
-    }
-
     @Override
     public boolean isValidMove(Move move){
         boardValidation validator = createMoveValidation();
