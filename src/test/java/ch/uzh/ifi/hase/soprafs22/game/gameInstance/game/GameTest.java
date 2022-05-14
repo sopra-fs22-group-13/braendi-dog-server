@@ -75,8 +75,7 @@ class GameTest {
             }
         };
 
-        MockUserService mockUserService = new MockUserService() {
-        };
+        MockUserService mockUserService = new MockUserService() {};
 
         mockSpringContext.returnForClass(UserService.class, mockUserService);
 
@@ -99,7 +98,7 @@ class GameTest {
              }
 
              @Override
-             public boolean isValidMove(Move move) throws InvalidMoveException {
+             public boolean isValidMove(Move move){
                  if (move.get_card().getType().equals(CARDTYPE.JOKER)) {
                      return false;
                  }

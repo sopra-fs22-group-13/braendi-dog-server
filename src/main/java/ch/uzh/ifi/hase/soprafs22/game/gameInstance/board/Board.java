@@ -784,7 +784,7 @@ public class Board implements IBoard {
                     if(earlyReturn) return resultPositions; //early return to save time if possible
                 }
             }
-            catch (InvalidMoveException e) {
+            catch (Exception e) {
                 // do nothing here
                 // ik this is terrible, but our move is always well-formed in this case
             }
@@ -838,7 +838,7 @@ public class Board implements IBoard {
 
                     if(earlyReturn) return resultPositions; //early return to save time if possible
                 }
-            } catch (InvalidMoveException e) {
+            } catch (Exception e) {
                 // do nothing here
                 // ik this is terrible, but our move is always well-formed in this case
             }
@@ -895,7 +895,7 @@ public class Board implements IBoard {
 
                     if(earlyReturn) return resultPositions; //early return to save time if possible
                 }
-            } catch (InvalidMoveException e) {
+            } catch (Exception e) {
                 // do nothing here
                 // ik this is terrible, but our move is always well-formed in this case
             }
@@ -946,7 +946,7 @@ public class Board implements IBoard {
 
                     if(earlyReturn) return resultPositions; //early return to save time if possible
                 }
-            } catch (InvalidMoveException e) {
+            } catch (Exception e) {
                 // do nothing here
                 // ik this is terrible, but our move is always well-formed in this case
             }
@@ -994,7 +994,7 @@ public class Board implements IBoard {
                 BoardPosition bp = new BoardPosition(m.get_toPos().get(0).getIndex(), false);
                 resultPositions.add(bp);
             }
-        } catch (InvalidMoveException e) {
+        } catch (Exception e) {
             // do nothing here
             // ik this is terrible, but our move is always well-formed in this case
         }
@@ -1210,7 +1210,7 @@ public class Board implements IBoard {
             try {
                 if (isValidMove(move))
                     return true;
-            } catch (InvalidMoveException | IndexOutOfBoundsException e) {
+            } catch (IndexOutOfBoundsException e) {
                 // do nothing here
                 // ik this is terrible
             }
@@ -1591,7 +1591,12 @@ public class Board implements IBoard {
     }
 
     @Override
-    public boolean isValidMove(Move move) throws InvalidMoveException {
+    public boolean isValidMove(Move move){
+        boardValidation validator = createMoveValidation();
+        return validator.isValidMove(move).getValid();
+    }
+
+    public validMove getValidMove(Move move){
         boardValidation validator = createMoveValidation();
         return validator.isValidMove(move);
     }

@@ -591,10 +591,10 @@ public class boardValidation {
         return moveDist;
     }
 
-    public validMove isValidMove(Move move) throws InvalidMoveException {
+    public validMove isValidMove(Move move){
         // throwing exceptions
         if (!move.checkIfComplete()) {
-            throw new InvalidMoveException("BAD_MOVE", "move is not complete");
+            return new validMove(false, "Move is not complete");
         }
 
         // checking if the move is valid based on the card
@@ -661,10 +661,15 @@ public class boardValidation {
     }
 
     // check if the move is valid for a jack card
-    private validMove isValidJackMove(Move move) throws NoMarbleException {
+    private validMove isValidJackMove(Move move){
         int startPos = move.get_fromPos().get(0).getIndex();
         int endPos = move.get_toPos().get(0).getIndex();
-        COLOR marbleColor = getMarbleColor(move, startPos);
+        COLOR marbleColor;
+        try{
+            marbleColor = getMarbleColor(move, startPos);
+        }catch(Exception e){
+            return new validMove(false, "error at getMarbleColor: " + e);
+        }
         // validate for starting move
         if (startPos == -1) {
             return new validMove(false, "jack cannot start");
@@ -679,8 +684,7 @@ public class boardValidation {
             return new validMove(false, "cannot switch from or to goal");
         }
         // jack behaviour unclear yet: unclear on how front-end passes the move
-        if (this._mainCircle.get(startPos) == MARBLE.NONE || this._mainCircle.get(endPos) == MARBLE.NONE
-                || marbleColor == this.getColorFromPosition(endPos)) {
+        if (this._mainCircle.get(startPos) == MARBLE.NONE || this._mainCircle.get(endPos) == MARBLE.NONE) {
             return new validMove(false, "no marble at start or end position");
         }
         // check for blocked intersect
@@ -734,10 +738,15 @@ public class boardValidation {
     }
 
     // check if the move is valid for a king card
-    private validMove isValidKingMove(Move move) throws NoMarbleException {
+    private validMove isValidKingMove(Move move){
         int startPos = move.get_fromPos().get(0).getIndex();
         int endPos = move.get_toPos().get(0).getIndex();
-        COLOR marbleColor = getMarbleColor(move, startPos);
+        COLOR marbleColor;
+        try{
+            marbleColor = getMarbleColor(move, startPos);
+        }catch(Exception e){
+            return new validMove(false, "error at getMarbleColor: " + e);
+        }
         // check if marble color is the same as move color
         if (marbleColor != move.get_color()) {
             return new validMove(false, "move color != marble color");
@@ -853,10 +862,15 @@ public class boardValidation {
     }
 
     // check if the move is valid for a 4 card
-    private validMove isValidFourMove(Move move) throws NoMarbleException {
+    private validMove isValidFourMove(Move move) {
         int startPos = move.get_fromPos().get(0).getIndex();
         int endPos = move.get_toPos().get(0).getIndex();
-        COLOR marbleColor = getMarbleColor(move, startPos);
+        COLOR marbleColor;
+        try{
+            marbleColor = getMarbleColor(move, startPos);
+        }catch(Exception e){
+            return new validMove(false, "error at getMarbleColor: " + e);
+        }
         boolean isBackwardMove = false;
         // check if marble color is the same as move color
         if (marbleColor != move.get_color()) {
@@ -893,12 +907,16 @@ public class boardValidation {
     }
 
     // check if the move is valid for a regular card
-    private validMove isValidRegularMove(Move move) throws NoMarbleException {
+    private validMove isValidRegularMove(Move move){
         int startPos = move.get_fromPos().get(0).getIndex();
         int endPos = move.get_toPos().get(0).getIndex();
         Card moveCard = move.get_card();
-        COLOR marbleColor = getMarbleColor(move, startPos);
-
+        COLOR marbleColor;
+        try{
+            marbleColor = getMarbleColor(move, startPos);
+        }catch(Exception e){
+            return new validMove(false, "error at getMarbleColor: " + e);
+        }
         // check if marble color is the same as move color
         if (marbleColor != move.get_color()) {
             return new validMove(false, "move color != marble color");

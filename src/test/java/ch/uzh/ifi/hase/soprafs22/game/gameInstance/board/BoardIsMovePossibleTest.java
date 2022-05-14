@@ -165,12 +165,9 @@ public class BoardIsMovePossibleTest {
 
         //should work
 
-        try {
-            assertTrue(_b.isValidMove(m));
-        }
-        catch (InvalidMoveException e) {
-            fail(e.getMessage());
-        }
+        
+        assertTrue(_b.isValidMove(m));
+        
     }
 
     @Test
