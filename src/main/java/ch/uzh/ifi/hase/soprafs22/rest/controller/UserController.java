@@ -52,6 +52,15 @@ public class UserController {
     return userGetDTOs;
   }
 
+  @GetMapping("/users/{usertoken}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public UserGetDTO getUser(HttpServletRequest request, @PathVariable String usertoken) {
+      userService.checkIfLoggedIn(request);
+
+      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userService.getUserByToken(usertoken));
+  }
+
   @PostMapping("/users")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody

@@ -5,7 +5,10 @@ import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.IBoard;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
+
+import java.util.List;
 
 public abstract class MockBoard implements IBoard {
     @Override
@@ -46,6 +49,11 @@ public abstract class MockBoard implements IBoard {
     @Override
     public int getNumberInBase(COLOR color){
         return 0;
+    }
+
+    @Override
+    public List<BoardPosition> whatMovesPossible(BoardPosition bp, Card card, COLOR color) {
+        return null;
     }
 
     public int getCountStartingMove() {

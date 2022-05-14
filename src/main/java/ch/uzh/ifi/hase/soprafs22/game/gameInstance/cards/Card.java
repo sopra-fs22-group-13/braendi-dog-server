@@ -106,7 +106,7 @@ public class Card {
     }
 
     public boolean isJoker() {
-        return type == CARDTYPE.JOKER;
+        return type == CARDTYPE.JOKER || value == CARDVALUE.JOKER;
     }
 
     public boolean isAce() {
