@@ -43,6 +43,8 @@ public class Game {
     private int _indexOfHowManyCardToDeal;
     private final long creationTime = new Date().getTime();
 
+    private Card _lastPlayedCard;
+
     private IUserService _userService = SpringContext.getBean(UserService.class);
 
     public Game(ArrayList<User> users){
@@ -153,15 +155,17 @@ public class Game {
         if  (_playersWithValidTurns.get(_indexWithCurrentTurn)) {
             //checks if move is logical right
             if (_board.isValidMove(move)) {
-                if (move.get_fromPos().get(0) == -1) {
+                if (move.get_fromPos().get(0).getIndex() == -1) {
                     _board.makeStartingMove(move.get_color());
                 }
                 else if (move.get_card().getValue() == CARDVALUE.JACK) {
-                    _board.makeSwitch(move.get_fromPos().get(0), move.get_toPos().get(0));
+                    _board.makeSwitch(move.get_fromPos().get(0).getIndex(), move.get_toPos().get(0).getIndex());
                 }
                 else {
                     _board.makeMove(move);
                 }
+                // last played card
+                _lastPlayedCard = move.get_card();
                 //remove card from player hand
                 _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
                 _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.BOARD,""));
@@ -227,14 +231,14 @@ public class Game {
 
         //the color mapping of the users
         Map<Long, COLOR> cMap = new HashMap<>();
-        ArrayList<COLOR> cols = new ArrayList<>(Arrays.asList(COLOR.RED, COLOR.YELLOW, COLOR.GREEN, COLOR.BLUE));
+        ArrayList<COLOR> cols = new ArrayList<>(Arrays.asList(COLOR.RED, COLOR.BLUE, COLOR.GREEN, COLOR.YELLOW));
 
         for (Player p: _players) {
             User u = _userManager.getUserFromPlayer(p);
             cMap.put(u.getId(), cols.remove(0));
         }
         bd.setColorMapping(cMap);
-
+        bd.setLastPlayedCard(_lastPlayedCard != null ? _lastPlayedCard.getFormatted() : null);
         return bd;
     }
 

@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.Game;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.Board;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.IBoard;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.mocks.*;
@@ -159,22 +160,18 @@ class GameTest {
 
 
     private Move generateMove(String token, COLOR moveColor, int from, Integer to, boolean fromGoal, boolean toGoal, CARDVALUE cardvalue,CARDTYPE cardtype, CARDSUITE suite){
-        ArrayList<Integer> _fromPos = new ArrayList<>();
-        ArrayList<Integer> _toPos = new ArrayList<>();
-        ArrayList<Boolean> _fromPosInGoal = new ArrayList<>();
-        ArrayList<Boolean> _toPosInGoal = new ArrayList<>();
+        ArrayList<BoardPosition> _fromPos = new ArrayList<>();
+        ArrayList<BoardPosition> _toPos = new ArrayList<>();
 
-        _fromPos.add(from);
+        _fromPos.add(new BoardPosition(from, fromGoal));
         if (to!=null) {
-            _toPos.add(to);
+            _toPos.add(new BoardPosition(to, toGoal));
         }
-        _fromPosInGoal.add(fromGoal);
-        _toPosInGoal.add(toGoal);
 
         Card _card= new Card(cardvalue, cardtype, suite);
 
 
-        return new Move(_fromPos,_toPos,_fromPosInGoal,_toPosInGoal,_card, token,moveColor);
+        return new Move(_fromPos,_toPos,_card, token,moveColor);
     }
 
     @Test
@@ -448,7 +445,7 @@ class GameTest {
         Card firstCard=playerWithCurrentTurn.getCartValueInIndexHand(playerWithCurrentTurn.getCardCount()-1);
 
 
-        Move  _move= generateMove(_token, colorOfCurrentPlayerTurn, -29, 30,false,false,firstCard.getValue(),firstCard.getType(),firstCard.getSuite());
+        Move  _move= generateMove(_token, colorOfCurrentPlayerTurn, 0, 30,false,false,firstCard.getValue(),firstCard.getType(),firstCard.getSuite());
         try{
             board.makeMove(_move);
         } catch (InvalidMoveException e) {

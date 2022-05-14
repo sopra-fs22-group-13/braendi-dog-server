@@ -30,9 +30,8 @@ public class HeartBeatInvoker {
                     {
                         //TODO
                         LobbyManager lm = SpringContext.getBean(LobbyController.class).getLobbyManagerInstance();
-                        System.out.println(lm.getLobbyIdFromPlayer(token));
                         if(lm.getLobbyIdFromPlayer(token) != -1){
-                            lm.closeLobby(lm.getLobbyIdFromPlayer(token), true);
+                            lm.closeLobby(lm.getLobbyIdFromPlayer(token), true, token);
                         }
                     }
                     if(heartBeats.get(HeartBeatType.GAME) == false)

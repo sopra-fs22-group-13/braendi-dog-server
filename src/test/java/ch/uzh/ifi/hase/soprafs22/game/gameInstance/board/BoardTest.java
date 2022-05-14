@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs22.game.exceptions.MoveBlockedByMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -176,22 +177,18 @@ class BoardTest {
         moveRedOut();
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
         ArrayList<Boolean> from_base = new ArrayList<>();
         ArrayList<Boolean> to_base = new ArrayList<>();
 
-        from.add(0);
-        to.add(1);
-        from_base.add(false);
-        to_base.add(false);
+        from.add(new BoardPosition(0, false));
+        to.add(new BoardPosition(1, false));
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
 
         //make the move
         try{
@@ -231,22 +228,18 @@ class BoardTest {
         }
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
         ArrayList<Boolean> from_base = new ArrayList<>();
         ArrayList<Boolean> to_base = new ArrayList<>();
 
-        from.add(16);
-        to.add(17);
-        from_base.add(false);
-        to_base.add(false);
+        from.add(new BoardPosition(16, false));
+        to.add(new BoardPosition(17, false));
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
 
         //make the move
         try{
@@ -286,22 +279,16 @@ class BoardTest {
         }
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
-        ArrayList<Boolean> from_base = new ArrayList<>();
-        ArrayList<Boolean> to_base = new ArrayList<>();
 
-        from.add(32);
-        to.add(33);
-        from_base.add(false);
-        to_base.add(false);
+        from.add(new BoardPosition(32, false));
+        to.add(new BoardPosition(33, false));
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
 
         //make the move
         try{
@@ -341,22 +328,16 @@ class BoardTest {
         }
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
-        ArrayList<Boolean> from_base = new ArrayList<>();
-        ArrayList<Boolean> to_base = new ArrayList<>();
+        from.add(new BoardPosition(48, false));
+        to.add(new BoardPosition(49, false));
 
-        from.add(48);
-        to.add(49);
-        from_base.add(false);
-        to_base.add(false);
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
 
         //make the move
         try{
@@ -391,22 +372,16 @@ class BoardTest {
         moveRedOut();
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
-        ArrayList<Boolean> from_base = new ArrayList<>();
-        ArrayList<Boolean> to_base = new ArrayList<>();
 
-        from.add(0);
-        to.add(3);
-        from_base.add(false);
-        to_base.add(true); //move it into a goal
+        from.add(new BoardPosition(0, false));
+        to.add(new BoardPosition(3, true));//move it into a goal
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
         move.set_color(COLOR.RED); //need to set the color.
 
         //make the move
@@ -448,22 +423,15 @@ class BoardTest {
         }
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
-        ArrayList<Boolean> from_base = new ArrayList<>();
-        ArrayList<Boolean> to_base = new ArrayList<>();
-
-        from.add(16);
-        to.add(3);
-        from_base.add(false);
-        to_base.add(true); //move it into a goal
+        from.add(new BoardPosition(16, false));
+        to.add(new BoardPosition(3, true));//move it into a goal
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
         move.set_color(COLOR.YELLOW); //need to set the color.
 
         //make the move
@@ -505,22 +473,15 @@ class BoardTest {
         }
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
-        ArrayList<Boolean> from_base = new ArrayList<>();
-        ArrayList<Boolean> to_base = new ArrayList<>();
-
-        from.add(32);
-        to.add(3);
-        from_base.add(false);
-        to_base.add(true); //move it into a goal
+        from.add(new BoardPosition(32, false));
+        to.add(new BoardPosition(3, true));//move it into a goal
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
         move.set_color(COLOR.GREEN); //need to set the color.
 
         //make the move
@@ -562,22 +523,15 @@ class BoardTest {
         }
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
-        ArrayList<Boolean> from_base = new ArrayList<>();
-        ArrayList<Boolean> to_base = new ArrayList<>();
-
-        from.add(48);
-        to.add(3);
-        from_base.add(false);
-        to_base.add(true); //move it into a goal
+        from.add(new BoardPosition(48, false));
+        to.add(new BoardPosition(3, true));//move it into a goal
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
         move.set_color(COLOR.BLUE); //need to set the color.
 
         //make the move
@@ -615,23 +569,18 @@ class BoardTest {
         moveRedOut();
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
-        ArrayList<Boolean> from_base = new ArrayList<>();
-        ArrayList<Boolean> to_base = new ArrayList<>();
+        from.add(new BoardPosition(0, false));
+        to.add(new BoardPosition(3, false));
+        to.add(new BoardPosition(1, false)); //added 1 too many. move is now not well formed
 
-        from.add(0);
-        to.add(3);
-        to.add(1); //added 1 too many. move is now not well formed
-        from_base.add(false);
-        to_base.add(false); //move it into a goal
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
+
 
         //make the move
         boolean success = false;
@@ -660,22 +609,18 @@ class BoardTest {
         moveRedOut();
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
         ArrayList<Boolean> from_base = new ArrayList<>();
         ArrayList<Boolean> to_base = new ArrayList<>();
 
-        from.add(0);
-        to.add(1);
-        from_base.add(false);
-        to_base.add(false);
+        from.add(new BoardPosition(0, false));
+        to.add(new BoardPosition(1, false));//move it into a goal
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
 
         //make the first move
         try{
@@ -713,22 +658,15 @@ class BoardTest {
         moveRedOut();
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
-        ArrayList<Boolean> from_base = new ArrayList<>();
-        ArrayList<Boolean> to_base = new ArrayList<>();
-
-        from.add(0);
-        to.add(5);
-        from_base.add(false);
-        to_base.add(false);
+        from.add(new BoardPosition(0, false));
+        to.add(new BoardPosition(5, false));
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
 
         //make the first move
         try{
@@ -743,7 +681,7 @@ class BoardTest {
 
         move.set_card(new Card(CARDVALUE.SEVEN, CARDTYPE.DEFAULT, CARDSUITE.CLUBS)); //with a 7!!!
         to.clear();
-        to.add(7); //move to 7
+        to.add(new BoardPosition(7, false)); //move to 7
 
         //make the second move, skip the 5, this should reset the first marble
         //this should reset the first marble
@@ -768,22 +706,15 @@ class BoardTest {
         //DO NOT move red out, so we can not do a move
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
-        ArrayList<Boolean> from_base = new ArrayList<>();
-        ArrayList<Boolean> to_base = new ArrayList<>();
-
-        from.add(0);
-        to.add(1);
-        from_base.add(false);
-        to_base.add(false);
+        from.add(new BoardPosition(0, false));
+        to.add(new BoardPosition(1, false));
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
 
         //make the move
         assertThrows(NoMarbleException.class, ()->{_b.makeMove(move);});
@@ -796,22 +727,15 @@ class BoardTest {
         moveRedOut();
 
         //create a simple move
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
-        ArrayList<Boolean> from_base = new ArrayList<>();
-        ArrayList<Boolean> to_base = new ArrayList<>();
-
-        from.add(0);
-        to.add(10);
-        from_base.add(false);
-        to_base.add(false);
+        from.add(new BoardPosition(0, false));
+        to.add(new BoardPosition(10, false));
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
 
         try{
             _b.makeMove(move);
@@ -827,13 +751,10 @@ class BoardTest {
         from.clear();
         to.clear();
 
-        from.add(10); //move 10 to 12
-        to.add(12);
-        from.add(0); //move 0 to 5
-        to.add(5);
-
-        from_base.add(false);
-        to_base.add(false);
+        from.add(new BoardPosition(10, false));
+        from.add(new BoardPosition(0, false));
+        to.add(new BoardPosition(12, false));
+        to.add(new BoardPosition(5, false));
 
         try{
             _b.makeMove(move);
@@ -862,22 +783,16 @@ class BoardTest {
 
         //create a simple move
         //color is necessary
-        ArrayList<Integer> from = new ArrayList<>();
-        ArrayList<Integer> to = new ArrayList<>();
 
-        ArrayList<Boolean> from_base = new ArrayList<>();
-        ArrayList<Boolean> to_base = new ArrayList<>();
+        ArrayList<BoardPosition> from = new ArrayList<>();
+        ArrayList<BoardPosition> to = new ArrayList<>();
 
-        from.add(0);
-        to.add(2);
-        from_base.add(false);
-        to_base.add(true);
+        from.add(new BoardPosition(0, false));
+        to.add(new BoardPosition(2, true));
 
         Move move = new Move();
         move.set_fromPos(from);
         move.set_toPos(to);
-        move.set_fromPosInGoal(from_base);
-        move.set_toPosInGoal(to_base);
 
         move.set_color(COLOR.RED);
 
@@ -891,13 +806,11 @@ class BoardTest {
 
         //now next move: move in the goal to a state in the goal
         from.clear();
-        from.add(2);
         to.clear();
-        to.add(3);
-        from_base.clear();
-        from_base.add(true);
-        to_base.clear();
-        to_base.add(true);
+
+        from.add(new BoardPosition(2, true));
+        to.add(new BoardPosition(3, true));
+
 
         try{
             _b.makeMove(move);
