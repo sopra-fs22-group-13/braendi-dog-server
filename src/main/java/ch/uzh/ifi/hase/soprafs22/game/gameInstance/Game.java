@@ -148,7 +148,7 @@ public class Game {
         }
 
 
-        if (!playerWantToMove.isCardAvailable(move.get_card())){
+        if (!playerWantToMove.isCardAvailable(move.get_card()) && !(move.get_isJoker() && playerWantToMove.isCardAvailable(new Card("Joker")))){
             throw new InvalidMoveException("WRONG_CARD", "Selected card is not in hand");
         }
 
@@ -166,10 +166,19 @@ public class Game {
                 else {
                     _board.makeMove(move);
                 }
-                // last played card
-                _lastPlayedCard = move.get_card();
+                // last played card &
                 //remove card from player hand
-                _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
+                if(move.get_isJoker())
+                {
+                    //the sent card is a pseudocard. we should actually remove the joker
+                    _lastPlayedCard = new Card("Joker");
+                    _players.get(_indexWithCurrentTurn).removeCard(new Card("Joker"));
+                }else
+                {
+                    //just remove the card
+                    _lastPlayedCard = move.get_card();
+                    _players.get(_indexWithCurrentTurn).removeCard(move.get_card());
+                }
                 _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.BOARD,""));
 
             }

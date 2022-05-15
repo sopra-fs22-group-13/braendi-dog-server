@@ -19,6 +19,7 @@ public class Move {
     private COLOR _color;
 
     private String _token;
+
     private boolean _isJoker;
 
     public Move(List<BoardPosition> fromPos, List<BoardPosition> toPos, Card c, String token, COLOR color)
@@ -91,10 +92,15 @@ public class Move {
 
     public String getToken() {return _token;}
 
-    public boolean is_isJoker()
+    public boolean get_isJoker()
     {
         return _isJoker;
     }
+
+    public void set_isJoker(boolean isJoker) {
+        this._isJoker = isJoker;
+    }
+
 
     public void setIsJoker(boolean isJoker)
     {
