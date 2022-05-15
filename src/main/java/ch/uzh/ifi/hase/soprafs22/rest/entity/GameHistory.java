@@ -1,32 +1,34 @@
 package ch.uzh.ifi.hase.soprafs22.rest.entity;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "PLAYED_GAME")
-public class PlayedGame implements Serializable {
+@Table(name = "gamehistory")
+public class GameHistory implements Serializable {
 
-    private static final long serialGameId = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId1;
+    @ManyToOne
+    User user1;
 
-    @Column(nullable = false)
-    private Long userId2;
+    @ManyToOne
+    User user2;
 
-    @Column(nullable = false)
-    private Long userId3;
+    @ManyToOne
+    User user3;
 
-    @Column(nullable = false)
-    private Long userId4;
+    @ManyToOne
+    User user4;
 
-    @Column(nullable = false)
-    private Long winnerId;
+    @ManyToOne
+    User winner;
 
     @Column(nullable = false)
     private Integer user1_goals;
@@ -49,44 +51,44 @@ public class PlayedGame implements Serializable {
         this.id = id;
     }
 
-    public Long getUserId1() {
-        return userId1;
+    public User getUser1() {
+        return user1;
     }
 
-    public void setUserId1(Long userId1) {
-        this.userId1 = userId1;
+    public void setUser1(User user1) {
+        this.user1 = user1;
     }
 
-    public Long getUserId2() {
-        return userId2;
+    public User getUser2() {
+        return user2;
     }
 
-    public void setUserId2(Long userId2) {
-        this.userId2 = userId2;
+    public void setUser2(User user2) {
+        this.user2 = user2;
     }
 
-    public Long getUserId3() {
-        return userId3;
+    public User getUser3() {
+        return user3;
     }
 
-    public void setUserId3(Long userId3) {
-        this.userId3 = userId3;
+    public void setUser3(User user3) {
+        this.user3 = user3;
     }
 
-    public Long getUserId4() {
-        return userId4;
+    public User getUser4() {
+        return user4;
     }
 
-    public void setUserId4(Long userId4) {
-        this.userId4 = userId4;
+    public void setUser4(User user4) {
+        this.user4 = user4;
     }
 
-    public Long getWinnerId() {
-        return winnerId;
+    public User getWinner() {
+        return winner;
     }
 
-    public void setWinnerId(Long winnerId) {
-        this.winnerId = winnerId;
+    public void setWinner(User winner) {
+        this.winner = winner;
     }
 
     public Integer getUser1_goals() {
