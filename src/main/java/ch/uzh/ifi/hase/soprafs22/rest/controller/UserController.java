@@ -53,7 +53,7 @@ public class UserController {
     return userGetDTOs;
   }
 
-  @GetMapping("/users/{userID}")
+  @GetMapping("/user/{userID}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public UserGetDTO getUser(HttpServletRequest request, @PathVariable Long userID) {
