@@ -18,7 +18,6 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
-import ch.uzh.ifi.hase.soprafs22.rest.data.dto.PossibleMovesGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.IUserService;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
@@ -26,8 +25,6 @@ import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import ch.uzh.ifi.hase.soprafs22.voicechat.VoiceChatCreator;
 import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.util.*;
@@ -189,15 +186,7 @@ public class Game {
         // check if somebody won
         for (Player player:_players){
             if (_board.checkWinningCondition(player.getColor())) {
-                _userService.addWins(_userManager.getUserFromPlayer(player));
-                for (Player playerGoal:_players){
-                    int numberOfMarbleInGoals=  _board.getNumberInBase(playerGoal.getColor());
-                   _userService.addNumberInGoal(_userManager.getUserFromPlayer(playerGoal), numberOfMarbleInGoals);
-                }
-
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, String.format("{\"win\": \"%s\"}", player.getColor())));
-                VoiceChatCreator.getInstance().destroyRoomWithPlayers(_gameToken);
-                _manager.deleteGame(_gameToken);
+                endGame(player, "PLEASE END ME!!! -Anton");
                 return;
             }
         }
@@ -386,6 +375,22 @@ public class Game {
         {
             Player player = _players.get(_indexWithCurrentTurn);
             player.removeAllCard();
+        }
+    }
+
+    private void endGame(Player winner, String cryForHelp) {
+        processGameResults(winner);
+
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, String.format("{\"win\": \"%s\"}", winner.getColor())));
+        VoiceChatCreator.getInstance().destroyRoomWithPlayers(_gameToken);
+        _manager.deleteGame(_gameToken);
+    }
+
+    private void processGameResults(Player winner) {
+        _userService.addWins(_userManager.getUserFromPlayer(winner));
+        for (Player playerGoal:_players){
+            int numberOfMarbleInGoals=  _board.getNumberInBase(playerGoal.getColor());
+            _userService.addNumberInGoal(_userManager.getUserFromPlayer(playerGoal), numberOfMarbleInGoals);
         }
     }
 
