@@ -95,7 +95,7 @@ public class GameController {
             to.add(new BoardPosition(movePutDTO.get_toPos().get(i), movePutDTO.get_toPosInGoal().get(i)));
         }
         
-        Move move = new Move(from, to, new Card(movePutDTO.getCard()), movePutDTO.getToken(), movePutDTO.getColor());
+        Move move = new Move(from, to, new Card(movePutDTO.getCard()), movePutDTO.getToken(), movePutDTO.getColor(), movePutDTO.getCardIsPartOfJoker());
 
         Game game = gameManager.getGameByToken(gametoken);
         if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");

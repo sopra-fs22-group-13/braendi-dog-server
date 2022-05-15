@@ -13,16 +13,18 @@ public class MovePutDTO {
     private ArrayList<Boolean> _toPosInGoal;
 
     private String card;
+    private boolean cardIsPartOfJoker;
     private COLOR color;
 
     private String token;
 
-    public MovePutDTO(ArrayList<Integer> fromPos, ArrayList<Integer> toPos, ArrayList<Boolean> fromPosInGoal, ArrayList<Boolean> toPosInGoal, String c, String token, COLOR color) {
+    public MovePutDTO(ArrayList<Integer> fromPos, ArrayList<Integer> toPos, ArrayList<Boolean> fromPosInGoal, ArrayList<Boolean> toPosInGoal, String c, boolean cpoj, String token, COLOR color) {
         this._fromPos = fromPos;
         this._toPos = toPos;
         this._fromPosInGoal = fromPosInGoal;
         this._toPosInGoal = toPosInGoal;
         this.card = c;
+        this.cardIsPartOfJoker = cpoj;
         this.color = color;
         this.token = token;
     }
@@ -55,6 +57,10 @@ public class MovePutDTO {
         return token;
     }
 
+    public boolean getCardIsPartOfJoker() {
+        return cardIsPartOfJoker;
+    }
+
     public void set_fromPos(ArrayList<Integer> _fromPos) {
         this._fromPos = _fromPos;
     }
@@ -81,5 +87,9 @@ public class MovePutDTO {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public void setCardIsPartOfJoker(boolean isJoker){
+        this.cardIsPartOfJoker = isJoker;
     }
 }
