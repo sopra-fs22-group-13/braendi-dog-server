@@ -81,7 +81,7 @@ public class MoveTest {
 
         move = new Move(fromPos, toPos, _card, "token", _color);
         // test starting move
-        assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+        assertTrue(board.isValidMove(move).getValid());
     }
 
     @Test
@@ -94,7 +94,7 @@ public class MoveTest {
         toPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
 
         move = new Move(fromPos, toPos, _card, "token", _color);
-        assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+        assertFalse(board.isValidMove(move).getValid());
     }
 
     @Test
@@ -109,14 +109,14 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 11
 
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(11, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         } catch (Exception e) {
             fail(String.format("Should not throw exception | startPos: %s, endPos: %s", fromPos, toPos));
         }
@@ -135,14 +135,14 @@ public class MoveTest {
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(12, false)));
 
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for move too short
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
 
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
         }
@@ -174,7 +174,7 @@ public class MoveTest {
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
 
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 11
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
@@ -186,7 +186,7 @@ public class MoveTest {
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
 
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -207,7 +207,7 @@ public class MoveTest {
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
 
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // goal too close --> wrong move distance
 
@@ -221,7 +221,7 @@ public class MoveTest {
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
 
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
         }
@@ -244,7 +244,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         } catch (Exception e) {
             System.out.println(e + " | should not throw this exception");
         }
@@ -266,7 +266,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
         }
@@ -282,7 +282,7 @@ public class MoveTest {
         toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
         move = new Move(fromPos, toPos, _card, "token", _color);
         // test starting move
-        assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+        assertTrue(board.isValidMove(move).getValid());
     }
 
     @Test
@@ -295,7 +295,7 @@ public class MoveTest {
         toPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
         move = new Move(fromPos, toPos, _card, "token", _color);
         // test starting move
-        assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+        assertFalse(board.isValidMove(move).getValid());
     }
 
     @Test
@@ -310,7 +310,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(13, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
         }
@@ -328,13 +328,13 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(6, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for distance above 13
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
         }
@@ -355,7 +355,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(52, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
         }
@@ -377,12 +377,12 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(53, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
             // goal too close
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(53, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
         } catch (Exception e) {
             System.out.println(e + " | should not throw this exception");
@@ -408,7 +408,7 @@ public class MoveTest {
             try{
                 board.isValidMove(move);
                 //or if it does catch the error, we should at least have a false
-                assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+                assertFalse(board.isValidMove(move).getValid());
 
             } catch (IndexOutOfBoundsException e)
             {
@@ -442,7 +442,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(20, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(35, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         } catch (Exception e) {
             System.out.println(e + " Should not throw exception");
         }
@@ -466,7 +466,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(7, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError()); // one move
+            assertTrue(board.isValidMove(move).getValid()); // one move
 
             // test for two marbles
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
@@ -478,7 +478,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false), new BoardPosition(7, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(6, false), new BoardPosition(8, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError()); // two moves for two marbles
+            assertTrue(board.isValidMove(move).getValid()); // two moves for two marbles
         } catch (Exception e) {
             fail(e +" Should not throw exception");
         }
@@ -502,7 +502,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(61, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for two marbles
             board.makeStartingMove(COLOR.RED); // move second marble to start
@@ -513,7 +513,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false), new BoardPosition(61, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, true), new BoardPosition(0, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
         }
@@ -538,7 +538,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true), new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true), new BoardPosition(4, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
         }
@@ -567,7 +567,7 @@ public class MoveTest {
                     new BoardPosition(2, true),
                     new BoardPosition(15, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move));
+            assertFalse(board.isValidMove(move).getValid());
 
             moveMarble(13, 12, false, false); //this should work
             fromPos = new ArrayList<>(Arrays.asList(
@@ -579,7 +579,7 @@ public class MoveTest {
                     new BoardPosition(2, true),
                     new BoardPosition(15, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -609,7 +609,7 @@ public class MoveTest {
                     new BoardPosition(0, true),
                     new BoardPosition(15, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -628,12 +628,12 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(4, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError()); // forward move
+            assertTrue(board.isValidMove(move).getValid()); // forward move
 
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(60, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError()); // backward move
+            assertTrue(board.isValidMove(move).getValid()); // backward move
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
         }
@@ -660,7 +660,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
         }
@@ -678,35 +678,35 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 3
             _card = new Card(CARDVALUE.THREE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 5
             _card = new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(5, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 6
             _card = new Card(CARDVALUE.SIX, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(6, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 8
             _card = new Card(CARDVALUE.EIGHT, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(8, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 9
             _card = new Card(CARDVALUE.NINE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
@@ -714,42 +714,42 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(9, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 10
             _card = new Card(CARDVALUE.TEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(10, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for queen
             _card = new Card(CARDVALUE.QUEEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(12, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for ace 1
             _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for ace 2
             _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(11, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for king
             _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(13, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -767,84 +767,84 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(62, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for 3
             _card = new Card(CARDVALUE.THREE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(61, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for 5
             _card = new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(59, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for 6
             _card = new Card(CARDVALUE.SIX, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(58, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for 8
             _card = new Card(CARDVALUE.EIGHT, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(56, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for 9
             _card = new Card(CARDVALUE.NINE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(55, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for 10
             _card = new Card(CARDVALUE.TEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(54, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for queen
             _card = new Card(CARDVALUE.QUEEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(52, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for ace 1
             _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for ace 2
             _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(53, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for king
             _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(51, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             // test for wrong distance
             _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(52, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
@@ -867,17 +867,22 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 3
             _card = new Card(CARDVALUE.THREE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 5
             _card = new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid()); //initial check for boundary (idx 3 in goal)
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(60, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
@@ -885,7 +890,8 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(60, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
+
 
             // test for 6
             _card = new Card(CARDVALUE.SIX, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
@@ -897,7 +903,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(59, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 8
             _card = new Card(CARDVALUE.EIGHT, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
@@ -908,7 +914,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(57, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 9
             _card = new Card(CARDVALUE.NINE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
@@ -919,7 +925,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(56, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 10
             _card = new Card(CARDVALUE.TEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
@@ -930,7 +936,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(55, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for queen
             _card = new Card(CARDVALUE.QUEEN, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
@@ -941,9 +947,297 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(54, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         } catch (InvalidMoveException e) {
             fail("Should not throw exception");
+        }
+    }
+
+    @Test
+    void validFiveToGoalOthersBlocked()
+    {
+        try {
+            board.makeStartingMove(COLOR.RED); // move first marble to start
+            board.makeStartingMove(COLOR.GREEN); // move first marble to start
+            board.makeStartingMove(COLOR.YELLOW); // move first marble to start
+            board.makeStartingMove(COLOR.BLUE); // move first marble to start
+
+            _card = new Card(CARDVALUE.FIVE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+
+            //RED
+            _color = COLOR.RED;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(63, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+            //GREEN
+            _color = COLOR.GREEN;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(32, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(31, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(31, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+            //YELLOW
+            _color = COLOR.YELLOW;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(15, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(15, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+            //BLUE
+            _color = COLOR.BLUE;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(48, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(47, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(47, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+        }catch (Exception e)
+        {
+            fail();
+        }
+    }
+
+
+    @Test
+    void validFourToGoalOthersBlocked()
+    {
+        try {
+            board.makeStartingMove(COLOR.RED); // move first marble to start
+            board.makeStartingMove(COLOR.GREEN); // move first marble to start
+            board.makeStartingMove(COLOR.YELLOW); // move first marble to start
+            board.makeStartingMove(COLOR.BLUE); // move first marble to start
+
+            _card = new Card(CARDVALUE.FOUR, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+
+            //RED
+
+            _color = COLOR.RED;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertFalse(board.isValidMove(move).getValid()); //right from start is not possible
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid()); //now it should be
+
+
+            //GREEN
+
+            _color = COLOR.GREEN;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(32, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertFalse(board.isValidMove(move).getValid()); //right from start is not possible
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(32, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(32, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(32, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid()); //now it should be
+
+            //YELLOW
+
+            _color = COLOR.YELLOW;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertFalse(board.isValidMove(move).getValid()); //right from start is not possible
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid()); //now it should be
+
+            //BLUE
+
+            _color = COLOR.BLUE;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(48, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertFalse(board.isValidMove(move).getValid()); //right from start is not possible
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(48, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(48, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(48, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid()); //now it should be
+
+        }catch (Exception e)
+        {
+            fail();
+        }
+    }
+
+    @Test
+    void validAceToGoalOthersBlocked()
+    {
+        try {
+            board.makeStartingMove(COLOR.RED); // move first marble to start
+            board.makeStartingMove(COLOR.GREEN); // move first marble to start
+            board.makeStartingMove(COLOR.YELLOW); // move first marble to start
+            board.makeStartingMove(COLOR.BLUE); // move first marble to start
+
+            _card = new Card(CARDVALUE.ACE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+
+            //RED
+            _color = COLOR.RED;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(57, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(57, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+            //GREEN
+            _color = COLOR.GREEN;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(32, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(25, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(25, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+            //YELLOW
+            _color = COLOR.YELLOW;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(9, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(9, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+            //BLUE
+            _color = COLOR.BLUE;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(48, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(41, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(41, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+        }catch (Exception e)
+        {
+            fail();
+        }
+    }
+
+    @Test
+    void validKingToGoalOthersBlocked()
+    {
+        try {
+            board.makeStartingMove(COLOR.RED); // move first marble to start
+            board.makeStartingMove(COLOR.GREEN); // move first marble to start
+            board.makeStartingMove(COLOR.YELLOW); // move first marble to start
+            board.makeStartingMove(COLOR.BLUE); // move first marble to start
+
+            _card = new Card(CARDVALUE.KING, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
+
+            //RED
+            _color = COLOR.RED;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(55, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(55, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+            //GREEN
+            _color = COLOR.GREEN;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(32, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(23, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(23, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+            //YELLOW
+            _color = COLOR.YELLOW;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(7, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(7, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+            //BLUE
+            _color = COLOR.BLUE;
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(48, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(39, false)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            board.makeMove(move); //move in position
+
+            fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(39, false)));
+            toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
+            move = new Move(fromPos, toPos, _card, "token", _color);
+            assertTrue(board.isValidMove(move).getValid());
+
+        }catch (Exception e)
+        {
+            fail();
         }
     }
 
@@ -966,14 +1260,14 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
             // test for 3
             _card = new Card(CARDVALUE.THREE, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, true)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(3, true)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         } catch (InvalidMoveException e) {
             fail(e + "Should not throw exception");
         }
@@ -1029,7 +1323,7 @@ public class MoveTest {
 
         boolean success = false;
         
-        success = board.isValidMove(move);
+        success = board.isValidMove(move).getValid();
         
 
         return success;
@@ -1248,7 +1542,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             moveMarble(16, 18, false, false);
 
@@ -1257,7 +1551,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(18, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         }catch (Exception e)
         {
             fail("Should not throw here.");
@@ -1281,14 +1575,14 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(60, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(4, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             //this should work
             _card = new Card(CARDVALUE.JACK, CARDTYPE.DEFAULT, CARDSUITE.HEARTS);
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(18, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
             board.makeSwitch(0, 18);
 
 
@@ -1297,7 +1591,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(60, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(4, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
         }catch (Exception e)
         {
@@ -1319,7 +1613,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(16, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertFalse(board.isValidMove(move), board.getValidMove(move).getError());
+            assertFalse(board.isValidMove(move).getValid());
 
             moveMarble(16, 18, false, false);
 
@@ -1328,7 +1622,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(18, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
 
         }catch (Exception e)
         {
@@ -1465,7 +1759,7 @@ public class MoveTest {
         toPos = new ArrayList<>(Arrays.asList(new BoardPosition(0, false)));
         move = new Move(fromPos, toPos, _card, "token", _color);
         // test starting move
-        assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+        assertTrue(board.isValidMove(move).getValid());
     }
     
     @Test
@@ -1491,7 +1785,7 @@ public class MoveTest {
                     new BoardPosition(2, true),
                     new BoardPosition(3, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         }catch(Exception e){
             fail("Should not throw this exception: " + e);
         }
@@ -1509,7 +1803,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(1, false), new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(5, false), new BoardPosition(3, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         }catch(Exception e){
             fail("Should not throw this exception: " + e);
         }
@@ -1527,7 +1821,7 @@ public class MoveTest {
             fromPos = new ArrayList<>(Arrays.asList(new BoardPosition(2, false), new BoardPosition(0, false)));
             toPos = new ArrayList<>(Arrays.asList(new BoardPosition(5, false), new BoardPosition(4, false)));
             move = new Move(fromPos, toPos, _card, "token", _color);
-            assertTrue(board.isValidMove(move), board.getValidMove(move).getError());
+            assertTrue(board.isValidMove(move).getValid());
         }catch(Exception e){
             fail("Should not throw this exception: " + e);
         }

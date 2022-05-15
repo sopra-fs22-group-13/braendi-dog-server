@@ -27,7 +27,7 @@ public class PossibleMovesGetDTO {
     }
 
     public void setInGoal(Boolean inGoal) {
-        inGoal = inGoal;
+        this.inGoal = inGoal;
     }
 
     public String getCard() {

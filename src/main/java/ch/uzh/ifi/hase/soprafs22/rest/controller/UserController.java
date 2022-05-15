@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * User Controller
@@ -52,13 +53,13 @@ public class UserController {
     return userGetDTOs;
   }
 
-  @GetMapping("/users/{usertoken}")
+  @GetMapping("/users/{userID}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public UserGetDTO getUser(HttpServletRequest request, @PathVariable String usertoken) {
+  public UserGetDTO getUser(HttpServletRequest request, @PathVariable Long userID) {
       userService.checkIfLoggedIn(request);
 
-      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userService.getUserByToken(usertoken));
+      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userService.getUserById(userID));
   }
 
   @PostMapping("/users")
@@ -83,7 +84,7 @@ public class UserController {
   @ResponseBody
   public void updateUser(HttpServletRequest request, @PathVariable Long userID, @RequestBody UserPutDTO userPutDTO) {
       User client = userService.checkIfLoggedIn(request);
-      if (client.getId() != userID) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You cannot edit someone else's profile.");
+      if (!Objects.equals(client.getId(), userID)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You cannot edit someone else's profile.");
 
       User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
       userInput.setId(userID);

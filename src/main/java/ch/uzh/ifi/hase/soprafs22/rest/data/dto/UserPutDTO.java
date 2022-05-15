@@ -26,19 +26,19 @@ public class UserPutDTO {
         this.username = username;
     }
 
-    public String getAvatar() {
-        return username;
+    public Integer getAvatar() {
+        return avatar;
     }
 
-    public void setAvatar(String username) {
-        this.username = username;
+    public void setAvatar(Integer avatar) {
+        this.avatar = avatar;
     }
 
     public String getDescription() {
-        return username;
+        return description;
     }
 
-    public void setDescription(String username) {
-        this.username = username;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

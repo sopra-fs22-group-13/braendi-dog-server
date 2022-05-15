@@ -10,6 +10,7 @@ import ch.uzh.ifi.hase.soprafs22.game.constants.COLOR;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.Board;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.IBoard;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.board.ValidMove;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.CardStack;
@@ -77,7 +78,7 @@ public class Game {
         this._gameToken= UUID.randomUUID().toString();
         this._manager= GameManager.getInstance();
 
-        this._userManager= new UserManager(_players,users);
+        this._userManager= new UserManager(_players, users);
     }
 
     private void makeFirstMoveValid()
@@ -155,7 +156,8 @@ public class Game {
         // checks if the player can do something
         if  (_playersWithValidTurns.get(_indexWithCurrentTurn)) {
             //checks if move is logical right
-            if (_board.isValidMove(move)) {
+            ValidMove validMove = _board.isValidMove(move);
+            if (validMove.getValid()) {
                 if (move.get_fromPos().get(0).getIndex() == -1) {
                     _board.makeStartingMove(move.get_color());
                 }
@@ -173,7 +175,7 @@ public class Game {
 
             }
             else {
-                throw new InvalidMoveException("RULE_VIOLATION", "Move is Invalid: Check the rules");
+                throw new InvalidMoveException("RULE_VIOLATION", validMove.getError());
             }
         }else
         {
@@ -232,7 +234,7 @@ public class Game {
 
         //the color mapping of the users
         Map<Long, COLOR> cMap = new HashMap<>();
-        ArrayList<COLOR> cols = new ArrayList<>(Arrays.asList(COLOR.RED, COLOR.BLUE, COLOR.GREEN, COLOR.YELLOW));
+        ArrayList<COLOR> cols = new ArrayList<>(Arrays.asList(COLOR.RED, COLOR.YELLOW, COLOR.GREEN, COLOR.BLUE));
 
         for (Player p: _players) {
             User u = _userManager.getUserFromPlayer(p);
@@ -277,7 +279,7 @@ public class Game {
 
         List<Integer> correctHiddenCards = new ArrayList<>();
 
-        //fix hidden cards direction
+        //fix hidden cards split
         if((correctStartIndex + 1) < 4)
         {
             correctHiddenCards = hiddenCards.subList(correctStartIndex + 1, 4);
@@ -286,6 +288,9 @@ public class Game {
         for (int i = 0; i < correctStartIndex; i++) {
             correctHiddenCards.add(hiddenCards.get(i));
         }
+
+        //fix dir
+        Collections.reverse(correctHiddenCards);
 
         pd.setHiddenCardCount(new ArrayList<>(correctHiddenCards));
 

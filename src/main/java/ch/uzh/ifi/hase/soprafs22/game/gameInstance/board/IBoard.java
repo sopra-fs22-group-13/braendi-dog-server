@@ -16,7 +16,7 @@ public interface IBoard {
     boolean checkWinningCondition(COLOR color);
     void makeSwitch(int start, int end) throws InvalidMoveException;
     boolean isAnyMovePossible(Card card, COLOR col);
-    boolean isValidMove(Move move) throws InvalidMoveException;
+    ValidMove isValidMove(Move move);
     List<BoardPosition> whatMovesPossible(BoardPosition bp, Card card, COLOR color);
     int getNumberInBase(COLOR color);
 }
