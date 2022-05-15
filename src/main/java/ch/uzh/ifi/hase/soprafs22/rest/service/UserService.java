@@ -53,8 +53,8 @@ public class UserService implements IUserService {
     newUser.setId(i);
     newUser.setWins(0);
     newUser.setGotGoal(0);
-
     newUser.setStatus(UserStatus.ONLINE);
+    newUser.setDescription("Hello there i'm playing dog");
 
     checkIfUserExists(newUser);
 
