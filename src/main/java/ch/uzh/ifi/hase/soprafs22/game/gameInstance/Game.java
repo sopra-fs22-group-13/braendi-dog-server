@@ -19,6 +19,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
+import ch.uzh.ifi.hase.soprafs22.rest.service.GameHistoryService;
 import ch.uzh.ifi.hase.soprafs22.rest.service.IUserService;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
@@ -45,6 +46,7 @@ public class Game {
     private Card _lastPlayedCard;
 
     private IUserService _userService = SpringContext.getBean(UserService.class);
+    private GameHistoryService _gameHistoryService = SpringContext.getBean(GameHistoryService.class);
 
     public Game(ArrayList<User> users){
         setup(users);
@@ -387,11 +389,19 @@ public class Game {
     }
 
     private void processGameResults(Player winner) {
+        GameResults gameResults = new GameResults();
+        gameResults.startingTime = creationTime;
+        gameResults.winnerID = _userManager.getUserFromPlayer(winner).getId();
+
         _userService.addWins(_userManager.getUserFromPlayer(winner));
         for (Player playerGoal:_players){
             int numberOfMarbleInGoals=  _board.getNumberInBase(playerGoal.getColor());
-            _userService.addNumberInGoal(_userManager.getUserFromPlayer(playerGoal), numberOfMarbleInGoals);
+            User user = _userManager.getUserFromPlayer(playerGoal);
+            _userService.addNumberInGoal(user, numberOfMarbleInGoals);
+            gameResults.addPlayerResults(user.getId(), numberOfMarbleInGoals);
         }
+
+        _gameHistoryService.savePlayedGame(gameResults);
     }
 
 
