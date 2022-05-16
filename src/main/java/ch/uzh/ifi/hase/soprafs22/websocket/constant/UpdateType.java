@@ -8,5 +8,6 @@ public enum UpdateType {
     WIN,
     LOBBY,
     INVITE,
-    VOICE
+    VOICE,
+    GAME_CLOSED
 }
