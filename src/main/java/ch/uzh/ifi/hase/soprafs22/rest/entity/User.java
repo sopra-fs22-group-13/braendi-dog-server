@@ -78,9 +78,9 @@ public class User implements Serializable {
 
   public void setAvatar(Integer avatar) { this.avatar = avatar; }
 
-  public Integer getDescription() { return avatar; }
+  public String getDescription() { return description; }
 
-  public void setDescription(Integer avatar) { this.avatar = avatar; }
+  public void setDescription(String description) { this.description = description; }
 
   public String getToken() {
     return token;

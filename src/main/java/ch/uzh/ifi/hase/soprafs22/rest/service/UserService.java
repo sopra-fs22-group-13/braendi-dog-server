@@ -45,16 +45,16 @@ public class UserService implements IUserService {
 
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
-/*    long i =0;
+    long i =0;
     while(userRepository.findById(i).isPresent()) {
         i++;
     }
 
-    newUser.setId(i);*/
+    newUser.setId(i);
     newUser.setWins(0);
     newUser.setGotGoal(0);
-
-    newUser.setStatus(UserStatus.OFFLINE);
+    newUser.setStatus(UserStatus.ONLINE);
+    newUser.setDescription("Hello there i'm playing dog");
 
     checkIfUserExists(newUser);
 
@@ -185,10 +185,10 @@ public class UserService implements IUserService {
         User storedUser = getUserById(reqUser.getId());
 
         if (userRepository.findByUsername(reqUser.getUsername()) != null) { throw new ResponseStatusException(HttpStatus.CONFLICT, "The username you are trying to change to is already taken."); }
-        if (reqUser.getUsername() != null) { storedUser.setUsername(reqUser.getUsername()); }
+        if (reqUser.getUsername() != null ) { storedUser.setUsername(reqUser.getUsername()); }
 
-        if (reqUser.getPassword() != null) { storedUser.setPassword(reqUser.getPassword()); }
-        if (reqUser.getAvatar() != null) { storedUser.setAvatar(reqUser.getAvatar()); }
+        if (reqUser.getPassword() != null ) { storedUser.setPassword(reqUser.getPassword()); }
+        if (reqUser.getAvatar() != null ) { storedUser.setAvatar(reqUser.getAvatar()); }
         if (reqUser.getDescription() != null) { storedUser.setDescription(reqUser.getDescription()); }
     }
 }

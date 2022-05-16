@@ -2,38 +2,42 @@ package ch.uzh.ifi.hase.soprafs22.rest.data.dto;
 
 import ch.uzh.ifi.hase.soprafs22.rest.constant.UserStatus;
 
+import javax.persistence.criteria.CriteriaBuilder;
+
 public class UserGetDTO {
 
-  private Long id;
-  private String username;
-  private UserStatus status;
-  private Integer avatar;
-  private String description;
+    private Long id;
+    private String username;
+    private UserStatus status;
+    private Integer avatar;
+    private String description;
+    private Integer wins;
+    private Integer gotInGoals;
 
 
-  public Long getId() {
+    public Long getId() {
     return id;
-  }
+    }
 
-  public void setId(Long id) {
+    public void setId(Long id) {
     this.id = id;
-  }
+    }
 
-  public String getUsername() {
+    public String getUsername() {
     return username;
-  }
+    }
 
-  public void setUsername(String username) {
+    public void setUsername(String username) {
     this.username = username;
-  }
+    }
 
-  public UserStatus getStatus() {
+    public UserStatus getStatus() {
     return status;
-  }
+    }
 
-  public void setStatus(UserStatus status) {
+    public void setStatus(UserStatus status) {
     this.status = status;
-  }
+    }
 
     public Integer getAvatar() {
         return avatar;
@@ -50,5 +54,13 @@ public class UserGetDTO {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Integer getWins(){return wins;}
+
+    public void setWins(Integer wins) {this.wins = wins;}
+
+    public Integer getGotInGoals(){return gotInGoals;}
+
+    public void setGotInGoals(Integer gotInGoals) {this.gotInGoals = gotInGoals;}
 }
 
