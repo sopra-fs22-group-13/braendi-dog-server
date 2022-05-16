@@ -428,4 +428,8 @@ public class Game {
         return _userManager.getPlayerFromUserToken(token);
     }
 
+    // needs to be passed to gamemanager in order to delete the players from the game
+    public UserManager getUserManager(){
+        return _userManager;
+    }
 }
