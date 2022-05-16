@@ -191,4 +191,9 @@ public class UserService implements IUserService {
         if (reqUser.getAvatar() != null ) { storedUser.setAvatar(reqUser.getAvatar()); }
         if (reqUser.getDescription() != null) { storedUser.setDescription(reqUser.getDescription()); }
     }
+
+    public void setUserOffline(User user){
+        User storedUser = getUserById(user.getId());
+        storedUser.setStatus(UserStatus.OFFLINE);
+    }
 }
