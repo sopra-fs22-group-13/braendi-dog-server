@@ -11,9 +11,11 @@ import java.util.List;
 @Repository
 public interface GameHistoryRepository extends JpaRepository<GameHistory, Long> {
 
-    @Query("SELECT * FROM gamehistory WHERE winner = ?1")
+    @Query("select gh from GameHistory gh where gh.winner = ?1")
     public List<GameHistory> findWonGames(User winner);
 
-    @Query("SELECT * FROM gamehistory WHERE user1 = ?1 OR user2 = ?1 OR user3 = ?1 OR user4 = ?1")
+
+    @Query("select gh from GameHistory gh where gh.user1 = ?1 OR gh.user2 = ?1 OR gh.user3 = ?1 OR gh.user4 = ?1")
     public List<GameHistory> findPlayedGames(User user);
+
 }
