@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class GameHistoryService {
+public class GameHistoryService implements IGameHistoryService{
 
     private final GameHistoryRepository gameHistoryRepository;
 

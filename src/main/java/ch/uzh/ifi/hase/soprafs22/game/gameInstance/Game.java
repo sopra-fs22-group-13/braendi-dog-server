@@ -20,6 +20,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.GameHistoryService;
+import ch.uzh.ifi.hase.soprafs22.rest.service.IGameHistoryService;
 import ch.uzh.ifi.hase.soprafs22.rest.service.IUserService;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
@@ -46,7 +47,7 @@ public class Game {
     private Card _lastPlayedCard;
 
     private IUserService _userService = SpringContext.getBean(UserService.class);
-    private GameHistoryService _gameHistoryService = SpringContext.getBean(GameHistoryService.class);
+    private IGameHistoryService _gameHistoryService = SpringContext.getBean(GameHistoryService.class);
 
     public Game(ArrayList<User> users){
         setup(users);
