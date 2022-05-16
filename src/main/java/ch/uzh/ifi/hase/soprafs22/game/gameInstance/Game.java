@@ -401,14 +401,14 @@ public class Game {
     private void processGameResults(Player winner) {
         GameResults gameResults = new GameResults();
         gameResults.startingTime = creationTime;
-        gameResults.winnerID = _userManager.getUserFromPlayer(winner).getId();
+        gameResults.winner = _userManager.getUserFromPlayer(winner);
 
         _userService.addWins(_userManager.getUserFromPlayer(winner));
         for (Player playerGoal:_players){
             int numberOfMarbleInGoals=  _board.getNumberInBase(playerGoal.getColor());
             User user = _userManager.getUserFromPlayer(playerGoal);
             _userService.addNumberInGoal(user, numberOfMarbleInGoals);
-            gameResults.addPlayerResults(user.getId(), numberOfMarbleInGoals);
+            gameResults.addPlayerResults(user, numberOfMarbleInGoals);
         }
 
         _gameHistoryService.savePlayedGame(gameResults);

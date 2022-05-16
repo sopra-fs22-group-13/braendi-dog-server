@@ -1,20 +1,22 @@
 package ch.uzh.ifi.hase.soprafs22.game.gameInstance;
 
+import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
+
 public class GameResults {
     public Long startingTime;
 
-    public Long winnerID;
+    public User winner;
 
-    private Long player1;
+    private User player1;
     private Integer resultPlayer1;
-    private Long player2;
+    private User player2;
     private Integer resultPlayer2;
-    private Long player3;
+    private User player3;
     private Integer resultPlayer3;
-    private Long player4;
+    private User player4;
     private Integer resultPlayer4;
 
-    public void addPlayerResults(Long player, Integer result) {
+    public void addPlayerResults(User player, Integer result) {
         if (player1 == null) {
             player1 = player;
             resultPlayer1 = result;
@@ -28,5 +30,41 @@ public class GameResults {
             player4 = player;
             resultPlayer4 = result;
         }
+    }
+
+    public User getWinner() {
+        return winner;
+    }
+
+    public User getPlayer1() {
+        return player1;
+    }
+
+    public User getPlayer2() {
+        return player2;
+    }
+
+    public User getPlayer3() {
+        return player3;
+    }
+
+    public User getPlayer4() {
+        return player4;
+    }
+
+    public Integer getResultPlayer1() {
+        return resultPlayer1;
+    }
+
+    public Integer getResultPlayer2() {
+        return resultPlayer2;
+    }
+
+    public Integer getResultPlayer3() {
+        return resultPlayer3;
+    }
+
+    public Integer getResultPlayer4() {
+        return resultPlayer4;
     }
 }

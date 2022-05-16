@@ -17,5 +17,4 @@ public interface GameHistoryRepository extends JpaRepository<GameHistory, Long> 
 
     @Query("select gh from GameHistory gh where gh.user1 = ?1 OR gh.user2 = ?1 OR gh.user3 = ?1 OR gh.user4 = ?1")
     public List<GameHistory> findPlayedGames(User user);
-
 }

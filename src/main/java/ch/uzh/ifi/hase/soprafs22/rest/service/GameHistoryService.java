@@ -22,6 +22,22 @@ public class GameHistoryService implements IGameHistoryService{
 
     public void savePlayedGame(GameResults gameResults) {
         GameHistory gameHistory = new GameHistory();
+
+        gameHistory.setStartDate(gameResults.startingTime);
+        gameHistory.setWinner(gameResults.winner);
+
+        gameHistory.setUser1(gameResults.getPlayer1());
+        gameHistory.setUser2(gameResults.getPlayer2());
+        gameHistory.setUser3(gameResults.getPlayer3());
+        gameHistory.setUser4(gameResults.getPlayer4());
+
+        gameHistory.setUser1_goals(gameResults.getResultPlayer1());
+        gameHistory.setUser2_goals(gameResults.getResultPlayer2());
+        gameHistory.setUser3_goals(gameResults.getResultPlayer3());
+        gameHistory.setUser4_goals(gameResults.getResultPlayer4());
+
+        gameHistoryRepository.save(gameHistory);
+        gameHistoryRepository.flush();
     }
 
     public List<GameHistory> getPlayedGames(User user) {

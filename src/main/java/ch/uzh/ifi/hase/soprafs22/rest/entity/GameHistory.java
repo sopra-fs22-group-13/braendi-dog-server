@@ -15,6 +15,9 @@ public class GameHistory implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @Column
+    Long startDate;
+
     @ManyToOne
     User user1;
 
@@ -49,6 +52,14 @@ public class GameHistory implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Long startDate) {
+        this.startDate = startDate;
     }
 
     public User getUser1() {
