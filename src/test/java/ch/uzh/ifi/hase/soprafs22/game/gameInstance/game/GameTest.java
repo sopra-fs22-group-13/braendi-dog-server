@@ -15,6 +15,7 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.mocks.*;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs22.rest.service.GameHistoryService;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
@@ -82,6 +83,10 @@ class GameTest {
         mockSpringContext.returnForClass(UserService.class, mockUserService);
 
         mockSpringContext.returnForClass(UserRepository.class, mockUserRepo);
+
+        MockGameHistoryService mockGameHistoryService = new MockGameHistoryService() {};
+
+        mockSpringContext.returnForClass(GameHistoryService.class, mockGameHistoryService);
 
         //set the spring context object to the mocked one (instead of the default runtime one)
         SpringContext.setSpringContextObject(mockSpringContext);
