@@ -1,11 +1,9 @@
 package ch.uzh.ifi.hase.soprafs22.rest.controller;
 
-import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserPutDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.*;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
-import ch.uzh.ifi.hase.soprafs22.rest.data.dto.HeartBeatDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.mapper.DTOMapper;
+import ch.uzh.ifi.hase.soprafs22.rest.service.GameHistoryService;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +28,11 @@ import java.util.Objects;
 public class UserController {
 
   private final UserService userService;
+  private final GameHistoryService gameHistoryService;
 
-  UserController(UserService userService) {
+  UserController(UserService userService, GameHistoryService gameHistoryService) {
     this.userService = userService;
+    this.gameHistoryService = gameHistoryService;
   }
 
   @GetMapping("/users")
@@ -90,6 +90,32 @@ public class UserController {
       userInput.setId(userID);
 
       userService.updateUser(userInput);
+  }
+
+  @GetMapping("/users/{userID}/history")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public List<GameHistoryGetDTO> getMatchHistory(HttpServletRequest request, @PathVariable Long userID) {
+      User client = userService.checkIfLoggedIn(request);
+
+      //oh boy
+      List<GameHistoryGetDTO> gameHistoryGetDTOs =
+              (List<GameHistoryGetDTO>) gameHistoryService.getPlayedGames(client)
+                      .stream().map(gameHistory -> {
+                          return new GameHistoryGetDTO(
+                                  gameHistory.getId(),
+                                  gameHistory.getStartDate(),
+                                  gameHistory.getWinner() == client,
+
+                                  gameHistory.getUser1() == client ? gameHistory.getUser1_goals() :
+                                          gameHistory.getUser2() == client ? gameHistory.getUser2_goals() :
+                                                  gameHistory.getUser3() == client ? gameHistory.getUser3_goals() :
+                                                          gameHistory.getUser4_goals()
+                          );
+                      });
+
+      return gameHistoryGetDTOs;
+
   }
 
 
