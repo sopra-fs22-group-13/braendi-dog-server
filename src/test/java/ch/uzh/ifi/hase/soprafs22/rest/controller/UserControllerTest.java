@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs22.rest.controller;
 import ch.uzh.ifi.hase.soprafs22.rest.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.service.GameHistoryService;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +44,9 @@ public class UserControllerTest {
 
   @MockBean
   private UserService userService;
+
+  @MockBean
+  private GameHistoryService gameHistoryService;
 
   @Test
   public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
