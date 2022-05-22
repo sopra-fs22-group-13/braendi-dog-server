@@ -110,7 +110,7 @@ public class GameController {
     @GetMapping("/game/{gametoken}/moves")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<PossibleMovesGetDTO> getPossibleMoves(HttpServletRequest request, @PathVariable String gametoken, @RequestBody PossibleMovesGetDTO possibleMovesGetDTO) {
+    public List<BoardPosition> getPossibleMoves(HttpServletRequest request, @PathVariable String gametoken, @RequestBody PossibleMovesGetDTO possibleMovesGetDTO) {
         User user = userService.checkIfLoggedIn(request);
 
         Game game = GameManager.getInstance().getGameByToken(gametoken);
@@ -129,8 +129,8 @@ public class GameController {
                 new Card(possibleMovesGetDTO.getCard()),
                 player.getColor()
                 );
-        List<PossibleMovesGetDTO> possibleMoveDTOs = (List<PossibleMovesGetDTO>) possibleMoves.stream().map(boardPosition -> new PossibleMovesGetDTO(boardPosition.getIndex(), boardPosition.isInGoal()));
+        //List<PossibleMovesGetDTO> possibleMoveDTOs = (List<PossibleMovesGetDTO>) possibleMoves.stream().map(boardPosition -> new PossibleMovesGetDTO(boardPosition.getIndex(), boardPosition.isInGoal()));
 
-        return possibleMoveDTOs;
+        return possibleMoves;
     }
 }
