@@ -114,8 +114,11 @@ public class UserController {
                           );
                       });
 
-      return gameHistoryGetDTOs;
+      if (gameHistoryGetDTOs.size() > 10) {
+          gameHistoryGetDTOs = gameHistoryGetDTOs.subList(0, 10);
+      }
 
+      return gameHistoryGetDTOs;
   }
 
 
