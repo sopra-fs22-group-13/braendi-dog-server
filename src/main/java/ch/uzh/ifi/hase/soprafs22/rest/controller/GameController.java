@@ -114,7 +114,7 @@ public class GameController {
         User user = userService.checkIfLoggedIn(request);
 
         Game game = GameManager.getInstance().getGameByToken(gametoken);
-        if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
+        if (game==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A game with the provided token doesn't exist.");
 
         String auth = request.getHeader("Authorization");
         String playerToken = auth.substring(6);
