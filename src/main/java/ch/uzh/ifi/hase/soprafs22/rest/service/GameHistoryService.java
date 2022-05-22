@@ -7,8 +7,9 @@ import ch.uzh.ifi.hase.soprafs22.rest.repository.GameHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -42,7 +43,17 @@ public class GameHistoryService implements IGameHistoryService{
     }
 
     public List<GameHistory> getPlayedGames(User user) {
-        return gameHistoryRepository.findPlayedGames(user);
+        List<GameHistory> playedGames = gameHistoryRepository.findPlayedGames(user);
+
+        playedGames.sort(new Comparator<GameHistory>() {
+            @Override
+            public int compare(GameHistory o1, GameHistory o2) {
+                return o1.getStartDate().compareTo(o2.getStartDate());
+            }
+        });
+        Collections.reverse(playedGames);
+
+        return playedGames;
     }
 
     public List<GameHistory> getWonGames(User user) {

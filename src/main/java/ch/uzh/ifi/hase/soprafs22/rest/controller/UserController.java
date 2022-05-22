@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * User Controller
@@ -100,8 +101,9 @@ public class UserController {
 
       //oh boy
       List<GameHistoryGetDTO> gameHistoryGetDTOs =
-              (List<GameHistoryGetDTO>) gameHistoryService.getPlayedGames(client)
-                      .stream().map(gameHistory -> {
+              gameHistoryService.getPlayedGames(client)
+                      .stream()
+                      .map(gameHistory -> {
                           return new GameHistoryGetDTO(
                                   gameHistory.getId(),
                                   gameHistory.getStartDate(),
@@ -112,10 +114,13 @@ public class UserController {
                                                   gameHistory.getUser3() == client ? gameHistory.getUser3_goals() :
                                                           gameHistory.getUser4_goals()
                           );
-                      });
+                      }).collect(Collectors.toList());
+
+      if (gameHistoryGetDTOs.size() > 10) {
+          gameHistoryGetDTOs = gameHistoryGetDTOs.subList(0, 10);
+      }
 
       return gameHistoryGetDTOs;
-
   }
 
 
