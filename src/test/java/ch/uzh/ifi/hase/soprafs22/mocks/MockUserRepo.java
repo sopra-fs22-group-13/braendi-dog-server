@@ -30,6 +30,9 @@ public abstract class MockUserRepo implements UserRepository {
     }
 
     @Override
+    public List<User> getTopTenUsers() {return null;}
+
+    @Override
     public List<User> findAll() {
         return null;
     }

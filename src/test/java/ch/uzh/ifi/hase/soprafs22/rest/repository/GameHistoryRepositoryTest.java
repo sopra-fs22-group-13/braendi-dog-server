@@ -103,7 +103,7 @@ class GameHistoryRepositoryTest {
         newUser.setToken(RandomString.make(16));
         newUser.setStatus(UserStatus.OFFLINE);
         newUser.setWins(0);
-        newUser.setGotGoal(0);
+        newUser.setGoals(0);
 
         User storedUser = userRepository.save(newUser);
         userRepository.flush();

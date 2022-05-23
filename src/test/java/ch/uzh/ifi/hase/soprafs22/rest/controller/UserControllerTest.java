@@ -266,6 +266,36 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$", hasSize(10)));
     }
 
+    @Test
+    public void getLeaderboard_Test() throws Exception{
+        //given
+        User user = new User();
+        given(userService.checkIfLoggedIn(Mockito.any())).willReturn(user);
+
+        User testUser1 = new User();
+        testUser1.setId(1L);
+        testUser1.setPassword("testName");
+        testUser1.setUsername("testUsername");
+
+        User testUser2 = new User();
+        testUser2.setId(2L);
+        testUser2.setPassword("testName2");
+        testUser2.setUsername("testUsername2");
+
+        ArrayList<User> u = new ArrayList<>(Arrays.asList(testUser1, testUser2));
+
+        given(userService.getLeaderboard()).willReturn(u); //the leaderboard to return
+
+        //when
+        MockHttpServletRequestBuilder getRequest = get("/users/leaderboard")
+                .header("Authorization", "testToken");
+
+        //then
+        mockMvc.perform(getRequest).andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+
+    }
+
 
     /**
      * the following tests verify the behaviour of

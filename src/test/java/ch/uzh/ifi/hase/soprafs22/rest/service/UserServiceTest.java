@@ -11,6 +11,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {
@@ -66,6 +69,27 @@ public class UserServiceTest {
     // then -> attempt to create second user with same user -> check that an error
     // is thrown
     assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
+  }
+
+  @Test
+    public void leaderboard()
+  {
+
+      User testUser1 = new User();
+      testUser1.setId(1L);
+      testUser1.setPassword("testName");
+      testUser1.setUsername("testUsername");
+
+      User testUser2 = new User();
+      testUser2.setId(2L);
+      testUser2.setPassword("testName2");
+      testUser2.setUsername("testUsername2");
+
+      ArrayList<User> u = new ArrayList<>(Arrays.asList(testUser1, testUser2));
+
+      Mockito.when(userRepository.getTopTenUsers()).thenReturn(u);
+
+      assertEquals(u , userService.getLeaderboard());
   }
 
 }

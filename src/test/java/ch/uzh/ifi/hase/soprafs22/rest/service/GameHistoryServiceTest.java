@@ -6,7 +6,6 @@ import ch.uzh.ifi.hase.soprafs22.rest.entity.GameHistory;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.GameHistoryRepository;
 import net.bytebuddy.utility.RandomString;
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,9 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -85,7 +82,7 @@ class GameHistoryServiceTest {
         newUser.setToken(RandomString.make(16));
         newUser.setStatus(UserStatus.OFFLINE);
         newUser.setWins(0);
-        newUser.setGotGoal(0);
+        newUser.setGoals(0);
 
         return newUser;
     }

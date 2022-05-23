@@ -29,98 +29,102 @@ import java.util.UUID;
 @Transactional
 public class UserService implements IUserService {
 
-  private final Logger log = LoggerFactory.getLogger(UserService.class);
+    private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-  private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-  @Autowired
-  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
-
-  public List<User> getUsers() {
-    return this.userRepository.findAll();
-  }
-
-
-  public User createUser(User newUser) {
-    newUser.setToken(UUID.randomUUID().toString());
-    long i =0;
-    while(userRepository.findById(i).isPresent()) {
-        i++;
+    @Autowired
+    public UserService(@Qualifier("userRepository") UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    newUser.setId(i);
-    newUser.setWins(0);
-    newUser.setGotGoal(0);
-    newUser.setStatus(UserStatus.ONLINE);
-    newUser.setDescription("Hello there i'm playing dog");
-
-    checkIfUserExists(newUser);
-
-    // saves the given entity but data is only persisted in the database once
-    // flush() is called
-    newUser = userRepository.save(newUser);
-    userRepository.flush();
-
-    log.debug("Created Information for User: {}", newUser);
-    return newUser;
-  }
-
-
-  public User loginUser(User user) {
-
-     checkIfPasswordIsCorrect(user);
-     // need to throw an expection is not register
-
-     User userAlreadyRegister = userRepository.findByUsername(user.getUsername());
-     log.debug("Check Information for User: {}", user);
-     userAlreadyRegister.setStatus(UserStatus.ONLINE);
-     return userAlreadyRegister;
-  }
-
-    public User getUserByToken(String token){
-      User user = userRepository.findByToken(token);
-      if (user == null){
-          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The provided Token was not found");
-      }
-      return user;
+    public List<User> getUsers() {
+        return this.userRepository.findAll();
     }
 
-    public User getUserById(Long id){
+
+    public User createUser(User newUser) {
+        newUser.setToken(UUID.randomUUID().toString());
+        long i = 0;
+        while (userRepository.findById(i).isPresent()) {
+            i++;
+        }
+
+        newUser.setId(i);
+        newUser.setWins(0);
+        newUser.setGoals(0);
+        newUser.setStatus(UserStatus.ONLINE);
+        newUser.setDescription("Hello there i'm playing dog");
+
+        checkIfUserExists(newUser);
+
+        // saves the given entity but data is only persisted in the database once
+        // flush() is called
+        newUser = userRepository.save(newUser);
+        userRepository.flush();
+
+        log.debug("Created Information for User: {}", newUser);
+        return newUser;
+    }
+
+
+    public User loginUser(User user) {
+
+        checkIfPasswordIsCorrect(user);
+        // need to throw an expection is not register
+
+        User userAlreadyRegister = userRepository.findByUsername(user.getUsername());
+        log.debug("Check Information for User: {}", user);
+        userAlreadyRegister.setStatus(UserStatus.ONLINE);
+        return userAlreadyRegister;
+    }
+
+    public User getUserByToken(String token) {
+        User user = userRepository.findByToken(token);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The provided Token was not found");
+        }
+        return user;
+    }
+
+    public User getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
-        User newUser = user.isPresent()? user.get() : null;
-        if (newUser == null){
+        User newUser = user.isPresent() ? user.get() : null;
+        if (newUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The provided Id was not found");
         }
         return newUser;
     }
 
     /**
-   * @param userToBeCreated
-   * @throws org.springframework.web.server.ResponseStatusException
-   * @see User
-   */
-  private void checkIfUserExists(User userToBeCreated) {
-    User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
+     * @param userToBeCreated
+     * @throws org.springframework.web.server.ResponseStatusException
+     * @see User
+     */
+    private void checkIfUserExists(User userToBeCreated) {
+        User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
 
-    String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
-    if (userByUsername != null) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "username", "is"));
+        String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
+        if (userByUsername != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "username", "is"));
+        }
     }
-  }
 
-  public void addWins (User user){
-      User userWon= userRepository.findByUsername(user.getUsername());
-      Integer wins = userWon.getWins();
-      userWon.setWins(wins+1);
-  }
+    public void addWins(User user) {
+        User userWon = userRepository.findByUsername(user.getUsername());
+        Integer wins = userWon.getWins();
+        userWon.setWins(wins + 1);
+    }
 
-  public void addNumberInGoal(User user, int marbleInGoal){
-      User userToAddGoals = userRepository.findByUsername(user.getUsername());
-      Integer goals= userToAddGoals.getGotInGoals();
-      userToAddGoals.setGotGoal(goals+marbleInGoal);
-  }
+    public void addNumberInGoal(User user, int marbleInGoal) {
+        User userToAddGoals = userRepository.findByUsername(user.getUsername());
+        Integer goals = userToAddGoals.getGoals();
+        userToAddGoals.setGoals(goals + marbleInGoal);
+    }
+
+    public List<User> getLeaderboard(){
+        return userRepository.getTopTenUsers();
+    }
 
 
     private void checkIfPasswordIsCorrect(User userToLoggedIn ) throws ResponseStatusException {

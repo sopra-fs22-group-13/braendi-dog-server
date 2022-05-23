@@ -123,6 +123,17 @@ public class UserController {
       return gameHistoryGetDTOs;
   }
 
+  @GetMapping("/users/leaderboard")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public List<User> getLeaderboard(HttpServletRequest request){
+      User client = userService.checkIfLoggedIn(request);
+
+      List<User> users = userService.getLeaderboard();
+
+      return users;
+  }
+
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
