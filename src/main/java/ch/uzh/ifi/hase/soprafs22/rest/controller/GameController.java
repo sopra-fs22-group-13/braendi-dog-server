@@ -107,7 +107,7 @@ public class GameController {
         }
     }
 
-    @GetMapping("/game/{gametoken}/moves")
+    @PostMapping("/game/{gametoken}/moves")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<BoardPosition> getPossibleMoves(HttpServletRequest request, @PathVariable String gametoken, @RequestBody PossibleMovesGetDTO possibleMovesGetDTO) {
