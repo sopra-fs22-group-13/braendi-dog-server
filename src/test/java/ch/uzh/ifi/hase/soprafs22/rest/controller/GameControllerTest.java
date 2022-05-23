@@ -72,7 +72,6 @@ public class GameControllerTest {
     fakeUser.add(user3);
     fakeUser.add(user4);
 
-    Game game= new Game();
 
     GameManager gameManager=    GameManager.getInstance();
 
