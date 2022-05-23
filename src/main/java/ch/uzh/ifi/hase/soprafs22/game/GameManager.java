@@ -55,8 +55,7 @@ public class GameManager {
         for (Game game:_games){
             String token= game.getGameToken();
             if(tokenToDelete.equals(token) && (game.getCreationTime() + 5000 < new Date().getTime() || !fromHeartBeat)){
-                UserManager userManager = game.getUserManager();
-                updatePlayers(game, UpdateType.GAME_CLOSED, userManager);
+                game.cancelGame();
                 _games.remove(game);
                 return;
             }
@@ -64,7 +63,13 @@ public class GameManager {
     }
 
     synchronized public void deleteGame(String tokenToDelete){
-        deleteGame(tokenToDelete, false);
+        for (Game game:_games){
+            String token= game.getGameToken();
+            if(tokenToDelete.equals(token) && (game.getCreationTime() + 5000 < new Date().getTime())){
+                _games.remove(game);
+                return;
+            }
+        }
     }
 
     private void updatePlayers(Game game, UpdateType updateType, UserManager userManager) {

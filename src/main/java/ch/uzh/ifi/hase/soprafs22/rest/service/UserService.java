@@ -196,4 +196,9 @@ public class UserService implements IUserService {
         User storedUser = getUserById(user.getId());
         storedUser.setStatus(UserStatus.OFFLINE);
     }
+
+    public void setUserOnline(User user){
+        User storedUser = getUserById(user.getId());
+        storedUser.setStatus(UserStatus.ONLINE);
+    }
 }

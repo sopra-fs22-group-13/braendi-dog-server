@@ -5,10 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
+import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
+import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
+
 public class HeartBeatManager {
     private static HeartBeatManager instance = null;
 
     private Map<String, PlayerHeartBeat> playerHeartBeatMap = new HashMap<>();
+
+    UserService userService = SpringContext.getBean(UserService.class);
 
     private HeartBeatManager() {
     }
@@ -53,8 +59,14 @@ public class HeartBeatManager {
         return res;
     }
 
-    public void updateOnlineStatus(String token, Boolean online) {
 
+    public void updateOnlineStatus(String token, Boolean online) {
+        User user = userService.getUserByToken(token);
+        if(online){
+            userService.setUserOnline(user);
+        }else{
+            userService.setUserOffline(user);
+        }
     }
 
     private boolean isAllFalse(Map<HeartBeatType, Boolean> map) {

@@ -33,7 +33,6 @@ public class HeartBeatInvoker {
                         User user = userService.getUserByToken(token);
                         if(lm.getLobbyIdFromPlayer(token) != -1){
                             lm.closeLobby(lm.getLobbyIdFromPlayer(token), true, token);
-                            userService.setUserOffline(user);
                         }
                     }
                     if(heartBeats.get(HeartBeatType.GAME) == false)
@@ -43,7 +42,6 @@ public class HeartBeatInvoker {
                         User user = userService.getUserByToken(token);
                         if(gm.getGameByPlayer(token) != null){
                             gm.deleteGame(gm.getGameByPlayer(token).getGameToken(), true);
-                            userService.setUserOffline(user);
                         }
                     }
                 }

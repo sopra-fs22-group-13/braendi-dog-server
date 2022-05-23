@@ -26,6 +26,8 @@ import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import ch.uzh.ifi.hase.soprafs22.springContext.SpringContext;
 import ch.uzh.ifi.hase.soprafs22.voicechat.VoiceChatCreator;
 import ch.uzh.ifi.hase.soprafs22.websocket.constant.UpdateType;
+import ch.uzh.ifi.hase.soprafs22.websocket.controller.IUpdateController;
+import ch.uzh.ifi.hase.soprafs22.websocket.controller.UpdateController;
 import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
 
 
@@ -48,6 +50,8 @@ public class Game {
 
     private IUserService _userService = SpringContext.getBean(UserService.class);
     private IGameHistoryService _gameHistoryService = SpringContext.getBean(GameHistoryService.class);
+
+    protected IUpdateController updateController = SpringContext.getBean(UpdateController.class); //to delete the lobby
 
     public Game(ArrayList<User> users){
         setup(users);
@@ -390,9 +394,15 @@ public class Game {
         }
     }
 
+    //TODO @shitao: this is not the best way to do this.
+    public void cancelGame(){
+        processGameResults();
+        _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.GAME_CLOSED, ""));
+        VoiceChatCreator.getInstance().destroyRoomWithPlayers(_gameToken);
+    }
+
     private void endGame(Player winner, String cryForHelp) {
         processGameResults(winner);
-
         _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.WIN, String.format("{\"win\": \"%s\"}", winner.getColor())));
         VoiceChatCreator.getInstance().destroyRoomWithPlayers(_gameToken);
         _manager.deleteGame(_gameToken);
@@ -404,6 +414,22 @@ public class Game {
         gameResults.winner = _userManager.getUserFromPlayer(winner);
 
         _userService.addWins(_userManager.getUserFromPlayer(winner));
+        for (Player playerGoal:_players){
+            int numberOfMarbleInGoals=  _board.getNumberInBase(playerGoal.getColor());
+            User user = _userManager.getUserFromPlayer(playerGoal);
+            _userService.addNumberInGoal(user, numberOfMarbleInGoals);
+            gameResults.addPlayerResults(user, numberOfMarbleInGoals);
+        }
+
+        _gameHistoryService.savePlayedGame(gameResults);
+    }
+
+    //TODO: process the game results after game is left, with no winner
+    private void processGameResults(){
+        GameResults gameResults = new GameResults();
+        gameResults.startingTime = creationTime;
+        gameResults.winner = null;
+
         for (Player playerGoal:_players){
             int numberOfMarbleInGoals=  _board.getNumberInBase(playerGoal.getColor());
             User user = _userManager.getUserFromPlayer(playerGoal);
@@ -426,10 +452,5 @@ public class Game {
 
     public Player getPlayerByToken(String token){
         return _userManager.getPlayerFromUserToken(token);
-    }
-
-    // needs to be passed to gamemanager in order to delete the players from the game
-    public UserManager getUserManager(){
-        return _userManager;
     }
 }
