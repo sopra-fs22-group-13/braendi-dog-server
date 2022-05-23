@@ -13,6 +13,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameHistoryServiceTest {
@@ -59,6 +62,18 @@ class GameHistoryServiceTest {
         Mockito.verify(gameHistoryRepository, Mockito.times(1)).save(Mockito.any());
     }
 
+    @Test
+    public void getPlayedGames_Test() {
+        GameHistory gh1 = new GameHistory(); gh1.setStartDate(10L);
+        GameHistory gh2 = new GameHistory(); gh2.setStartDate(5L);
+        GameHistory gh3 = new GameHistory(); gh3.setStartDate(15L);
+        List<GameHistory> providedHistory = new ArrayList<>(List.of(gh1, gh2, gh3));
+
+        Mockito.when(gameHistoryRepository.findPlayedGames(Mockito.any())).thenReturn(providedHistory);
+
+        assertEquals(List.of(gh3, gh1, gh2), gameHistoryService.getPlayedGames(randomUser()));
+    }
+
     private User randomUser() {
         User newUser = new User();
 
@@ -67,9 +82,8 @@ class GameHistoryServiceTest {
         newUser.setToken(RandomString.make(16));
         newUser.setStatus(UserStatus.OFFLINE);
         newUser.setWins(0);
-        newUser.setGotGoal(0);
+        newUser.setGoals(0);
 
         return newUser;
     }
-
 }

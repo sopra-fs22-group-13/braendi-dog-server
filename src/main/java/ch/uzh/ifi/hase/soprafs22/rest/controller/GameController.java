@@ -107,14 +107,14 @@ public class GameController {
         }
     }
 
-    @GetMapping("/game/{gametoken}/moves")
+    @PostMapping("/game/{gametoken}/moves")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<PossibleMovesGetDTO> getPossibleMoves(HttpServletRequest request, @PathVariable String gametoken, @RequestBody PossibleMovesGetDTO possibleMovesGetDTO) {
+    public List<BoardPosition> getPossibleMoves(HttpServletRequest request, @PathVariable String gametoken, @RequestBody PossibleMovesGetDTO possibleMovesGetDTO) {
         User user = userService.checkIfLoggedIn(request);
 
         Game game = GameManager.getInstance().getGameByToken(gametoken);
-        if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
+        if (game==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A game with the provided token doesn't exist.");
 
         String auth = request.getHeader("Authorization");
         String playerToken = auth.substring(6);
@@ -129,8 +129,8 @@ public class GameController {
                 new Card(possibleMovesGetDTO.getCard()),
                 player.getColor()
                 );
-        List<PossibleMovesGetDTO> possibleMoveDTOs = (List<PossibleMovesGetDTO>) possibleMoves.stream().map(boardPosition -> new PossibleMovesGetDTO(boardPosition.getIndex(), boardPosition.isInGoal()));
+        //List<PossibleMovesGetDTO> possibleMoveDTOs = (List<PossibleMovesGetDTO>) possibleMoves.stream().map(boardPosition -> new PossibleMovesGetDTO(boardPosition.getIndex(), boardPosition.isInGoal()));
 
-        return possibleMoveDTOs;
+        return possibleMoves;
     }
 }

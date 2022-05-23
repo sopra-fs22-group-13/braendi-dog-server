@@ -47,7 +47,7 @@ public class User implements Serializable {
   private Integer wins;
 
   @Column(nullable = false)
-  private Integer gotInGoals;
+  private Integer goals;
 
 
   public Long getId() {
@@ -102,8 +102,8 @@ public class User implements Serializable {
 
   public void setWins(Integer wins) { this.wins = wins;}
 
-  public Integer getGotInGoals() { return gotInGoals; }
+  public Integer getGoals() { return goals; }
 
-  public void setGotGoal(Integer gotInGoal) {this.gotInGoals= gotInGoal;}
+  public void setGoals(Integer goals) {this.goals = goals;}
 
 }

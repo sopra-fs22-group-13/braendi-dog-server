@@ -109,9 +109,6 @@ public class Game {
         makeFirstMoveValid();
     }
 
-    public Game(){
-        // for test purpose
-    }
 
     private boolean checkValidTurns(Move move, Player playerWantToMove) {
         if (move.checkIfComplete()) {
@@ -308,19 +305,7 @@ public class Game {
         return pd;
     }
 
-    private boolean ifMoveIsPossible(Move move){
 
-        for (int i =0; i<4;i++){
-            boolean possibleTurn= false;
-            for (String card: _players.get(i).getFormattedCards()) {
-                //possibleTurn = _board.makePossibleMove(card,_players.get(i).getColor());
-                Card c = new Card(CARDVALUE.NINE, CARDTYPE.DEFAULT, CARDSUITE.CLUBS); //todo @shitao: card constructor with string
-                _board.isAnyMovePossible(c, _players.get(i).getColor());
-            }
-            _playersWithValidTurns.set(i,possibleTurn);
-        }
-        return false;
-    }
 
     public List<BoardPosition> getPossibleMoves(BoardPosition bp, Card card, COLOR color) {
         return _board.whatMovesPossible(bp, card, color);
@@ -352,11 +337,6 @@ public class Game {
         return _players.get(_indexWithCurrentTurn);
     }
 
-    public Boolean getPlayerValidTurn(int i){
-        boolean valid = _playersWithValidTurns.get(i);
-        return valid;
-    }
-
     private Boolean someoneValidTurn(){
 
         boolean valid = false;
@@ -379,14 +359,6 @@ public class Game {
 
     private void removeInvalidTurnCards()
     {
-/*        for (int i = 0; i < 4; i++) {
-            if(_playersWithValidTurns.get(i) == false){
-                Player player= _players.get(i);
-                player.removeAllCard();
-                _userManager.sendUpdateToAll(new UpdateDTO(UpdateType.CARD,""));
-            }
-        }*/
-
         if(_playersWithValidTurns.get(_indexWithCurrentTurn) == false)
         {
             Player player = _players.get(_indexWithCurrentTurn);

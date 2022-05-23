@@ -1538,7 +1538,7 @@ public class Board implements IBoard {
         switch (color){
             case BLUE:
                 for (MARBLE marble: _blueGoal){
-                    if (marble!=null){
+                    if (marble != MARBLE.NONE){
                         numberOfMarble++;
                     }
                 }
@@ -1546,21 +1546,21 @@ public class Board implements IBoard {
 
             case GREEN:
                 for (MARBLE marble: _greenGoal){
-                    if (marble!=null){
+                    if (marble != MARBLE.NONE){
                         numberOfMarble++;
                     }
                 }
                 return numberOfMarble;
             case RED:
                 for (MARBLE marble: _redGoal){
-                    if (marble!=null){
+                    if (marble != MARBLE.NONE){
                         numberOfMarble++;
                     }
                 }
                 return numberOfMarble;
             case YELLOW:
                 for (MARBLE marble: _yellowGoal){
-                    if (marble!=null){
+                    if (marble != MARBLE.NONE){
                         numberOfMarble++;
                     }
                 }
