@@ -87,9 +87,7 @@ public class LobbyController {
         return new LobbyGetDTO(lobbyID);
     }
 
-    /** TODO
-     * still needs tests
-     */
+
     @DeleteMapping("/lobby/{lobbyID}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
