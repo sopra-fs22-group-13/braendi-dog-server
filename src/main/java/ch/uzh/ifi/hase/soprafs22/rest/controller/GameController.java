@@ -22,8 +22,10 @@ import ch.uzh.ifi.hase.soprafs22.rest.data.dto.PossibleMovesGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,10 +43,18 @@ public class GameController {
     private final UserService userService;
     private GameManager gameManager;
 
+    @Autowired
+    private Environment environment;
+
     GameController(UserService userService) {this.userService = userService;}
 
     @EventListener(ApplicationReadyEvent.class)
-    public void start() { gameManager = GameManager.getInstance();
+    public void start() {
+        if(Arrays.stream(environment.getActiveProfiles()).noneMatch(
+                env -> (env.equalsIgnoreCase("test")) ))
+        {
+            gameManager = GameManager.getInstance();
+        }
     }
 
     @GetMapping("/game/{gametoken}/board")
@@ -53,8 +63,8 @@ public class GameController {
     public BoardData getGame( @PathVariable String gametoken, HttpServletRequest request) {
         User user = userService.checkIfLoggedIn(request);
 
-        Game game = GameManager.getInstance().getGameByToken(gametoken);
-        if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
+        Game game = gameManager.getGameByToken(gametoken);
+        if (game==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A game with the provided token doesn't exist.");
 
         String auth = request.getHeader("Authorization");
         String playerToken = auth.substring(6);
@@ -71,7 +81,7 @@ public class GameController {
     public PlayerData getPlayerHands(HttpServletRequest request, @PathVariable String gametoken) {
         User client = userService.checkIfLoggedIn(request);
         Game game = gameManager.getGameByToken(gametoken);
-        if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
+        if (game==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A game with the provided token doesn't exist.");
 
         return game.getPlayerStates(client.getToken());
     }
@@ -98,7 +108,7 @@ public class GameController {
         Move move = new Move(from, to, new Card(movePutDTO.getCard()), movePutDTO.getToken(), movePutDTO.getColor(), movePutDTO.getCardIsPartOfJoker());
 
         Game game = gameManager.getGameByToken(gametoken);
-        if (game==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A game with the provided token doesn't exist.");
+        if (game==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A game with the provided token doesn't exist.");
 
         try {
             game.playerMove(move);
@@ -132,5 +142,14 @@ public class GameController {
         //List<PossibleMovesGetDTO> possibleMoveDTOs = (List<PossibleMovesGetDTO>) possibleMoves.stream().map(boardPosition -> new PossibleMovesGetDTO(boardPosition.getIndex(), boardPosition.isInGoal()));
 
         return possibleMoves;
+    }
+
+
+    protected void insertGameManager(GameManager gameManager) {
+        if(Arrays.stream(environment.getActiveProfiles()).anyMatch(
+                env -> (env.equalsIgnoreCase("test")) ))
+        {
+            this.gameManager = gameManager;
+        }
     }
 }

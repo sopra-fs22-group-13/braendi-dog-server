@@ -18,16 +18,6 @@ public class MovePutDTO {
 
     private String token;
 
-    public MovePutDTO(ArrayList<Integer> fromPos, ArrayList<Integer> toPos, ArrayList<Boolean> fromPosInGoal, ArrayList<Boolean> toPosInGoal, String c, boolean cpoj, String token, COLOR color) {
-        this._fromPos = fromPos;
-        this._toPos = toPos;
-        this._fromPosInGoal = fromPosInGoal;
-        this._toPosInGoal = toPosInGoal;
-        this.card = c;
-        this.cardIsPartOfJoker = cpoj;
-        this.color = color;
-        this.token = token;
-    }
 
     public ArrayList<Integer> get_fromPos() {
         return _fromPos;
