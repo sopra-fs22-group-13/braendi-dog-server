@@ -383,9 +383,14 @@ public class Game {
     private void processGameResults(Player winner) {
         GameResults gameResults = new GameResults();
         gameResults.startingTime = creationTime;
-        gameResults.winner = _userManager.getUserFromPlayer(winner);
 
-        _userService.addWins(_userManager.getUserFromPlayer(winner));
+        if (winner != null)
+        {
+            gameResults.winner = _userManager.getUserFromPlayer(winner);
+            _userService.addWins(_userManager.getUserFromPlayer(winner));
+        }else{
+            gameResults.winner = null;
+        }
         for (Player playerGoal:_players){
             int numberOfMarbleInGoals=  _board.getNumberInBase(playerGoal.getColor());
             User user = _userManager.getUserFromPlayer(playerGoal);
@@ -398,18 +403,7 @@ public class Game {
 
     //TODO: process the game results after game is left, with no winner
     private void processGameResults(){
-        GameResults gameResults = new GameResults();
-        gameResults.startingTime = creationTime;
-        gameResults.winner = null;
-
-        for (Player playerGoal:_players){
-            int numberOfMarbleInGoals=  _board.getNumberInBase(playerGoal.getColor());
-            User user = _userManager.getUserFromPlayer(playerGoal);
-            _userService.addNumberInGoal(user, numberOfMarbleInGoals);
-            gameResults.addPlayerResults(user, numberOfMarbleInGoals);
-        }
-
-        _gameHistoryService.savePlayedGame(gameResults);
+       processGameResults(null);
     }
 
 
