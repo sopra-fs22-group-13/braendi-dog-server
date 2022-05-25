@@ -69,12 +69,4 @@ public class GameManager {
     synchronized public void deleteGame(String tokenToDelete){
         deleteGame(tokenToDelete, false);
     }
-
-    private void updatePlayers(Game game, UpdateType updateType, UserManager userManager) {
-        UpdateDTO updateDTO = new UpdateDTO(updateType, "");
-
-        for (Player player: game.getPlayers()){
-            updateController.sendUpdateToUser(userManager.getUserFromPlayer(player).getToken(), updateDTO);
-        }
-    }
 }
