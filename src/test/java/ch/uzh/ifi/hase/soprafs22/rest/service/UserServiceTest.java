@@ -9,12 +9,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 
 public class UserServiceTest {
 
@@ -71,6 +78,105 @@ public class UserServiceTest {
     assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
   }
 
+    @Test
+    public void loginUser_valid() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+        testUser.setStatus(UserStatus.OFFLINE);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findByPassword(Mockito.any())).thenReturn(testUser);
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+
+        // then -> attempt to log in, this should set the status to online and give us back the user
+        User u = userService.loginUser(testUser);
+        assertEquals(UserStatus.ONLINE, u.getStatus());
+        assertEquals(testUser.getUsername(), u.getUsername());
+    }
+
+    @Test
+    public void loginUser_wrong_pw() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+        testUser.setStatus(UserStatus.OFFLINE);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findByUsername(testUser.getUsername())).thenReturn(testUser);
+
+        User login_user = new User();
+        login_user.setUsername("testUsername");
+        login_user.setPassword("wrongPw");
+
+        // then -> attempt to log in, this throws an error
+        assertThrows(ResponseStatusException.class, () -> userService.loginUser(login_user));
+    }
+
+    @Test
+    public void loginUser_wrong_user() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+        testUser.setStatus(UserStatus.OFFLINE);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findByUsername(testUser.getUsername())).thenReturn(testUser);
+
+        User login_user = new User();
+        login_user.setUsername("someWrongUsername");
+        login_user.setPassword("testName");
+
+        // then -> attempt to log in, this throws an error
+        assertThrows(ResponseStatusException.class, () -> userService.loginUser(login_user));
+    }
+
+    @Test
+    public void getUserById_valid() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+        Optional<User> opt = Optional.of(testUser);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(opt);
+
+        User find_user = new User();
+        find_user.setId(1L); //ok, but any is ok
+
+        // then -> attempt to find
+        assertEquals(testUser, userService.getUserById(find_user.getId()));
+    }
+
+    @Test
+    public void getUserById_invalid() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+        Optional<User> opt = Optional.ofNullable(testUser);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findById(testUser.getId())).thenReturn(opt);
+
+        User find_user = new User();
+        find_user.setId(1000L); //wrong
+
+        // then -> attempt to find
+        assertThrows(ResponseStatusException.class, () -> userService.getUserById(find_user.getId()));
+    }
+
+    @Test
+    public void addWinsAndGoals() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+        Optional<User> opt = Optional.ofNullable(testUser);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findById(testUser.getId())).thenReturn(opt);
+
+        // then -> attempt to find
+        userService.addWins(testUser);
+        userService.addNumberInGoal(testUser, 2);
+
+        assertEquals(2, testUser.getGoals());
+        assertEquals(1, testUser.getWins());
+    }
+
   @Test
     public void leaderboard()
   {
@@ -91,5 +197,172 @@ public class UserServiceTest {
 
       assertEquals(u , userService.getLeaderboard());
   }
+
+    @Test
+    public void checkIfLoggedIn_valid() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findByToken(Mockito.any())).thenReturn(testUser);
+
+        // then -> attempt login
+
+        MockHttpServletRequest r = new MockHttpServletRequest();
+        r.addHeader("Authorization", "BASIC " + testUser.getToken());
+
+        assertDoesNotThrow(() -> userService.checkIfLoggedIn(r));
+    }
+
+    @Test
+    public void checkIfLoggedIn_bad_token() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findByToken(Mockito.any())).thenReturn(testUser);
+
+        // then -> attempt login
+
+        MockHttpServletRequest r = new MockHttpServletRequest();
+        r.addHeader("Authorization", "BASIC " + "wrongToken");
+
+        assertThrows(ResponseStatusException.class, () -> userService.checkIfLoggedIn(r));
+    }
+
+    @Test
+    public void checkIfLoggedIn_wrong_auth() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findByToken(Mockito.any())).thenReturn(testUser);
+
+        // then -> attempt login
+
+        MockHttpServletRequest r = new MockHttpServletRequest();
+        r.addHeader("Authorization", "LAME " + testUser.getToken());
+
+        assertThrows(ResponseStatusException.class, () -> userService.checkIfLoggedIn(r));
+    }
+
+    @Test
+    public void checkIfLoggedInUser_valid() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+        Optional<User> opt = Optional.ofNullable(testUser);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findByToken(Mockito.any())).thenReturn(testUser);
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(opt);
+
+        // then -> attempt login
+
+        MockHttpServletRequest r = new MockHttpServletRequest();
+        r.addHeader("Authorization", "BASIC " + testUser.getToken());
+
+        assertDoesNotThrow(() -> userService.CheckIfLoggedInAsUser(r, 1L));
+    }
+
+    @Test
+    public void checkIfLoggedInUser_bad_token() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+        Optional<User> opt = Optional.ofNullable(testUser);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findByToken(Mockito.any())).thenReturn(testUser);
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(opt);
+
+        // then -> attempt login
+
+        MockHttpServletRequest r = new MockHttpServletRequest();
+        r.addHeader("Authorization", "BASIC " + "wrongToken");
+
+        assertThrows(ResponseStatusException.class, () -> userService.CheckIfLoggedInAsUser(r, 1L));
+    }
+
+    @Test
+    public void checkIfLoggedInUser_wrong_auth() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findByToken(Mockito.any())).thenReturn(testUser);
+
+        // then -> attempt login
+
+        MockHttpServletRequest r = new MockHttpServletRequest();
+        r.addHeader("Authorization", "LAME " + testUser.getToken());
+
+        assertThrows(ResponseStatusException.class, () -> userService.CheckIfLoggedInAsUser(r, 1L));
+    }
+
+    @Test
+    public void updateOfflineOnline() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+        Optional<User> opt = Optional.ofNullable(testUser);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(opt);
+
+        // then -> update offline/online status
+
+        userService.setUserOffline(testUser);
+        assertEquals(UserStatus.OFFLINE,testUser.getStatus());
+        userService.setUserOnline(testUser);
+        assertEquals(UserStatus.ONLINE,testUser.getStatus());
+        userService.setUserOffline(testUser);
+        assertEquals(UserStatus.OFFLINE,testUser.getStatus());
+   }
+
+   @Test
+   public void updateUser_valid() {
+       // given -> a first user has already been created
+       userService.createUser(testUser);
+       Optional<User> opt = Optional.ofNullable(testUser);
+
+
+
+       // when -> setup additional mocks for UserRepository
+       Mockito.when(userRepository.findByUsername(testUser.getUsername())).thenReturn(testUser);
+       Mockito.when(userRepository.findById(Mockito.any())).thenReturn(opt);
+
+       // then -> update user
+       User new_user = new User();
+       new_user.setId(testUser.getId());
+       new_user.setUsername("NewUsername");
+       new_user.setDescription("Hello World");
+       new_user.setPassword("newPass");
+       new_user.setAvatar(2);
+
+       userService.updateUser(new_user);
+
+       assertEquals(0L, testUser.getId());
+       assertEquals(2, testUser.getAvatar());
+       assertEquals(new_user.getUsername(), testUser.getUsername());
+       assertEquals(new_user.getPassword(), testUser.getPassword());
+       assertEquals(new_user.getDescription(), testUser.getDescription());
+   }
+
+    @Test
+    public void updateUser_username_taken() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
+        Optional<User> opt = Optional.ofNullable(testUser);
+
+        // when -> setup additional mocks for UserRepository
+        Mockito.when(userRepository.findByUsername(testUser.getUsername())).thenReturn(testUser);
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(opt);
+
+        // then -> update user
+        User new_user = new User();
+        new_user.setId(testUser.getId());
+        new_user.setUsername(testUser.getUsername()); //this username is taken
+        new_user.setDescription("Hello World");
+
+        assertThrows(ResponseStatusException.class, () -> userService.updateUser(new_user));
+    }
 
 }
