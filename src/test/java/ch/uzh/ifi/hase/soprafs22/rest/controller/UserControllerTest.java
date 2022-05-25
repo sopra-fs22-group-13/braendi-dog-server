@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs22.rest.controller;
 
+import ch.uzh.ifi.hase.soprafs22.heartbeat.HeartBeatManager;
 import ch.uzh.ifi.hase.soprafs22.rest.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.HeartBeatDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.UserPutDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.GameHistory;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
@@ -10,6 +12,7 @@ import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,6 +29,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -301,6 +305,26 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(user.getId().intValue())))
                 .andExpect(jsonPath("$.username", is(user.getUsername())))
                 .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
+    }
+
+
+    /**
+     * the following tests verify the behaviour of
+     * POST /heartbeat
+     */
+
+    @Test
+    public void postHeartbeat_Test_Unauthorized() throws Exception {
+        //given
+        HeartBeatDTO heartBeatDTO = new HeartBeatDTO();
+
+        //when
+        MockHttpServletRequestBuilder postRequest = post("/heartbeat")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(heartBeatDTO));
+
+        //then
+        basicAuthorization_Test(postRequest);
     }
 
 

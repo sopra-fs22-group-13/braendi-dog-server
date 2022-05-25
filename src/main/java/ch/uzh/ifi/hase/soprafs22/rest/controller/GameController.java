@@ -117,13 +117,13 @@ public class GameController {
         }
     }
 
-    @GetMapping("/game/{gametoken}/moves")
+    @PostMapping("/game/{gametoken}/moves")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<BoardPosition> getPossibleMoves(HttpServletRequest request, @PathVariable String gametoken, @RequestBody PossibleMovesGetDTO possibleMovesGetDTO) {
         User user = userService.checkIfLoggedIn(request);
 
-        Game game = GameManager.getInstance().getGameByToken(gametoken);
+        Game game = gameManager.getGameByToken(gametoken);
         if (game==null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A game with the provided token doesn't exist.");
 
         String auth = request.getHeader("Authorization");

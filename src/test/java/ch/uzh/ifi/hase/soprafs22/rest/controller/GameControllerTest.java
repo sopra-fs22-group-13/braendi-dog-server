@@ -4,9 +4,11 @@ import ch.uzh.ifi.hase.soprafs22.game.GameManager;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.Game;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
+import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.PlayerData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.player.Player;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.MovePutDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.data.dto.PossibleMovesGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
@@ -311,6 +313,96 @@ public class GameControllerTest {
                 .andExpect(status().isNoContent());
 
         Mockito.verify(game, times(1)).playerMove(Mockito.any());
+    }
+
+
+    /**
+     * the following tests verify the behaviour of
+     * PUT /game/{gametoken}/moves
+     */
+
+    @Test
+    public void getPossibleMoves_Test_Unauthorized() throws Exception {
+        //given
+        PossibleMovesGetDTO possibleMovesGetDTO = new PossibleMovesGetDTO(1, false);
+
+        //when
+        MockHttpServletRequestBuilder postRequest = post("/game/testGametoken/moves")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(possibleMovesGetDTO));
+
+        // then
+        basicAuthorization_Test(postRequest);
+    }
+
+    @Test
+    public void getPossibleMoves_Test_GameNotFound() throws Exception {
+        //given
+        User client = new User();
+        PossibleMovesGetDTO possibleMovesGetDTO = new PossibleMovesGetDTO(1, false);
+
+        given(userService.checkIfLoggedIn(Mockito.any())).willReturn(client);
+        given(gameManager.getGameByToken("testGametoken")).willReturn(null);
+
+        //when
+        MockHttpServletRequestBuilder postRequest = post("/game/testGametoken/moves")
+                .header("Authorization", "testToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(possibleMovesGetDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getPossibleMoves_Test_NotInGame() throws Exception {
+        //given
+        User client = new User();
+        Game game = Mockito.mock(Game.class);
+        PossibleMovesGetDTO possibleMovesGetDTO = new PossibleMovesGetDTO(1, false);
+
+        given(userService.checkIfLoggedIn(Mockito.any())).willReturn(client);
+        given(gameManager.getGameByToken("testGametoken")).willReturn(game);
+        given(game.getPlayerByToken(Mockito.any())).willReturn(null);
+
+        //when
+        MockHttpServletRequestBuilder postRequest = post("/game/testGametoken/moves")
+                .header("Authorization", "testToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(possibleMovesGetDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void getPossibleMoves_Test_Valid() throws Exception {
+        //given
+        User client = new User();
+        Game game = Mockito.mock(Game.class);
+        Player player = Mockito.mock(Player.class);
+        PossibleMovesGetDTO possibleMovesGetDTO = new PossibleMovesGetDTO(1, false);
+        possibleMovesGetDTO.setCard("H4");
+        List<BoardPosition> boardPositions = new ArrayList<>();
+        boardPositions.add(new BoardPosition(2, true));
+
+        given(userService.checkIfLoggedIn(Mockito.any())).willReturn(client);
+        given(gameManager.getGameByToken("testGametoken")).willReturn(game);
+        given(game.getPlayerByToken(Mockito.any())).willReturn(player);
+        given(game.getPossibleMoves(Mockito.any(), Mockito.any(), Mockito.any())).willReturn(boardPositions);
+
+        //when
+        MockHttpServletRequestBuilder postRequest = post("/game/testGametoken/moves")
+                .header("Authorization", "testToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(possibleMovesGetDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].index", is(2)));
     }
 
 
