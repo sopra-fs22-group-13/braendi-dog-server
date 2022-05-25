@@ -62,40 +62,6 @@ public class Board implements IBoard {
             _blueGoal.add(MARBLE.NONE);
         while (_yellowGoal.size() < 4)
             _yellowGoal.add(MARBLE.NONE);
-
-        // initate board helper
-        helper = new boardHelper(
-                this._mainCircle,
-                this._redGoal,
-                this._greenGoal,
-                this._blueGoal,
-                this._yellowGoal,
-                this._redBase,
-                this._greenBase,
-                this._blueBase,
-                this._yellowBase,
-                this.REDBLOCKED,
-                this.GREENBLOCKED,
-                this.BLUEBLOCKED,
-                this.YELLOWBLOCKED
-        );
-    }
-
-    // updates the board after calling methods from board helper
-    private void updateBoard(){
-        this._mainCircle = helper.getMainCircle();
-        this._redGoal = helper.getRedGoal();
-        this._greenGoal = helper.getGreenGoal();
-        this._blueGoal = helper.getBlueGoal();
-        this._yellowGoal = helper.getYellowGoal();
-        this._redBase = helper.getRedBase();
-        this._greenBase = helper.getGreenBase();
-        this._blueBase = helper.getBlueBase();
-        this._yellowBase = helper.getYellowBase();
-        this.REDBLOCKED = helper.getREDBLOCKED();
-        this.GREENBLOCKED = helper.getGREENBLOCKED();
-        this.BLUEBLOCKED = helper.getBLUEBLOCKED();
-        this.YELLOWBLOCKED = helper.getYELLOWBLOCKED();
     }
 
     private boolean setMarbleAtPosition(int position, MARBLE marble) {

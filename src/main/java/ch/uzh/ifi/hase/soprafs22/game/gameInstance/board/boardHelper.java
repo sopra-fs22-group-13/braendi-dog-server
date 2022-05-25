@@ -20,7 +20,19 @@ public class boardHelper {
 
     }
 
-    public void makeMove(Move move) throws InvalidMoveException {
+    public void makeMove(Move move, ArrayList<MARBLE> _mainCircle, 
+                        boolean REDBLOCKED,
+                        boolean GREENBLOCKED,
+                        boolean BLUEBLOCKED,
+                        boolean YELLOWBLOCKED,
+                        ArrayList<MARBLE> _redGoal,
+                        ArrayList<MARBLE> _blueGoal,
+                        ArrayList<MARBLE> _greenGoal,
+                        ArrayList<MARBLE> _yellowGoal,
+                        int _redBase,
+                        int _greenBase,
+                        int _blueBase,
+                        int _yellowBase) throws InvalidMoveException {
         // expects the move to be valid
         if (move == null || !move.isWellFormed()) {
             throw new InvalidMoveException("BAD_STRUCTURE", "Bad move structure");
@@ -52,15 +64,19 @@ public class boardHelper {
             // do the move
             if (endsInGoal) {
                 movePositions(fromPos, toPos, move.get_color(), startsInGoal,
-                        move.get_card() != null ? move.get_card().isSeven() : false);
+                        move.get_card() != null ? move.get_card().isSeven() : false, _mainCircle, _redGoal, _greenGoal, _blueGoal, _yellowGoal, _redBase, _greenBase, _blueBase, _yellowBase);
             } else {
-                movePositions(fromPos, toPos, move.get_card() != null ? move.get_card().isSeven() : false);
+                movePositions(fromPos, toPos, move.get_card() != null ? move.get_card().isSeven() : false, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
             }
 
         }
     }
 
-    private void movePositions(int pos1, int pos2, boolean removeInbetweeners)
+    private void movePositions(int pos1, int pos2, boolean removeInbetweeners, ArrayList<MARBLE> _mainCircle,
+            int _redBase,
+            int _greenBase,
+            int _blueBase,
+            int _yellowBase)
             throws InvalidMoveException, IndexOutOfBoundsException {
         if (pos1 < 0 || pos1 >= 64 || pos2 < 0 || pos2 >= 64)
             throw new IndexOutOfBoundsException("the positions have to be in range 0-63 (inclusive)");
@@ -72,23 +88,23 @@ public class boardHelper {
             throw new NoMarbleException();
         if (m2 != MARBLE.NONE) {
             // reset the problem marble
-            resetMarble(pos2);
+            resetMarble(pos2, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
         }
 
         // all good, make the move
         if (removeInbetweeners) {
-            resetInbetweeners(pos1, pos2);
+            resetInbetweeners(pos1, pos2, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
         }
 
-        setMarbleAtPosition(pos2, m1);
-        setMarbleAtPosition(pos1, MARBLE.NONE);
+        setMarbleAtPosition(pos2, m1, _mainCircle);
+        setMarbleAtPosition(pos1, MARBLE.NONE, _mainCircle);
     }
 
-    private void resetMarble(int pos, ArrayList<MARBLE> _mainCircle, 
-                    int _redBase,
-                    int _blueBase,
-                    int _greenBase,
-                    int _yellowBase) throws NoMarbleException, IndexOutOfBoundsException {
+    private void resetMarble(int pos, ArrayList<MARBLE> _mainCircle,
+            int _redBase,
+            int _blueBase,
+            int _greenBase,
+            int _yellowBase) throws NoMarbleException, IndexOutOfBoundsException {
         if (pos < 0 || pos >= 64)
             throw new IndexOutOfBoundsException("the position has to be in range 0-63 (inclusive)");
 
@@ -119,7 +135,11 @@ public class boardHelper {
             ArrayList<MARBLE> _redGoal,
             ArrayList<MARBLE> _blueGoal,
             ArrayList<MARBLE> _yellowGoal,
-            ArrayList<MARBLE> _greenGoal)
+            ArrayList<MARBLE> _greenGoal,
+            int _redBase,
+            int _blueBase,
+            int _greenBase,
+            int _yellowBase)
             throws InvalidMoveException, IndexOutOfBoundsException {
         MARBLE m1;
         MARBLE m2;
@@ -168,13 +188,13 @@ public class boardHelper {
             throw new NoMarbleException();
         if (m2 != MARBLE.NONE) {
             // reset the problem marble
-            resetMarble(pos2);
+            resetMarble(pos2, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
         }
 
         // all good, make the move
 
         if (removeInbetweeners && !startInGoal) {
-            resetInbetweeners(pos1, colorintersect, _mainCircle);
+            resetInbetweeners(pos1, colorintersect, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
         }
 
         setMarbleAtPosition(pos2, m1, goalColor, _redGoal, _blueGoal, _yellowGoal, _greenGoal);
@@ -245,15 +265,20 @@ public class boardHelper {
     /**
      * resets any inbetweeners (exclusive, inclusive)
      */
-    private void resetInbetweeners(int pos1, int pos2, ArrayList<MARBLE> _mainCircle) throws NoMarbleException {
+    private void resetInbetweeners(int pos1, int pos2, ArrayList<MARBLE> _mainCircle,
+            int _redBase,
+            int _greenBase,
+            int _blueBase,
+            int _yellowBase) throws NoMarbleException {
         ArrayList<Integer> relevantInbetweeners = getInbetweeners(pos1, pos2, _mainCircle);
 
         for (Integer inb : relevantInbetweeners) {
-            resetMarble(inb);
+            resetMarble(inb, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
         }
     }
 
-    private ArrayList<Integer> getInbetweenersBackwards(int pos1, int pos2, ArrayList<MARBLE> _mainCircle) throws IndexOutOfBoundsException {
+    private ArrayList<Integer> getInbetweenersBackwards(int pos1, int pos2, ArrayList<MARBLE> _mainCircle)
+            throws IndexOutOfBoundsException {
         int newPos1 = pos2;
         int newPos2 = pos1;
 
@@ -475,7 +500,8 @@ public class boardHelper {
         return moveDist;
     }
 
-    private ArrayList<COLOR> getMarbleColor(Move move, ArrayList<Integer> startPos, ArrayList<MARBLE> _mainCircle) throws NoMarbleException {
+    private ArrayList<COLOR> getMarbleColor(Move move, ArrayList<Integer> startPos, ArrayList<MARBLE> _mainCircle)
+            throws NoMarbleException {
         ArrayList<COLOR> marbleColor = new ArrayList<>();
         try {
             for (int i = 0; i < startPos.size(); i++) {
