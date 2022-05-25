@@ -111,15 +111,21 @@ public class UserService implements IUserService {
     }
 
     public void addWins(User user) {
-        User userWon = userRepository.findByUsername(user.getUsername());
-        Integer wins = userWon.getWins();
-        userWon.setWins(wins + 1);
+        Optional<User> userWon = userRepository.findById(user.getId());
+        if(userWon.isPresent())
+        {
+            Integer wins = userWon.get().getWins();
+            userWon.get().setWins(wins + 1);
+        }
     }
 
     public void addNumberInGoal(User user, int marbleInGoal) {
-        User userToAddGoals = userRepository.findByUsername(user.getUsername());
-        Integer goals = userToAddGoals.getGoals();
-        userToAddGoals.setGoals(goals + marbleInGoal);
+        Optional<User> userToAddGoals = userRepository.findById(user.getId());
+        if(userToAddGoals.isPresent())
+        {
+            Integer goals = userToAddGoals.get().getGoals();
+            userToAddGoals.get().setGoals(goals + marbleInGoal);
+        }
     }
 
     public List<User> getLeaderboard(){
@@ -156,7 +162,7 @@ public class UserService implements IUserService {
                 return us;
             }
             else {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, us == null ? "bad token" : "something went wrong");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "bad token");
             }
         }
         else {
