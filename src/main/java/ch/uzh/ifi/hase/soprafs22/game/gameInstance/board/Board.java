@@ -2,13 +2,10 @@ package ch.uzh.ifi.hase.soprafs22.game.gameInstance.board;
 
 import ch.uzh.ifi.hase.soprafs22.game.constants.*;
 import ch.uzh.ifi.hase.soprafs22.game.exceptions.InvalidMoveException;
-import ch.uzh.ifi.hase.soprafs22.game.exceptions.MoveBlockedByMarbleException;
-import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.cards.Card;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardData;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.BoardPosition;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
-import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,25 +15,10 @@ import java.util.List;
 public class Board implements IBoard {
     private final Logger log = LoggerFactory.getLogger(Board.class);
 
-    private boardHelper helper = new boardHelper();
-    private boardState bState = new boardState();
+    private BoardHelper _helper = new BoardHelper();
+    private BoardState _bState = new BoardState();
 
     private ArrayList<MARBLE> _mainCircle = new ArrayList<>();
-
-    private ArrayList<MARBLE> _redGoal = new ArrayList<>();
-    private ArrayList<MARBLE> _greenGoal = new ArrayList<>();
-    private ArrayList<MARBLE> _blueGoal = new ArrayList<>();
-    private ArrayList<MARBLE> _yellowGoal = new ArrayList<>();
-
-    private int _redBase = 4;
-    private int _greenBase = 4;
-    private int _blueBase = 4;
-    private int _yellowBase = 4;
-
-    private boolean REDBLOCKED = false;
-    private boolean GREENBLOCKED = false;
-    private boolean BLUEBLOCKED = false;
-    private boolean YELLOWBLOCKED = false;
 
     private final int REDINTERSECT = 0;
     private final int BLUEINTERSECT = 48;
@@ -45,24 +27,24 @@ public class Board implements IBoard {
 
     public Board() {
         // set all marbles to the start pos.
-        _redBase = 4;
-        _greenBase = 4;
-        _blueBase = 4;
-        _yellowBase = 4;
+        _bState._redBase = 4;
+        _bState._greenBase = 4;
+        _bState._blueBase = 4;
+        _bState._yellowBase = 4;
 
         // create the board list
         while (_mainCircle.size() < 64)
             _mainCircle.add(MARBLE.NONE);
 
         // create the goal lists
-        while (_redGoal.size() < 4)
-            _redGoal.add(MARBLE.NONE);
-        while (_greenGoal.size() < 4)
-            _greenGoal.add(MARBLE.NONE);
-        while (_blueGoal.size() < 4)
-            _blueGoal.add(MARBLE.NONE);
-        while (_yellowGoal.size() < 4)
-            _yellowGoal.add(MARBLE.NONE);
+        while (_bState._redGoal.size() < 4)
+            _bState._redGoal.add(MARBLE.NONE);
+        while (_bState._greenGoal.size() < 4)
+            _bState._greenGoal.add(MARBLE.NONE);
+        while (_bState._blueGoal.size() < 4)
+            _bState._blueGoal.add(MARBLE.NONE);
+        while (_bState._yellowGoal.size() < 4)
+            _bState._yellowGoal.add(MARBLE.NONE);
     }
 
     /**
@@ -78,10 +60,8 @@ public class Board implements IBoard {
 
         marble1 = _mainCircle.get(pos1);
         marble2 = _mainCircle.get(pos2);
-        updateToBoardState();
-        helper.setMarbleAtPosition(pos1, marble2, _mainCircle);
-        helper.setMarbleAtPosition(pos2, marble1, _mainCircle);
-        updateFromBoardState();
+        _helper.setMarbleAtPosition(pos1, marble2, _mainCircle);
+        _helper.setMarbleAtPosition(pos2, marble1, _mainCircle);
     }
 
     private boolean isEmptyAt(int position) {
@@ -97,24 +77,24 @@ public class Board implements IBoard {
         }
 
         ArrayList<String> redGoal = new ArrayList<>();
-        for (MARBLE m : _redGoal) {
+        for (MARBLE m : _bState._redGoal) {
             redGoal.add(m.toString());
         }
         ArrayList<String> greenGoal = new ArrayList<>();
-        for (MARBLE m : _greenGoal) {
+        for (MARBLE m : _bState._greenGoal) {
             greenGoal.add(m.toString());
         }
         ArrayList<String> blueGoal = new ArrayList<>();
-        for (MARBLE m : _blueGoal) {
+        for (MARBLE m : _bState._blueGoal) {
             blueGoal.add(m.toString());
         }
         ArrayList<String> yellowGoal = new ArrayList<>();
-        for (MARBLE m : _yellowGoal) {
+        for (MARBLE m : _bState._yellowGoal) {
             yellowGoal.add(m.toString());
         }
 
-        BoardData boardData = new BoardData(board, redGoal, greenGoal, blueGoal, yellowGoal, _redBase, _greenBase,
-                _blueBase, _yellowBase);
+        BoardData boardData = new BoardData(board, redGoal, greenGoal, blueGoal, yellowGoal, _bState._redBase, _bState._greenBase,
+                _bState._blueBase, _bState._yellowBase);
         return boardData;
     }
 
@@ -129,40 +109,8 @@ public class Board implements IBoard {
      */
     public void makeMove(Move move) throws InvalidMoveException {
         // expects the move to be valid
-        updateToBoardState();
-        helper.makeMove(move, _mainCircle, bState);
-        updateFromBoardState();
-        log.info(String.format("CARD: %s: RED: %b, YELLOW %b, GREEN %b, BLUE %b", move.get_card() != null ? move.get_card().getFormatted() : "NOT SPECIFIED", REDBLOCKED, YELLOWBLOCKED, GREENBLOCKED, BLUEBLOCKED));
-    }
-
-    private void updateFromBoardState(){
-        _redGoal = bState._redGoal;
-        _greenGoal = bState._greenGoal;
-        _blueGoal = bState._blueGoal;
-        _yellowGoal = bState._yellowGoal;
-        _redBase = bState._redBase;
-        _greenBase = bState._greenBase;
-        _blueBase = bState._blueBase;
-        _yellowBase = bState._yellowBase;
-        REDBLOCKED = bState.REDBLOCKED;
-        GREENBLOCKED = bState.GREENBLOCKED;
-        BLUEBLOCKED = bState.BLUEBLOCKED;
-        YELLOWBLOCKED = bState.YELLOWBLOCKED;
-    }
-
-    private void updateToBoardState(){
-        bState._redGoal = _redGoal;
-        bState._greenGoal = _greenGoal;
-        bState._blueGoal = _blueGoal;
-        bState._yellowGoal = _yellowGoal;
-        bState._redBase = _redBase;
-        bState._greenBase = _greenBase;
-        bState._blueBase = _blueBase;
-        bState._yellowBase = _yellowBase;
-        bState.REDBLOCKED = REDBLOCKED;
-        bState.GREENBLOCKED = GREENBLOCKED;
-        bState.BLUEBLOCKED = BLUEBLOCKED;
-        bState.YELLOWBLOCKED = YELLOWBLOCKED;
+        _helper.makeMove(move, _mainCircle, _bState);
+        log.info(String.format("CARD: %s: RED: %b, YELLOW %b, GREEN %b, BLUE %b", move.get_card() != null ? move.get_card().getFormatted() : "NOT SPECIFIED", _bState.REDBLOCKED, _bState.YELLOWBLOCKED, _bState.GREENBLOCKED, _bState.BLUEBLOCKED));
     }
 
     /**
@@ -177,82 +125,82 @@ public class Board implements IBoard {
     public void makeStartingMove(COLOR color) throws InvalidMoveException {
         switch (color) {
             case RED:
-                if (_redBase > 0) {
+                if (_bState._redBase > 0) {
                     if (!isEmptyAt(REDINTERSECT))
-                        helper.resetMarble(REDINTERSECT, _mainCircle, bState);
+                        _helper.resetMarble(REDINTERSECT, _mainCircle, _bState);
 
-                    _redBase = _redBase - 1;
-                    helper.setMarbleAtPosition(REDINTERSECT, MARBLE.RED, _mainCircle);
-                    REDBLOCKED = true;
+                    _bState._redBase = _bState._redBase - 1;
+                    _helper.setMarbleAtPosition(REDINTERSECT, MARBLE.RED, _mainCircle);
+                    _bState.REDBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
                 break;
             case YELLOW:
-                if (_yellowBase > 0) {
+                if (_bState._yellowBase > 0) {
                     if (!isEmptyAt(YELLOWINTERSECT))
-                        helper.resetMarble(YELLOWINTERSECT, _mainCircle, bState);
+                        _helper.resetMarble(YELLOWINTERSECT, _mainCircle, _bState);
 
-                    _yellowBase = _yellowBase - 1;
-                    helper.setMarbleAtPosition(YELLOWINTERSECT, MARBLE.YELLOW, _mainCircle);
-                    YELLOWBLOCKED = true;
+                    _bState._yellowBase = _bState._yellowBase - 1;
+                    _helper.setMarbleAtPosition(YELLOWINTERSECT, MARBLE.YELLOW, _mainCircle);
+                    _bState.YELLOWBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
                 break;
             case GREEN:
-                if (_greenBase > 0) {
+                if (_bState._greenBase > 0) {
                     if (!isEmptyAt(GREENINTERSECT))
-                        helper.resetMarble(GREENINTERSECT, _mainCircle, bState);
+                        _helper.resetMarble(GREENINTERSECT, _mainCircle, _bState);
 
-                    _greenBase = _greenBase - 1;
-                    helper.setMarbleAtPosition(GREENINTERSECT, MARBLE.GREEN, _mainCircle);
-                    GREENBLOCKED = true;
+                    _bState._greenBase = _bState._greenBase - 1;
+                    _helper.setMarbleAtPosition(GREENINTERSECT, MARBLE.GREEN, _mainCircle);
+                    _bState.GREENBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
                 break;
             case BLUE:
-                if (_blueBase > 0) {
+                if (_bState._blueBase > 0) {
                     if (!isEmptyAt(BLUEINTERSECT))
-                        helper.resetMarble(BLUEINTERSECT, _mainCircle, bState);
+                        _helper.resetMarble(BLUEINTERSECT, _mainCircle, _bState);
 
-                    _blueBase = _blueBase - 1;
-                    helper.setMarbleAtPosition(BLUEINTERSECT, MARBLE.BLUE, _mainCircle);
-                    BLUEBLOCKED = true;
+                    _bState._blueBase = _bState._blueBase - 1;
+                    _helper.setMarbleAtPosition(BLUEINTERSECT, MARBLE.BLUE, _mainCircle);
+                    _bState.BLUEBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
                 break;
         }
-        log.info(String.format("CARD: START: RED: %b, YELLOW %b, GREEN %b, BLUE %b", REDBLOCKED, YELLOWBLOCKED, GREENBLOCKED, BLUEBLOCKED));
+        log.info(String.format("CARD: START: RED: %b, YELLOW %b, GREEN %b, BLUE %b", _bState.REDBLOCKED, _bState.YELLOWBLOCKED, _bState.GREENBLOCKED, _bState.BLUEBLOCKED));
     }
 
     public boolean checkWinningCondition(COLOR color) {
         switch (color) {
             case RED:
-                for (MARBLE m : _redGoal) {
+                for (MARBLE m : _bState._redGoal) {
                     if (m == MARBLE.NONE) {
                         return false;
                     }
                 }
                 break;
             case BLUE:
-                for (MARBLE m : _blueGoal) {
+                for (MARBLE m : _bState._blueGoal) {
                     if (m == MARBLE.NONE) {
                         return false;
                     }
                 }
                 break;
             case GREEN:
-                for (MARBLE m : _greenGoal) {
+                for (MARBLE m : _bState._greenGoal) {
                     if (m == MARBLE.NONE) {
                         return false;
                     }
                 }
                 break;
             case YELLOW:
-                for (MARBLE m : _yellowGoal) {
+                for (MARBLE m : _bState._yellowGoal) {
                     if (m == MARBLE.NONE) {
                         return false;
                     }
@@ -274,32 +222,32 @@ public class Board implements IBoard {
     public void makeSwitch(int start, int end) throws InvalidMoveException {
         switch(start){
             case REDINTERSECT:
-                REDBLOCKED = false;
+                _bState.REDBLOCKED = false;
                 break;
             case YELLOWINTERSECT:
-                YELLOWBLOCKED = false;
+                _bState.YELLOWBLOCKED = false;
                 break;
             case GREENINTERSECT:
-                GREENBLOCKED = false;
+                _bState.GREENBLOCKED = false;
                 break;
             case BLUEINTERSECT:
-                BLUEBLOCKED = false;
+                _bState.BLUEBLOCKED = false;
                 break;
             default:
                 break;
         }
         switch(end){
             case REDINTERSECT:
-                REDBLOCKED = false;
+                _bState.REDBLOCKED = false;
                 break;
             case YELLOWINTERSECT:
-                YELLOWBLOCKED = false;
+                _bState.YELLOWBLOCKED = false;
                 break;
             case GREENINTERSECT:
-                GREENBLOCKED = false;
+                _bState.GREENBLOCKED = false;
                 break;
             case BLUEINTERSECT:
-                BLUEBLOCKED = false;
+                _bState.BLUEBLOCKED = false;
                 break;
             default:
                 break;
@@ -309,7 +257,7 @@ public class Board implements IBoard {
         } catch (IndexOutOfBoundsException e) {
             throw new InvalidMoveException("OUT_OF_BOUNDS", "one of the positions was out of bounds (0-63)");
         }
-        log.info(String.format("CARD: SWITCH: RED: %b, YELLOW %b, GREEN %b, BLUE %b", REDBLOCKED, YELLOWBLOCKED, GREENBLOCKED, BLUEBLOCKED));
+        log.info(String.format("CARD: SWITCH: RED: %b, YELLOW %b, GREEN %b, BLUE %b", _bState.REDBLOCKED, _bState.YELLOWBLOCKED, _bState.GREENBLOCKED, _bState.BLUEBLOCKED));
     }
 
     /**
@@ -935,19 +883,19 @@ public class Board implements IBoard {
         switch (col) {
             case YELLOW:
                 searchedMarbleCol = MARBLE.YELLOW;
-                colGoal = new ArrayList<>(_yellowGoal);
+                colGoal = new ArrayList<>(_bState._yellowGoal);
                 break;
             case GREEN:
                 searchedMarbleCol = MARBLE.GREEN;
-                colGoal = new ArrayList<>(_greenGoal);
+                colGoal = new ArrayList<>(_bState._greenGoal);
                 break;
             case RED:
                 searchedMarbleCol = MARBLE.RED;
-                colGoal = new ArrayList<>(_redGoal);
+                colGoal = new ArrayList<>(_bState._redGoal);
                 break;
             case BLUE:
                 searchedMarbleCol = MARBLE.BLUE;
-                colGoal = new ArrayList<>(_blueGoal);
+                colGoal = new ArrayList<>(_bState._blueGoal);
                 break;
         }
 
@@ -1102,7 +1050,7 @@ public class Board implements IBoard {
         }
 
         // only forwards in goal!
-        int distToGoalStart = helper.getDistanceInBetween(start, intersect);
+        int distToGoalStart = _helper.getDistanceInBetween(start, intersect);
         int restDistance = distance - distToGoalStart;
 
         // cannot reach a goal
@@ -1114,21 +1062,10 @@ public class Board implements IBoard {
     }
 
 
-    public boardValidation createMoveValidation(){
-        return new boardValidation(
+    public BoardValidation createMoveValidation(){
+        return new BoardValidation(
             copyList(_mainCircle),
-            copyList(_redGoal),
-            copyList(_greenGoal),
-            copyList(_blueGoal),
-            copyList(_yellowGoal),
-            this._redBase,
-            this._greenBase,
-            this._blueBase,
-            this._yellowBase,
-            this.REDBLOCKED,
-            this.GREENBLOCKED,
-            this.BLUEBLOCKED,
-            this.YELLOWBLOCKED
+            _bState
         );
     }
 
@@ -1159,7 +1096,7 @@ public class Board implements IBoard {
         int numberOfMarble = 0;
         switch (color){
             case BLUE:
-                for (MARBLE marble: _blueGoal){
+                for (MARBLE marble: _bState._blueGoal){
                     if (marble != MARBLE.NONE){
                         numberOfMarble++;
                     }
@@ -1167,21 +1104,21 @@ public class Board implements IBoard {
                 return numberOfMarble;
 
             case GREEN:
-                for (MARBLE marble: _greenGoal){
+                for (MARBLE marble: _bState._greenGoal){
                     if (marble != MARBLE.NONE){
                         numberOfMarble++;
                     }
                 }
                 return numberOfMarble;
             case RED:
-                for (MARBLE marble: _redGoal){
+                for (MARBLE marble: _bState._redGoal){
                     if (marble != MARBLE.NONE){
                         numberOfMarble++;
                     }
                 }
                 return numberOfMarble;
             case YELLOW:
-                for (MARBLE marble: _yellowGoal){
+                for (MARBLE marble: _bState._yellowGoal){
                     if (marble != MARBLE.NONE){
                         numberOfMarble++;
                     }
@@ -1195,7 +1132,7 @@ public class Board implements IBoard {
 
     @Override
     public ValidMove isValidMove(Move move){
-        boardValidation validator = createMoveValidation();
+        BoardValidation validator = createMoveValidation();
         return validator.isValidMove(move);
     }
 }

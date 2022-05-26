@@ -9,7 +9,7 @@ import ch.uzh.ifi.hase.soprafs22.game.exceptions.NoMarbleException;
 import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 
 //contains the board helper functions
-public class boardHelper {
+public class BoardHelper {
 
     
 
@@ -19,7 +19,7 @@ public class boardHelper {
     private final int YELLOWINTERSECT = 16;
 
     public void makeMove(Move move, ArrayList<MARBLE> _mainCircle, 
-                        boardState bState) throws InvalidMoveException {
+                        BoardState bState) throws InvalidMoveException {
         // expects the move to be valid
         if (move == null || !move.isWellFormed()) {
             throw new InvalidMoveException("BAD_STRUCTURE", "Bad move structure");
@@ -60,7 +60,7 @@ public class boardHelper {
     }
 
     public void movePositions(int pos1, int pos2, boolean removeInbetweeners, ArrayList<MARBLE> _mainCircle,
-            boardState bState)
+            BoardState bState)
             throws InvalidMoveException, IndexOutOfBoundsException {
         if (pos1 < 0 || pos1 >= 64 || pos2 < 0 || pos2 >= 64)
             throw new IndexOutOfBoundsException("the positions have to be in range 0-63 (inclusive)");
@@ -85,7 +85,7 @@ public class boardHelper {
     }
 
     public void resetMarble(int pos, ArrayList<MARBLE> _mainCircle,
-            boardState bState) throws NoMarbleException, IndexOutOfBoundsException {
+            BoardState bState) throws NoMarbleException, IndexOutOfBoundsException {
         if (pos < 0 || pos >= 64)
             throw new IndexOutOfBoundsException("the position has to be in range 0-63 (inclusive)");
 
@@ -113,7 +113,7 @@ public class boardHelper {
 
     public void movePositions(int pos1, int pos2, COLOR goalColor, boolean startInGoal, boolean removeInbetweeners,
             ArrayList<MARBLE> _mainCircle,
-            boardState bState)
+            BoardState bState)
             throws InvalidMoveException, IndexOutOfBoundsException {
         MARBLE m1;
         MARBLE m2;
@@ -186,7 +186,7 @@ public class boardHelper {
     }
 
     public boolean setMarbleAtPosition(int position, MARBLE marble, COLOR goalColor,
-            boardState bState) {
+            BoardState bState) {
         switch (goalColor) {
             case RED:
                 if (marble != MARBLE.RED && marble != MARBLE.NONE)
@@ -237,7 +237,7 @@ public class boardHelper {
      * resets any inbetweeners (exclusive, inclusive)
      */
     public void resetInbetweeners(int pos1, int pos2, ArrayList<MARBLE> _mainCircle,
-            boardState bState) throws NoMarbleException {
+            BoardState bState) throws NoMarbleException {
         ArrayList<Integer> relevantInbetweeners = getInbetweeners(pos1, pos2, _mainCircle);
 
         for (Integer inb : relevantInbetweeners) {
@@ -266,7 +266,7 @@ public class boardHelper {
     }
 
     public boolean blockedIntersect(Move move, int startPos, int endPos, boolean forward, ArrayList<MARBLE> _mainCircle,
-            boardState bState) {
+            BoardState bState) {
         if (forward) {
             ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos, _mainCircle);
             ArrayList<Integer> blockIntersect = new ArrayList<>();
