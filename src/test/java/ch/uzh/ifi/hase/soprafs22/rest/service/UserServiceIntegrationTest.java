@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs22.rest.service;
 import ch.uzh.ifi.hase.soprafs22.rest.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,12 @@ public class UserServiceIntegrationTest {
     userRepository.deleteAll();
   }
 
+  @AfterEach
+  public void teardown()
+  {
+      userRepository.deleteAll();
+  }
+
   @Test
   public void createUser_validInputs_success() {
     // given
@@ -50,7 +57,7 @@ public class UserServiceIntegrationTest {
     assertEquals(testUser.getPassword(), createdUser.getPassword());
     assertEquals(testUser.getUsername(), createdUser.getUsername());
     assertNotNull(createdUser.getToken());
-    assertEquals(UserStatus.ONLINE, createdUser.getStatus());
+    assertEquals(UserStatus.OFFLINE, createdUser.getStatus()); //check the implementation on why this should still be "offline"
   }
 
   @Test

@@ -25,6 +25,7 @@ import ch.uzh.ifi.hase.soprafs22.websocket.dto.UpdateDTO;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -477,6 +478,7 @@ class GameTest {
         }
         String _token=users.get(indexOfCurrentPlayer).getToken() ;
 
+        playerWithCurrentTurn.removeAllCard();
         playerWithCurrentTurn.addCard(new Card(CARDVALUE.JOKER,CARDTYPE.JOKER,null));
 
 

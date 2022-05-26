@@ -53,7 +53,7 @@ public class UserService implements IUserService {
         newUser.setId(i);
         newUser.setWins(0);
         newUser.setGoals(0);
-        newUser.setStatus(UserStatus.ONLINE);
+        newUser.setStatus(UserStatus.OFFLINE); //this looks counterproductive, but we only set you to online if we receive a heartbeat
         newUser.setDescription("Hello there i'm playing dog");
 
         checkIfUserExists(newUser);
@@ -75,7 +75,7 @@ public class UserService implements IUserService {
 
         User userAlreadyRegister = userRepository.findByUsername(user.getUsername());
         log.debug("Check Information for User: {}", user);
-        userAlreadyRegister.setStatus(UserStatus.ONLINE);
+        userAlreadyRegister.setStatus(UserStatus.OFFLINE); //this looks counterproductive, but we only set you to online if we receive a heartbeat
         return userAlreadyRegister;
     }
 
