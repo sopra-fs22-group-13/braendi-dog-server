@@ -8,11 +8,13 @@ import java.util.List;
 public class LobbyData {
     private final ArrayList<Long> userIDs = new ArrayList<>();
     private final ArrayList<String> usernames = new ArrayList<>();
+    private final ArrayList<Integer> avatars = new ArrayList<>();
 
     public LobbyData(List<User> lobby) {
         for (User user: lobby) {
             userIDs.add(user.getId());
             usernames.add(user.getUsername());
+            avatars.add(user.getAvatar());
         }
     }
 
@@ -22,5 +24,8 @@ public class LobbyData {
 
     public ArrayList<String> getUsernames() {
         return usernames;
+    }
+    public ArrayList<Integer> getAvatars() {
+        return avatars;
     }
 }

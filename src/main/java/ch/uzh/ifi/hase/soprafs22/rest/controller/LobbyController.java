@@ -55,7 +55,7 @@ public class LobbyController {
         if (!inLobby) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not in this lobby.");
 
         LobbyData lobbyData = new LobbyData(lobby.getPlayers());
-        if (lobbyData.getUserIDs().size() != lobbyData.getUsernames().size()) {
+        if (lobbyData.getUserIDs().size() != lobbyData.getUsernames().size() && lobbyData.getUsernames().size() != lobbyData.getAvatars().size()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong while fetching the lobby data.");
         }
 
