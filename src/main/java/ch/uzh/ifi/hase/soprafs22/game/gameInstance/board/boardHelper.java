@@ -478,4 +478,18 @@ public class boardHelper {
         return marbleColor;
     }
 
+    public COLOR getMarbleColor(Move move, int startPos, ArrayList<MARBLE> _mainCircle) throws NoMarbleException {
+        COLOR marbleColor;
+        try {
+            if (startPos != -1 && !move.isGoalMove()) {
+                marbleColor = getColorFromPosition(startPos, _mainCircle);
+            } else {
+                marbleColor = move.get_color();
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new NoMarbleException();
+        }
+        return marbleColor;
+    }
 }

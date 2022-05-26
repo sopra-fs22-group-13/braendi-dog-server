@@ -65,172 +65,6 @@ public class Board implements IBoard {
             _yellowGoal.add(MARBLE.NONE);
     }
 
-    private boolean setMarbleAtPosition(int position, MARBLE marble) {
-        _mainCircle.set(position, marble);
-        return true;
-    }
-
-    private boolean setMarbleAtPosition(int position, MARBLE marble, COLOR goalColor) {
-        switch (goalColor) {
-            case RED:
-                if (marble != MARBLE.RED && marble != MARBLE.NONE)
-                    return false;
-                _redGoal.set(position, marble);
-                bState._redGoal = _redGoal;
-                break;
-            case BLUE:
-                if (marble != MARBLE.BLUE && marble != MARBLE.NONE)
-                    return false;
-                _blueGoal.set(position, marble);
-                break;
-            case YELLOW:
-                if (marble != MARBLE.YELLOW && marble != MARBLE.NONE)
-                    return false;
-                _yellowGoal.set(position, marble);
-                break;
-            case GREEN:
-                if (marble != MARBLE.GREEN && marble != MARBLE.NONE)
-                    return false;
-                _greenGoal.set(position, marble);
-                break;
-            default:
-                return false;
-        }
-        return true;
-    }
-
-    private boolean isEmptyAt(int position) {
-        MARBLE m = _mainCircle.get(position);
-        return m == MARBLE.NONE;
-    }
-
-    /**
-     * Gets the inbetweeners in the main circle in the FORWARDS direction!
-     * (exclusive, inclusive)
-     * IMPORTANT: NEVER USE THIS METHOD WHEN TRYING TO MOVE BACKWARDS
-     */
-    private ArrayList<Integer> getInbetweeners(int pos1, int pos2) throws IndexOutOfBoundsException {
-        ArrayList<Integer> importantInbetweeners = new ArrayList<>();
-        if (pos1 < 0 || pos1 >= 64 || pos2 < 0 || pos2 >= 64)
-            throw new IndexOutOfBoundsException("the positions have to be in range 0-63 (inclusive)");
-
-        if (pos1 < pos2) {
-            // no loop
-            for (int i = pos1 + 1; i <= pos2; i++) {
-                if (_mainCircle.get(i) != MARBLE.NONE) {
-                    importantInbetweeners.add(i);
-                }
-            }
-        } else {
-            // get to half way
-            for (int i = pos1 + 1; i < 64; i++) {
-                if (_mainCircle.get(i) != MARBLE.NONE) {
-                    importantInbetweeners.add(i);
-                }
-            }
-            // rest
-            for (int i = 0; i <= pos2; i++) {
-                if (_mainCircle.get(i) != MARBLE.NONE) {
-                    importantInbetweeners.add(i);
-                }
-            }
-        }
-
-        return importantInbetweeners;
-    }
-
-    /**
-     *
-     * Gets the inbetweeners in the main circle in the BACKWARDS direction!
-     * (exclusive, inclusive)
-     * IMPORTANT: NEVER USE THIS METHOD WHEN TRYING TO MOVE FORWARDS
-     */
-    private ArrayList<Integer> getInbetweenersBackwards(int pos1, int pos2) throws IndexOutOfBoundsException
-    {
-        int newPos1 = pos2;
-        int newPos2 = pos1;
-
-        //manage exclusive/inclusive correctly
-        newPos1 = newPos1 - 1;
-        newPos2 = newPos2 - 1;
-
-        //fix looping
-        if(newPos1 < 0)
-        {
-            newPos1 = 64 + newPos1;
-        }
-        if(newPos2 < 0)
-        {
-            newPos2 = 64 + newPos2;
-        }
-
-        return getInbetweeners(newPos1, newPos2);
-    }
-
-    /**
-     * Resets a marble on the main circle back to the base
-     */
-    private void resetMarble(int pos) throws NoMarbleException, IndexOutOfBoundsException {
-        if (pos < 0 || pos >= 64)
-            throw new IndexOutOfBoundsException("the position has to be in range 0-63 (inclusive)");
-
-        if (_mainCircle.get(pos) == MARBLE.NONE)
-            throw new NoMarbleException();
-
-        MARBLE m = _mainCircle.get(pos);
-
-        setMarbleAtPosition(pos, MARBLE.NONE);
-        switch (m) {
-            case RED:
-                _redBase++;
-                break;
-            case BLUE:
-                _blueBase++;
-                break;
-            case GREEN:
-                _greenBase++;
-                break;
-            case YELLOW:
-                _yellowBase++;
-                break;
-        }
-    }
-
-    /**
-     * resets any inbetweeners (exclusive, inclusive)
-     */
-    private void resetInbetweeners(int pos1, int pos2) throws NoMarbleException {
-        ArrayList<Integer> relevantInbetweeners = getInbetweeners(pos1, pos2);
-
-        for (Integer inb : relevantInbetweeners) {
-            resetMarble(inb);
-        }
-    }
-
-    /**
-     * Get the TurnColor from a marble at a position x on the main circle
-     *
-     * @throws NoMarbleException if there is no marble at x
-     */
-    private COLOR getColorFromPosition(int pos) throws NoMarbleException {
-        if (pos < 0 || pos >= 64)
-            throw new IndexOutOfBoundsException("the position has to be in range 0-63 (inclusive)");
-        MARBLE m = _mainCircle.get(pos);
-
-        switch (m) {
-            case GREEN:
-                return COLOR.GREEN;
-            case BLUE:
-                return COLOR.BLUE;
-            case RED:
-                return COLOR.RED;
-            case YELLOW:
-                return COLOR.YELLOW;
-            default:
-                throw new NoMarbleException();
-        }
-    }
-
     /**
      * Switches the marbles at pos1 to pos2, no checking is done
      * You can also change a NONE with something.
@@ -244,213 +78,17 @@ public class Board implements IBoard {
 
         marble1 = _mainCircle.get(pos1);
         marble2 = _mainCircle.get(pos2);
-
-        setMarbleAtPosition(pos1, marble2);
-        setMarbleAtPosition(pos2, marble1);
+        updateToBoardState();
+        helper.setMarbleAtPosition(pos1, marble2, _mainCircle);
+        helper.setMarbleAtPosition(pos2, marble1, _mainCircle);
+        updateFromBoardState();
     }
 
-    /**
-     * Moves the marble from position 1 to position 2 in the main circle
-     *
-     * @param removeInbetweeners IMPORTANT: NEVER SET THIS TO TRUE WHEN TRYING TO
-     *                           MOVE BACKWARDS
-     * @throws NoMarbleException            no marble was at pos1
-     * @throws MoveBlockedByMarbleException there was already a marble at pos2
-     */
-    private void movePositions(int pos1, int pos2, boolean removeInbetweeners)
-            throws InvalidMoveException, IndexOutOfBoundsException {
-        if (pos1 < 0 || pos1 >= 64 || pos2 < 0 || pos2 >= 64)
-            throw new IndexOutOfBoundsException("the positions have to be in range 0-63 (inclusive)");
-
-        MARBLE m1 = _mainCircle.get(pos1);
-        MARBLE m2 = _mainCircle.get(pos2);
-
-        if (m1 == MARBLE.NONE)
-            throw new NoMarbleException();
-        if (m2 != MARBLE.NONE) {
-            // reset the problem marble
-            resetMarble(pos2);
-        }
-
-        // all good, make the move
-        if (removeInbetweeners) {
-            resetInbetweeners(pos1, pos2);
-        }
-
-        setMarbleAtPosition(pos2, m1);
-        setMarbleAtPosition(pos1, MARBLE.NONE);
+    private boolean isEmptyAt(int position) {
+        MARBLE m = _mainCircle.get(position);
+        return m == MARBLE.NONE;
     }
-
-    /**
-     * Moves the marble from position 1 to position 2 where position 2 is in the
-     * respective goal.
-     *
-     * @param goalColor          the goal color to consider
-     * @param startInGoal        defines if position 1 is already in the goal. (ex:
-     *                           move 1 forward in the goal)
-     * @param removeInbetweeners IMPORTANT: NEVER SET THIS TO TRUE WHEN TRYING TO
-     *                           MOVE BACKWARDS
-     * @throws NoMarbleException            no marble was at pos1
-     * @throws MoveBlockedByMarbleException there was already a marble at pos2
-     */
-    private void movePositions(int pos1, int pos2, COLOR goalColor, boolean startInGoal, boolean removeInbetweeners)
-            throws InvalidMoveException, IndexOutOfBoundsException {
-        MARBLE m1;
-        MARBLE m2;
-
-        int colorintersect = 0;
-
-        ArrayList<MARBLE> coloredGoalList = _redGoal;
-        // get the respective color
-        switch (goalColor) {
-            case RED:
-                coloredGoalList = _redGoal;
-                colorintersect = REDINTERSECT;
-                break;
-            case BLUE:
-                coloredGoalList = _blueGoal;
-                colorintersect = BLUEINTERSECT;
-                break;
-            case YELLOW:
-                coloredGoalList = _yellowGoal;
-                colorintersect = YELLOWINTERSECT;
-                break;
-            case GREEN:
-                coloredGoalList = _greenGoal;
-                colorintersect = GREENINTERSECT;
-        }
-
-        if (startInGoal) {
-            if (pos1 < 0 || pos2 >= 4)
-                throw new IndexOutOfBoundsException(
-                        "if startInGoal is true, the pos1 can be in the range 0-3 (inclusive)");
-            m1 = coloredGoalList.get(pos1);
-        } else {
-            if (pos1 < 0 || pos2 >= 64)
-                throw new IndexOutOfBoundsException(
-                        "if startInGoal is false, the pos1 can be in the range 0-63 (inclusive)");
-            m1 = _mainCircle.get(pos1);
-        }
-
-        if (pos2 < 0 || pos2 >= 4)
-            throw new IndexOutOfBoundsException("the pos2 can be in the range 0-3 (inclusive)");
-        m2 = coloredGoalList.get(pos2);
-
-        // we now have the start and end position. we move from pos1 to pos2
-
-        if (m1 == MARBLE.NONE)
-            throw new NoMarbleException();
-        if (m2 != MARBLE.NONE) {
-            // reset the problem marble
-            resetMarble(pos2);
-        }
-
-        // all good, make the move
-
-        if (removeInbetweeners && !startInGoal) {
-            resetInbetweeners(pos1, colorintersect);
-        }
-
-        setMarbleAtPosition(pos2, m1, goalColor);
-
-        if (startInGoal) {
-            setMarbleAtPosition(pos1, MARBLE.NONE, goalColor);
-        } else {
-            setMarbleAtPosition(pos1, MARBLE.NONE);
-        }
-    }
-
-    /**
-     * gets the next position when moving forward a certain distance on the main
-     * field
-     */
-    private int getDistanceInBetween(int startPosition, int endPosition) throws IndexOutOfBoundsException {
-        return getDistanceInBetween(startPosition, endPosition, true);
-    }
-
-    /**
-     * gets the next position when moving a certain distance on the main field,
-     * either forward or backwards
-     */
-    private int getDistanceInBetween(int startPosition, int endPosition, boolean forward)
-            throws IndexOutOfBoundsException {
-        if (startPosition < 0 || startPosition >= 64 || endPosition < 0 || endPosition >= 64)
-            throw new IndexOutOfBoundsException(
-                    "Index is wrong: the main ring has indices between 0 and 63 while goals reach from 0 to 3");
-        if (forward) {
-            if (startPosition <= endPosition) // we do not loop over
-            {
-                return endPosition - startPosition;
-            } else // we loop over the edge
-            {
-                int rest = 63 - startPosition;
-                return endPosition + rest + 1;
-            }
-        } else // we move backwards
-        {
-            if (endPosition <= startPosition) // we do not loop over
-            {
-                return startPosition - endPosition;
-            } else // we loop over the edge
-            {
-                int rest = 63 - endPosition;
-                return startPosition + rest + 1;
-            }
-        }
-    }
-
-    /**
-     * gets the next position when moving a certain distance to a goal, forward
-     * only!
-     *
-     * @param startPosition the start position (0-63 or 0-3, depending on
-     *                      startInGoal)
-     * @param endPosition   the end position (0-3)
-     * @param goalColor     the color of the goal we are considering for moving into
-     * @param startInGoal   if the marble already starts in its respective goal (eg:
-     *                      moving 1 forward in the goal)
-     */
-    private int getDistanceInBetween(int startPosition, int endPosition, COLOR goalColor, boolean startInGoal)
-            throws IndexOutOfBoundsException {
-        if (!startInGoal) // normal move into a goal from outside
-        {
-            int intersect = 0;
-            // get the respective intersect
-            switch (goalColor) {
-                case RED:
-                    intersect = REDINTERSECT;
-                    break;
-                case BLUE:
-                    intersect = BLUEINTERSECT;
-                    break;
-                case YELLOW:
-                    intersect = YELLOWINTERSECT;
-                    break;
-                case GREEN:
-                    intersect = GREENINTERSECT;
-            }
-
-            // distance from the startposition to the respective INTERSECT
-            int distanceToIntersect = getDistanceInBetween(startPosition, intersect);
-
-            if (endPosition < 0 || endPosition >= 4)
-                throw new IndexOutOfBoundsException("endposition must be between 0 and 3 (inclusive)");
-
-            // distance between the 2 positions
-            return distanceToIntersect + 1 + endPosition;
-
-        } else // from goal to goal, more simple
-        {
-            if (endPosition < startPosition)
-                throw new IndexOutOfBoundsException("cannot move backwards in the goal");
-            if (endPosition < 0 || endPosition >= 4)
-                throw new IndexOutOfBoundsException("endposition must be between 0 and 3 (inclusive)");
-            if (startPosition < 0 || startPosition >= 4)
-                throw new IndexOutOfBoundsException("startposition must be between 0 and 3 (inclusive)");
-
-            return endPosition - startPosition;
-        }
-    }
+    
 
     public BoardData getFormattedBoardState() {
         ArrayList<String> board = new ArrayList<>();
@@ -491,58 +129,40 @@ public class Board implements IBoard {
      */
     public void makeMove(Move move) throws InvalidMoveException {
         // expects the move to be valid
-        if (move == null || !move.isWellFormed()) {
-            throw new InvalidMoveException("BAD_STRUCTURE", "Bad move structure");
-        }
-
-        // For each move, make it
-        for (int i = 0; i < move.get_fromPos().size(); i++) {
-            int fromPos = move.get_fromPos().get(i).getIndex();
-            int toPos = move.get_toPos().get(i).getIndex();
-            boolean startsInGoal = move.get_fromPos().get(i).isInGoal();
-            boolean endsInGoal = move.get_toPos().get(i).isInGoal();
-            // unblock if it was on an intersection
-            if(!startsInGoal){
-                switch(fromPos){
-                    case REDINTERSECT:
-                        REDBLOCKED = false;
-                        break;
-                    case GREENINTERSECT:
-                        GREENBLOCKED = false;
-                        break;
-                    case BLUEINTERSECT:
-                        BLUEBLOCKED = false;
-                        break;
-                    case YELLOWINTERSECT:
-                        YELLOWBLOCKED = false;
-                        break;
-                }
-            }
-            // do the move
-            if (endsInGoal) {
-                movePositions(fromPos, toPos, move.get_color(), startsInGoal,
-                        move.get_card() != null ? move.get_card().isSeven() : false);
-            } else {
-                switch(toPos){
-                    case REDINTERSECT:
-                        REDBLOCKED = false;
-                        break;
-                    case GREENINTERSECT:
-                        GREENBLOCKED = false;
-                        break;
-                    case BLUEINTERSECT:
-                        BLUEBLOCKED = false;
-                        break;
-                    case YELLOWINTERSECT:
-                        YELLOWBLOCKED = false;
-                        break;
-                }
-                movePositions(fromPos, toPos, move.get_card() != null ? move.get_card().isSeven() : false);
-            }
-
-        }
-
+        updateToBoardState();
+        helper.makeMove(move, _mainCircle, bState);
+        updateFromBoardState();
         log.info(String.format("CARD: %s: RED: %b, YELLOW %b, GREEN %b, BLUE %b", move.get_card() != null ? move.get_card().getFormatted() : "NOT SPECIFIED", REDBLOCKED, YELLOWBLOCKED, GREENBLOCKED, BLUEBLOCKED));
+    }
+
+    private void updateFromBoardState(){
+        _redGoal = bState._redGoal;
+        _greenGoal = bState._greenGoal;
+        _blueGoal = bState._blueGoal;
+        _yellowGoal = bState._yellowGoal;
+        _redBase = bState._redBase;
+        _greenBase = bState._greenBase;
+        _blueBase = bState._blueBase;
+        _yellowBase = bState._yellowBase;
+        REDBLOCKED = bState.REDBLOCKED;
+        GREENBLOCKED = bState.GREENBLOCKED;
+        BLUEBLOCKED = bState.BLUEBLOCKED;
+        YELLOWBLOCKED = bState.YELLOWBLOCKED;
+    }
+
+    private void updateToBoardState(){
+        bState._redGoal = _redGoal;
+        bState._greenGoal = _greenGoal;
+        bState._blueGoal = _blueGoal;
+        bState._yellowGoal = _yellowGoal;
+        bState._redBase = _redBase;
+        bState._greenBase = _greenBase;
+        bState._blueBase = _blueBase;
+        bState._yellowBase = _yellowBase;
+        bState.REDBLOCKED = REDBLOCKED;
+        bState.GREENBLOCKED = GREENBLOCKED;
+        bState.BLUEBLOCKED = BLUEBLOCKED;
+        bState.YELLOWBLOCKED = YELLOWBLOCKED;
     }
 
     /**
@@ -559,10 +179,10 @@ public class Board implements IBoard {
             case RED:
                 if (_redBase > 0) {
                     if (!isEmptyAt(REDINTERSECT))
-                        resetMarble(REDINTERSECT);
+                        helper.resetMarble(REDINTERSECT, _mainCircle, bState);
 
                     _redBase = _redBase - 1;
-                    setMarbleAtPosition(REDINTERSECT, MARBLE.RED);
+                    helper.setMarbleAtPosition(REDINTERSECT, MARBLE.RED, _mainCircle);
                     REDBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
@@ -571,10 +191,10 @@ public class Board implements IBoard {
             case YELLOW:
                 if (_yellowBase > 0) {
                     if (!isEmptyAt(YELLOWINTERSECT))
-                        resetMarble(YELLOWINTERSECT);
+                        helper.resetMarble(YELLOWINTERSECT, _mainCircle, bState);
 
                     _yellowBase = _yellowBase - 1;
-                    setMarbleAtPosition(YELLOWINTERSECT, MARBLE.YELLOW);
+                    helper.setMarbleAtPosition(YELLOWINTERSECT, MARBLE.YELLOW, _mainCircle);
                     YELLOWBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
@@ -583,10 +203,10 @@ public class Board implements IBoard {
             case GREEN:
                 if (_greenBase > 0) {
                     if (!isEmptyAt(GREENINTERSECT))
-                        resetMarble(GREENINTERSECT);
+                        helper.resetMarble(GREENINTERSECT, _mainCircle, bState);
 
                     _greenBase = _greenBase - 1;
-                    setMarbleAtPosition(GREENINTERSECT, MARBLE.GREEN);
+                    helper.setMarbleAtPosition(GREENINTERSECT, MARBLE.GREEN, _mainCircle);
                     GREENBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
@@ -595,17 +215,16 @@ public class Board implements IBoard {
             case BLUE:
                 if (_blueBase > 0) {
                     if (!isEmptyAt(BLUEINTERSECT))
-                        resetMarble(BLUEINTERSECT);
+                        helper.resetMarble(BLUEINTERSECT, _mainCircle, bState);
 
                     _blueBase = _blueBase - 1;
-                    setMarbleAtPosition(BLUEINTERSECT, MARBLE.BLUE);
+                    helper.setMarbleAtPosition(BLUEINTERSECT, MARBLE.BLUE, _mainCircle);
                     BLUEBLOCKED = true;
                 } else {
                     throw new InvalidMoveException("NOTHING_LEFT", "there are no marbles left to start with");
                 }
                 break;
         }
-
         log.info(String.format("CARD: START: RED: %b, YELLOW %b, GREEN %b, BLUE %b", REDBLOCKED, YELLOWBLOCKED, GREENBLOCKED, BLUEBLOCKED));
     }
 
@@ -690,7 +309,6 @@ public class Board implements IBoard {
         } catch (IndexOutOfBoundsException e) {
             throw new InvalidMoveException("OUT_OF_BOUNDS", "one of the positions was out of bounds (0-63)");
         }
-
         log.info(String.format("CARD: SWITCH: RED: %b, YELLOW %b, GREEN %b, BLUE %b", REDBLOCKED, YELLOWBLOCKED, GREENBLOCKED, BLUEBLOCKED));
     }
 
@@ -1484,7 +1102,7 @@ public class Board implements IBoard {
         }
 
         // only forwards in goal!
-        int distToGoalStart = getDistanceInBetween(start, intersect);
+        int distToGoalStart = helper.getDistanceInBetween(start, intersect);
         int restDistance = distance - distToGoalStart;
 
         // cannot reach a goal
