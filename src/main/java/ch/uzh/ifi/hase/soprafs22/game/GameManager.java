@@ -53,9 +53,13 @@ public class GameManager {
 
     synchronized public void deleteGame(String tokenToDelete, boolean fromHeartBeat){
         for (Game game:_games){
-            String token= game.getGameToken();
-            if(tokenToDelete.equals(token) && (game.getCreationTime() + 5000 < new Date().getTime() || !fromHeartBeat)){
-                game.cancelGame();
+            String token = game.getGameToken();
+            if(tokenToDelete.equals(token)){
+                if(fromHeartBeat)
+                {
+                    if(game.getCreationTime() + 5000 > new Date().getTime()) return; //not enough time passed for heartbeat deletion, skip
+                    game.cancelGame(); //track stats on deletion from heartbeat.
+                }
                 _games.remove(game);
                 return;
             }
@@ -63,20 +67,6 @@ public class GameManager {
     }
 
     synchronized public void deleteGame(String tokenToDelete){
-        for (Game game:_games){
-            String token= game.getGameToken();
-            if(tokenToDelete.equals(token) && (game.getCreationTime() + 5000 < new Date().getTime())){
-                _games.remove(game);
-                return;
-            }
-        }
-    }
-
-    private void updatePlayers(Game game, UpdateType updateType, UserManager userManager) {
-        UpdateDTO updateDTO = new UpdateDTO(updateType, "");
-
-        for (Player player: game.getPlayers()){
-            updateController.sendUpdateToUser(userManager.getUserFromPlayer(player).getToken(), updateDTO);
-        }
+        deleteGame(tokenToDelete, false);
     }
 }

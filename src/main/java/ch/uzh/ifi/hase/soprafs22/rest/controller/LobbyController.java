@@ -9,20 +9,30 @@ import ch.uzh.ifi.hase.soprafs22.rest.data.dto.InvitationResponsePutDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.data.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Objects;
 
 @RestController
 public class LobbyController {
 
-    private final UserService userService;
+    private UserService userService;
     private LobbyManager lobbyManager;
+
+    @Autowired
+    private Environment environment;
 
     LobbyController(UserService userService) {
         this.userService = userService;
@@ -30,7 +40,11 @@ public class LobbyController {
 
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
-        lobbyManager = new LobbyManager();
+        if(Arrays.stream(environment.getActiveProfiles()).noneMatch(
+                env -> (env.equalsIgnoreCase("test")) ))
+        {
+            lobbyManager = new LobbyManager();
+        }
     }
 
     @GetMapping("/lobby/{lobbyID}")
@@ -73,9 +87,7 @@ public class LobbyController {
         return new LobbyGetDTO(lobbyID);
     }
 
-    /** TODO
-     * still needs tests
-     */
+
     @DeleteMapping("/lobby/{lobbyID}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -124,5 +136,13 @@ public class LobbyController {
     
     public LobbyManager getLobbyManagerInstance(){
         return lobbyManager;
+    }
+
+    protected void insertLobbyManager(LobbyManager lobbyManager) {
+        if(Arrays.stream(environment.getActiveProfiles()).anyMatch(
+                env -> (env.equalsIgnoreCase("test")) ))
+        {
+            this.lobbyManager = lobbyManager;
+        }
     }
 }

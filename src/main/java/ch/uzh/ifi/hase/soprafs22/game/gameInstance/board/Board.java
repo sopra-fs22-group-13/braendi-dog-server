@@ -18,7 +18,8 @@ import java.util.List;
 public class Board implements IBoard {
     private final Logger log = LoggerFactory.getLogger(Board.class);
 
-    private boardHelper helper;
+    private boardHelper helper = new boardHelper();
+    private boardState bState = new boardState();
 
     private ArrayList<MARBLE> _mainCircle = new ArrayList<>();
 
@@ -75,6 +76,7 @@ public class Board implements IBoard {
                 if (marble != MARBLE.RED && marble != MARBLE.NONE)
                     return false;
                 _redGoal.set(position, marble);
+                bState._redGoal = _redGoal;
                 break;
             case BLUE:
                 if (marble != MARBLE.BLUE && marble != MARBLE.NONE)

@@ -11,28 +11,15 @@ import ch.uzh.ifi.hase.soprafs22.game.gameInstance.data.Move;
 //contains the board helper functions
 public class boardHelper {
 
+    
+
     private final int REDINTERSECT = 0;
     private final int BLUEINTERSECT = 48;
     private final int GREENINTERSECT = 32;
     private final int YELLOWINTERSECT = 16;
 
-    public boardHelper() {
-
-    }
-
     public void makeMove(Move move, ArrayList<MARBLE> _mainCircle, 
-                        boolean REDBLOCKED,
-                        boolean GREENBLOCKED,
-                        boolean BLUEBLOCKED,
-                        boolean YELLOWBLOCKED,
-                        ArrayList<MARBLE> _redGoal,
-                        ArrayList<MARBLE> _blueGoal,
-                        ArrayList<MARBLE> _greenGoal,
-                        ArrayList<MARBLE> _yellowGoal,
-                        int _redBase,
-                        int _greenBase,
-                        int _blueBase,
-                        int _yellowBase) throws InvalidMoveException {
+                        boardState bState) throws InvalidMoveException {
         // expects the move to be valid
         if (move == null || !move.isWellFormed()) {
             throw new InvalidMoveException("BAD_STRUCTURE", "Bad move structure");
@@ -48,35 +35,32 @@ public class boardHelper {
             if (!startsInGoal) {
                 switch (fromPos) {
                     case REDINTERSECT:
-                        REDBLOCKED = false;
+                        bState.REDBLOCKED = false;
                         break;
                     case GREENINTERSECT:
-                        GREENBLOCKED = false;
+                        bState.GREENBLOCKED = false;
                         break;
                     case BLUEINTERSECT:
-                        BLUEBLOCKED = false;
+                        bState.BLUEBLOCKED = false;
                         break;
                     case YELLOWINTERSECT:
-                        YELLOWBLOCKED = false;
+                        bState.YELLOWBLOCKED = false;
                         break;
                 }
             }
             // do the move
             if (endsInGoal) {
                 movePositions(fromPos, toPos, move.get_color(), startsInGoal,
-                        move.get_card() != null ? move.get_card().isSeven() : false, _mainCircle, _redGoal, _greenGoal, _blueGoal, _yellowGoal, _redBase, _greenBase, _blueBase, _yellowBase);
+                        move.get_card() != null ? move.get_card().isSeven() : false, _mainCircle, bState);
             } else {
-                movePositions(fromPos, toPos, move.get_card() != null ? move.get_card().isSeven() : false, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
+                movePositions(fromPos, toPos, move.get_card() != null ? move.get_card().isSeven() : false, _mainCircle, bState);
             }
 
         }
     }
 
-    private void movePositions(int pos1, int pos2, boolean removeInbetweeners, ArrayList<MARBLE> _mainCircle,
-            int _redBase,
-            int _greenBase,
-            int _blueBase,
-            int _yellowBase)
+    public void movePositions(int pos1, int pos2, boolean removeInbetweeners, ArrayList<MARBLE> _mainCircle,
+            boardState bState)
             throws InvalidMoveException, IndexOutOfBoundsException {
         if (pos1 < 0 || pos1 >= 64 || pos2 < 0 || pos2 >= 64)
             throw new IndexOutOfBoundsException("the positions have to be in range 0-63 (inclusive)");
@@ -88,23 +72,20 @@ public class boardHelper {
             throw new NoMarbleException();
         if (m2 != MARBLE.NONE) {
             // reset the problem marble
-            resetMarble(pos2, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
+            resetMarble(pos2, _mainCircle, bState);
         }
 
         // all good, make the move
         if (removeInbetweeners) {
-            resetInbetweeners(pos1, pos2, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
+            resetInbetweeners(pos1, pos2, _mainCircle, bState);
         }
 
         setMarbleAtPosition(pos2, m1, _mainCircle);
         setMarbleAtPosition(pos1, MARBLE.NONE, _mainCircle);
     }
 
-    private void resetMarble(int pos, ArrayList<MARBLE> _mainCircle,
-            int _redBase,
-            int _blueBase,
-            int _greenBase,
-            int _yellowBase) throws NoMarbleException, IndexOutOfBoundsException {
+    public void resetMarble(int pos, ArrayList<MARBLE> _mainCircle,
+            boardState bState) throws NoMarbleException, IndexOutOfBoundsException {
         if (pos < 0 || pos >= 64)
             throw new IndexOutOfBoundsException("the position has to be in range 0-63 (inclusive)");
 
@@ -116,53 +97,46 @@ public class boardHelper {
         setMarbleAtPosition(pos, MARBLE.NONE, _mainCircle);
         switch (m) {
             case RED:
-                _redBase++;
+                bState._redBase++;
                 break;
             case BLUE:
-                _blueBase++;
+                bState._blueBase++;
                 break;
             case GREEN:
-                _greenBase++;
+                bState._greenBase++;
                 break;
             case YELLOW:
-                _yellowBase++;
+                bState._yellowBase++;
                 break;
         }
     }
 
-    private void movePositions(int pos1, int pos2, COLOR goalColor, boolean startInGoal, boolean removeInbetweeners,
+    public void movePositions(int pos1, int pos2, COLOR goalColor, boolean startInGoal, boolean removeInbetweeners,
             ArrayList<MARBLE> _mainCircle,
-            ArrayList<MARBLE> _redGoal,
-            ArrayList<MARBLE> _blueGoal,
-            ArrayList<MARBLE> _yellowGoal,
-            ArrayList<MARBLE> _greenGoal,
-            int _redBase,
-            int _blueBase,
-            int _greenBase,
-            int _yellowBase)
+            boardState bState)
             throws InvalidMoveException, IndexOutOfBoundsException {
         MARBLE m1;
         MARBLE m2;
 
         int colorintersect = 0;
 
-        ArrayList<MARBLE> coloredGoalList = _redGoal;
+        ArrayList<MARBLE> coloredGoalList = bState._redGoal;
         // get the respective color
         switch (goalColor) {
             case RED:
-                coloredGoalList = _redGoal;
+                coloredGoalList = bState._redGoal;
                 colorintersect = REDINTERSECT;
                 break;
             case BLUE:
-                coloredGoalList = _blueGoal;
+                coloredGoalList = bState._blueGoal;
                 colorintersect = BLUEINTERSECT;
                 break;
             case YELLOW:
-                coloredGoalList = _yellowGoal;
+                coloredGoalList = bState._yellowGoal;
                 colorintersect = YELLOWINTERSECT;
                 break;
             case GREEN:
-                coloredGoalList = _greenGoal;
+                coloredGoalList = bState._greenGoal;
                 colorintersect = GREENINTERSECT;
         }
 
@@ -188,54 +162,51 @@ public class boardHelper {
             throw new NoMarbleException();
         if (m2 != MARBLE.NONE) {
             // reset the problem marble
-            resetMarble(pos2, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
+            resetMarble(pos2, _mainCircle, bState);
         }
 
         // all good, make the move
 
         if (removeInbetweeners && !startInGoal) {
-            resetInbetweeners(pos1, colorintersect, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
+            resetInbetweeners(pos1, colorintersect, _mainCircle, bState);
         }
 
-        setMarbleAtPosition(pos2, m1, goalColor, _redGoal, _blueGoal, _yellowGoal, _greenGoal);
+        setMarbleAtPosition(pos2, m1, goalColor, bState);
 
         if (startInGoal) {
-            setMarbleAtPosition(pos1, MARBLE.NONE, goalColor, _redGoal, _blueGoal, _yellowGoal, _greenGoal);
+            setMarbleAtPosition(pos1, MARBLE.NONE, goalColor, bState);
         } else {
             setMarbleAtPosition(pos1, MARBLE.NONE, _mainCircle);
         }
     }
 
-    private boolean setMarbleAtPosition(int position, MARBLE marble, ArrayList<MARBLE> _mainCircle) {
+    public boolean setMarbleAtPosition(int position, MARBLE marble, ArrayList<MARBLE> _mainCircle) {
         _mainCircle.set(position, marble);
         return true;
     }
 
-    private boolean setMarbleAtPosition(int position, MARBLE marble, COLOR goalColor,
-            ArrayList<MARBLE> _redGoal,
-            ArrayList<MARBLE> _blueGoal,
-            ArrayList<MARBLE> _yellowGoal,
-            ArrayList<MARBLE> _greenGoal) {
+    public boolean setMarbleAtPosition(int position, MARBLE marble, COLOR goalColor,
+            boardState bState) {
         switch (goalColor) {
             case RED:
                 if (marble != MARBLE.RED && marble != MARBLE.NONE)
                     return false;
-                _redGoal.set(position, marble);
+                    bState._redGoal.set(position, marble);
                 break;
             case BLUE:
                 if (marble != MARBLE.BLUE && marble != MARBLE.NONE)
                     return false;
-                _blueGoal.set(position, marble);
+                    bState._blueGoal.set(position, marble);
                 break;
             case YELLOW:
                 if (marble != MARBLE.YELLOW && marble != MARBLE.NONE)
                     return false;
-                _yellowGoal.set(position, marble);
+                    bState._yellowGoal.set(position, marble);
                 break;
             case GREEN:
                 if (marble != MARBLE.GREEN && marble != MARBLE.NONE)
                     return false;
-                _greenGoal.set(position, marble);
+                    bState._greenGoal.set(position, marble);
                 break;
             default:
                 return false;
@@ -265,19 +236,16 @@ public class boardHelper {
     /**
      * resets any inbetweeners (exclusive, inclusive)
      */
-    private void resetInbetweeners(int pos1, int pos2, ArrayList<MARBLE> _mainCircle,
-            int _redBase,
-            int _greenBase,
-            int _blueBase,
-            int _yellowBase) throws NoMarbleException {
+    public void resetInbetweeners(int pos1, int pos2, ArrayList<MARBLE> _mainCircle,
+            boardState bState) throws NoMarbleException {
         ArrayList<Integer> relevantInbetweeners = getInbetweeners(pos1, pos2, _mainCircle);
 
         for (Integer inb : relevantInbetweeners) {
-            resetMarble(inb, _mainCircle, _redBase, _greenBase, _blueBase, _yellowBase);
+            resetMarble(inb, _mainCircle, bState);
         }
     }
 
-    private ArrayList<Integer> getInbetweenersBackwards(int pos1, int pos2, ArrayList<MARBLE> _mainCircle)
+    public ArrayList<Integer> getInbetweenersBackwards(int pos1, int pos2, ArrayList<MARBLE> _mainCircle)
             throws IndexOutOfBoundsException {
         int newPos1 = pos2;
         int newPos2 = pos1;
@@ -298,10 +266,7 @@ public class boardHelper {
     }
 
     public boolean blockedIntersect(Move move, int startPos, int endPos, boolean forward, ArrayList<MARBLE> _mainCircle,
-            boolean REDBLOCKED,
-            boolean BLUEBLOCKED,
-            boolean GREENBLOCKED,
-            boolean YELLOWBLOCKED) {
+            boardState bState) {
         if (forward) {
             ArrayList<Integer> blockPos = getInbetweeners(startPos, endPos, _mainCircle);
             ArrayList<Integer> blockIntersect = new ArrayList<>();
@@ -315,22 +280,22 @@ public class boardHelper {
                 for (int i = 0; i < blockIntersect.size(); i++) {
                     switch (blockIntersect.get(i)) {
                         case REDINTERSECT:
-                            if (REDBLOCKED) {
+                            if (bState.REDBLOCKED) {
                                 return true;
                             }
                             break;
                         case YELLOWINTERSECT:
-                            if (YELLOWBLOCKED) {
+                            if (bState.YELLOWBLOCKED) {
                                 return true;
                             }
                             break;
                         case GREENINTERSECT:
-                            if (GREENBLOCKED) {
+                            if (bState.GREENBLOCKED) {
                                 return true;
                             }
                             break;
                         case BLUEINTERSECT:
-                            if (BLUEBLOCKED) {
+                            if (bState.BLUEBLOCKED) {
                                 return true;
                             }
                             break;
@@ -350,22 +315,22 @@ public class boardHelper {
                 for (int i = 0; i < blockIntersect.size(); i++) {
                     switch (blockIntersect.get(i)) {
                         case REDINTERSECT:
-                            if (REDBLOCKED) {
+                            if (bState.REDBLOCKED) {
                                 return true;
                             }
                             break;
                         case YELLOWINTERSECT:
-                            if (YELLOWBLOCKED) {
+                            if (bState.YELLOWBLOCKED) {
                                 return true;
                             }
                             break;
                         case GREENINTERSECT:
-                            if (GREENBLOCKED) {
+                            if (bState.GREENBLOCKED) {
                                 return true;
                             }
                             break;
                         case BLUEINTERSECT:
-                            if (BLUEBLOCKED) {
+                            if (bState.BLUEBLOCKED) {
                                 return true;
                             }
                             break;
@@ -376,7 +341,7 @@ public class boardHelper {
         return false;
     }
 
-    private ArrayList<Integer> getInbetweeners(int pos1, int pos2, ArrayList<MARBLE> _mainCircle)
+    public ArrayList<Integer> getInbetweeners(int pos1, int pos2, ArrayList<MARBLE> _mainCircle)
             throws IndexOutOfBoundsException {
         ArrayList<Integer> importantInbetweeners = new ArrayList<>();
         if (pos1 < 0 || pos1 >= 64 || pos2 < 0 || pos2 >= 64)
@@ -407,7 +372,7 @@ public class boardHelper {
         return importantInbetweeners;
     }
 
-    private int getDistanceInBetween(int startPosition, int endPosition) throws IndexOutOfBoundsException {
+    public int getDistanceInBetween(int startPosition, int endPosition) throws IndexOutOfBoundsException {
         return getDistanceInBetween(startPosition, endPosition, true);
     }
 
@@ -415,7 +380,7 @@ public class boardHelper {
      * gets the next position when moving a certain distance on the main field,
      * either forward or backwards
      */
-    private int getDistanceInBetween(int startPosition, int endPosition, boolean forward)
+    public int getDistanceInBetween(int startPosition, int endPosition, boolean forward)
             throws IndexOutOfBoundsException {
         if (startPosition < 0 || startPosition >= 64 || endPosition < 0 || endPosition >= 64)
             throw new IndexOutOfBoundsException(
@@ -442,7 +407,7 @@ public class boardHelper {
         }
     }
 
-    private int getDistanceInBetween(int startPosition, int endPosition, COLOR goalColor, boolean startInGoal)
+    public int getDistanceInBetween(int startPosition, int endPosition, COLOR goalColor, boolean startInGoal)
             throws IndexOutOfBoundsException {
         if (!startInGoal) // normal move into a goal from outside
         {
@@ -500,7 +465,7 @@ public class boardHelper {
         return moveDist;
     }
 
-    private ArrayList<COLOR> getMarbleColor(Move move, ArrayList<Integer> startPos, ArrayList<MARBLE> _mainCircle)
+    public ArrayList<COLOR> getMarbleColor(Move move, ArrayList<Integer> startPos, ArrayList<MARBLE> _mainCircle)
             throws NoMarbleException {
         ArrayList<COLOR> marbleColor = new ArrayList<>();
         try {
