@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findById(Long id);
 
-    @Query(value = "SELECT * FROM User us ORDER BY us.wins DESC, us.goals DESC LIMIT 10", nativeQuery = true)
+    @Query(value = "SELECT * FROM users us ORDER BY us.wins DESC, us.goals DESC LIMIT 10", nativeQuery = true)
     List<User> getTopTenUsers();
 
 }
