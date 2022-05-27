@@ -44,15 +44,6 @@ public class GameHistoryService implements IGameHistoryService{
 
     public List<GameHistory> getPlayedGames(User user) {
         List<GameHistory> playedGames = gameHistoryRepository.findPlayedGames(user);
-
-        playedGames.sort(new Comparator<GameHistory>() {
-            @Override
-            public int compare(GameHistory o1, GameHistory o2) {
-                return o1.getStartDate().compareTo(o2.getStartDate());
-            }
-        });
-        Collections.reverse(playedGames);
-
         return playedGames;
     }
 

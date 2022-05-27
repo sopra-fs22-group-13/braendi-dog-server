@@ -71,7 +71,7 @@ class GameHistoryServiceTest {
 
         Mockito.when(gameHistoryRepository.findPlayedGames(Mockito.any())).thenReturn(providedHistory);
 
-        assertEquals(List.of(gh3, gh1, gh2), gameHistoryService.getPlayedGames(randomUser()));
+        assertEquals(List.of(gh1, gh2, gh3), gameHistoryService.getPlayedGames(randomUser()));
     }
 
     private User randomUser() {

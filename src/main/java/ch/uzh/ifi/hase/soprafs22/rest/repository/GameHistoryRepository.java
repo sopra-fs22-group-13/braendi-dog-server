@@ -15,6 +15,6 @@ public interface GameHistoryRepository extends JpaRepository<GameHistory, Long> 
     public List<GameHistory> findWonGames(User winner);
 
 
-    @Query("select gh from GameHistory gh where gh.user1 = ?1 OR gh.user2 = ?1 OR gh.user3 = ?1 OR gh.user4 = ?1")
+    @Query(value = "select * from GameHistory gh where gh.user1_id = ?1 OR gh.user2_id = ?1 OR gh.user3_id = ?1 OR gh.user4_id = ?1 ORDER BY gh.start_date DESC LIMIT 15", nativeQuery = true)
     public List<GameHistory> findPlayedGames(User user);
 }
