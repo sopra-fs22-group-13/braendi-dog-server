@@ -18,16 +18,16 @@ public class GameHistory implements Serializable {
     @Column
     Long startDate;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     User user1;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     User user2;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     User user3;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     User user4;
 
     @ManyToOne

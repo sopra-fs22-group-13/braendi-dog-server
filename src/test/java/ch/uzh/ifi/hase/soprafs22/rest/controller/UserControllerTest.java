@@ -393,6 +393,18 @@ public class UserControllerTest {
   private GameHistory randomGameHistory() {
       GameHistory gh = new GameHistory();
       gh.setStartDate(new Random().nextLong());
+      User user1 = new User();
+      user1.setId(3L);
+      gh.setUser1(user1);
+      User user2 = new User();
+      user1.setId(4L);
+      gh.setUser2(user2);
+      User user3 = new User();
+      user1.setId(5L);
+      gh.setUser3(user3);
+      User user4 = new User();
+      user1.setId(6L);
+      gh.setUser4(user4);
 
       return gh;
   }

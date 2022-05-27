@@ -109,11 +109,11 @@ public class UserController {
                           return new GameHistoryGetDTO(
                                   gameHistory.getId(),
                                   gameHistory.getStartDate(),
-                                  gameHistory.getWinner() == client,
+                                  gameHistory.getWinner() != null && gameHistory.getWinner().getId() == client.getId(),
 
-                                  gameHistory.getUser1() == client ? gameHistory.getUser1_goals() :
-                                          gameHistory.getUser2() == client ? gameHistory.getUser2_goals() :
-                                                  gameHistory.getUser3() == client ? gameHistory.getUser3_goals() :
+                                  gameHistory.getUser1().getId() == client.getId() ? gameHistory.getUser1_goals() :
+                                          gameHistory.getUser2().getId() == client.getId() ? gameHistory.getUser2_goals() :
+                                                  gameHistory.getId() == client.getId() ? gameHistory.getUser3_goals() :
                                                           gameHistory.getUser4_goals()
                           );
                       }).collect(Collectors.toList());
