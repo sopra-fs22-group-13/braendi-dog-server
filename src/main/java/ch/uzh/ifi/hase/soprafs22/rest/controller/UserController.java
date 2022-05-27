@@ -97,7 +97,9 @@ public class UserController {
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public List<GameHistoryGetDTO> getMatchHistory(HttpServletRequest request, @PathVariable Long userID) {
-      User client = userService.checkIfLoggedIn(request);
+      userService.checkIfLoggedIn(request);
+
+      User client = userService.getUserById(userID);
 
       //oh boy
       List<GameHistoryGetDTO> gameHistoryGetDTOs =
@@ -116,8 +118,8 @@ public class UserController {
                           );
                       }).collect(Collectors.toList());
 
-      if (gameHistoryGetDTOs.size() > 10) {
-          gameHistoryGetDTOs = gameHistoryGetDTOs.subList(0, 10);
+      if (gameHistoryGetDTOs.size() > 15) { //this does less than nothing as the SQL query has a limit of 15...
+          gameHistoryGetDTOs = gameHistoryGetDTOs.subList(0, 15);
       }
 
       return gameHistoryGetDTOs;

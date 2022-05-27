@@ -255,6 +255,8 @@ public class UserControllerTest {
         // given
         User user = new User();
         given(userService.checkIfLoggedIn(Mockito.any())).willReturn(user);
+        given(userService.getUserById(Mockito.any())).willReturn(user);
+
 
         List<GameHistory> providedHistory = new ArrayList<>();
         for (int i=0; i<20; i++) providedHistory.add(randomGameHistory());
@@ -267,7 +269,7 @@ public class UserControllerTest {
 
         //then
         mockMvc.perform(getRequest).andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(10)));
+                .andExpect(jsonPath("$", hasSize(15)));
     }
 
     @Test
