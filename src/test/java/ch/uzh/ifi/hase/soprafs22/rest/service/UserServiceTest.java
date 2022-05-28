@@ -41,7 +41,7 @@ public class UserServiceTest {
     testUser = new User();
     testUser.setId(1L);
     testUser.setPassword("testName");
-    testUser.setUsername("testUsername");
+    testUser.setUsername("testUsern");
 
     // when -> any object is being save in the userRepository -> return the dummy
     // testUser
@@ -104,7 +104,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.findByUsername(testUser.getUsername())).thenReturn(testUser);
 
         User login_user = new User();
-        login_user.setUsername("testUsername");
+        login_user.setUsername("testUsern");
         login_user.setPassword("wrongPw");
 
         // then -> attempt to log in, this throws an error
@@ -184,12 +184,12 @@ public class UserServiceTest {
       User testUser1 = new User();
       testUser1.setId(1L);
       testUser1.setPassword("testName");
-      testUser1.setUsername("testUsername");
+      testUser1.setUsername("testUsern");
 
       User testUser2 = new User();
       testUser2.setId(2L);
       testUser2.setPassword("testName2");
-      testUser2.setUsername("testUsername2");
+      testUser2.setUsername("testUsern2");
 
       ArrayList<User> u = new ArrayList<>(Arrays.asList(testUser1, testUser2));
 
@@ -332,7 +332,7 @@ public class UserServiceTest {
        // then -> update user
        User new_user = new User();
        new_user.setId(testUser.getId());
-       new_user.setUsername("NewUsername");
+       new_user.setUsername("NewUsern");
        new_user.setDescription("Hello World");
        new_user.setPassword("newPass");
        new_user.setAvatar(2);
