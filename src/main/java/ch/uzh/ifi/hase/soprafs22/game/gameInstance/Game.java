@@ -137,6 +137,10 @@ public class Game {
         // catch if token is not null but also not of a user
         try{
             playerWantToMove = _userManager.getPlayerFromUserToken(move.getToken());
+            if(playerWantToMove == null)
+            {
+                throw new InvalidMoveException("BAD_TOKEN", "Bad token");
+            }
         }
         catch (NullPointerException e){
             throw new InvalidMoveException("BAD_TOKEN", "Bad token");}
