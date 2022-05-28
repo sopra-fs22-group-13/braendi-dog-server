@@ -30,7 +30,6 @@ public class HeartBeatInvoker {
                     {
                         //TODO
                         LobbyManager lm = SpringContext.getBean(LobbyController.class).getLobbyManagerInstance();
-                        User user = userService.getUserByToken(token);
                         if(lm.getLobbyIdFromPlayer(token) != -1){
                             lm.closeLobby(lm.getLobbyIdFromPlayer(token), true, token);
                         }
@@ -39,7 +38,6 @@ public class HeartBeatInvoker {
                     {
                         //TODO
                         GameManager gm = GameManager.getInstance();
-                        User user = userService.getUserByToken(token);
                         if(gm.getGameByPlayer(token) != null){
                             gm.deleteGame(gm.getGameByPlayer(token).getGameToken(), true);
                         }
