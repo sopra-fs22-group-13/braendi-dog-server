@@ -1,8 +1,39 @@
-# SoPra RESTful Service Template FS22
+# SoPra FS22 Brändi Dog
 
+# Introduction
+TO BE DONE
+
+# Technologies
+TO BE DONE
+
+# High-level components
+The centrepieces of the server-side application are the UserService, the Lobby and the Game and Board classes. 
+These classes embrace the core functionalities of the application and changes in these classes are what is most easily visible on the client side.
+
+### The UserService class
+This class manages everything that interacts with the user repository. 
+It is therefore responsible for registering, updating and retrieving users, as well as being responsible for the authentication.
+The UserService class is mostly operated by the UserController, which manages all requests from the client concerning the user repository,
+but it also communicates with other classes, which might need information about users.
+
+### The Lobby class
+Before a game is created, there needs to be a lobby where 4 users gather. These lobby exist in the backend as instances of the Lobby class.
+This class stores all information about the lobby instance and performs actions on it that do not depend on any other sources.
+The managing of the lobby instances is done by the LobbyManager class, which itself is operated by the LobbyController. 
+Similar to the UserController, the LobbyController handles all requests from the client concerning the lobby.
+
+### The Game class
+After a lobby is filled and a game is started, this game exists as an instance of the Game class. Again, this class performs all actions that barely require external information.
+As with the Lobby class, the GameManager class keeps track of the game instances and communicates with the GameController, to then operate on the game instances.
+
+### The Board class
+A component of each game instance is an instance of the Board class. Since Braendy Dog is a classical board game, the board is where most of the actions happen.
+The Board class is therefore responsible to keep track of the state of the game, provide information tho outside classes or helper classes and finally operate on the board state.
+Given how many responsibilities the class has, there exist a multitude of other classes supporting it in its actions, which can be found in the same package.
+This package is pretty much dominated by the algorithm behind moves and move validation. <br>
 
 # Launch & Deployment
-##IntelliJ
+## IntelliJ
 To build right click the `build.gradle` file and choose `Run Build`
 <br>The server will now listen on [http://localhost:8080](http://localhost:8080)
 ## VS Code
@@ -65,41 +96,6 @@ do the following:
 3. Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
 4. Press `Shift + F9` or the use **Run**/Debug"Name of your task"
 
-## High-level components
-The centrepieces of the server-side application are the UserService, the Lobby and the Game and Board classes. 
-These classes embrace the core functionalities of the application and changes in these classes are what is most easily visible on the client side.
-
-### The UserService class
-This class manages everything that interacts with the user repository. 
-It is therefore responsible for registering, updating and retrieving users, as well as being responsible for the authentication.
-The UserService class is mostly operated by the UserController, which manages all requests from the client concerning the user repository,
-but it also communicates with other classes, which might need information about users.
-
-### The Lobby class
-Before a game is created, there needs to be a lobby where 4 users gather. These lobby exist in the backend as instances of the Lobby class.
-This class stores all information about the lobby instance and performs actions on it that do not depend on any other sources.
-The managing of the lobby instances is done by the LobbyManager class, which itself is operated by the LobbyController. 
-Similar to the UserController, the LobbyController handles all requests from the client concerning the lobby.
-
-### The Game class
-After a lobby is filled and a game is started, this game exists as an instance of the Game class. Again, this class performs all actions that barely require external information.
-As with the Lobby class, the GameManager class keeps track of the game instances and communicates with the GameController, to then operate on the game instances.
-
-### The Board class
-A component of each game instance is an instance of the Board class. Since Braendy Dog is a classical board game, the board is where most of the actions happen.
-The Board class is therefore responsible to keep track of the state of the game, provide information tho outside classes or helper classes and finally operate on the board state.
-Given how many responsibilities the class has, there exist a multitude of other classes supporting it in its actions, which can be found in the same package.
-This package is pretty much dominated by the algorithm behind moves and move validation.
-
-## Roadmap
-There are many things that could be implemented to develop the project further. But we decided on these three
-
-In the front-end, the marble class would have to be reformatted as it has too many responsibilities and is too big.
-The two other features that would change both the front-end and  back-end are the possibility of team play and an AI .
-For the former it would mean that there would be the possibility to swap cards with your teammate at the beginning of each round and the possibility to move the other player's marble. These rules already exist in the original board game.
-The second feature would allow the game to be played in the absence of other players. This design would be larger than the other two features, but would greatly help the playability of the game as it would allow even smaller groups of 4 people to play.
-
-
 ## Environment Variables
 If you want to run with voice chat enabled you must have the api and app id set as environment variables
 ```bash
@@ -119,3 +115,18 @@ To set these variables in IntelliJ
 3. Specify your run configuration (just running is `./gradlew bootRun`)
 4. Set the Environment Variables `api.key=[secret];api.url=[secret]api.enabled=true`
 5. Apply the changes
+
+# Roadmap
+With a fully functioning base version of the game, the next steps to develop the application in the future would be:
+- **Game mode 'Team play'** <br> In this game mode 2 players go up against another team. This enhances strategic gameplay and would include the swap of a card with your teammate at the beginning of each round and the possibility to move each others marbles under certain conditions (see original [instructions of Brändi Dog](https://www.braendi-dog.de/braendi-dog-spielregeln-anleitungen.html)).
+- **Implementation of an AI opponent** <br> In this game mode the AI compensates for any missing players, allowing for a game of dog with less than 4 users. This increase the user experience and advance the playability of the application.
+- **Refactoring the Marbles class** <br> This step only affects the Frontend. Currently the Marbles class has too many responsibilities and collected quite some technical debt. Refactoring it would increase the evolvability and maintainability of the application.
+
+# Authors
+TO BE DONE
+
+# License
+TO BE DONE
+
+# Acknowledgments
+TO BE DONE
