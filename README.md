@@ -65,6 +65,32 @@ do the following:
 3. Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
 4. Press `Shift + F9` or the use **Run**/Debug"Name of your task"
 
+## High-level components
+The centrepieces of the server-side application are the UserService, the Lobby and the Game and Board classes. 
+These classes embrace the core functionalities of the application and changes in these classes are what is most easily visible on the client side.
+
+### The UserService class
+This class manages everything that interacts with the user repository. 
+It is therefore responsible for registering, updating and retrieving users, as well as being responsible for the authentication.
+The UserService class is mostly operated by the UserController, which manages all requests from the client concerning the user repository,
+but it also communicates with other classes, which might need information about users.
+
+### The Lobby class
+Before a game is created, there needs to be a lobby where 4 users gather. These lobby exist in the backend as instances of the Lobby class.
+This class stores all information about the lobby instance and performs actions on it that do not depend on any other sources.
+The managing of the lobby instances is done by the LobbyManager class, which itself is operated by the LobbyController. 
+Similar to the UserController, the LobbyController handles all requests from the client concerning the lobby.
+
+### The Game class
+After a lobby is filled and a game is started, this game exists as an instance of the Game class. Again, this class performs all actions that barely require external information.
+As with the Lobby class, the GameManager class keeps track of the game instances and communicates with the GameController, to then operate on the game instances.
+
+### The Board class
+A component of each game instance is an instance of the Board class. Since Braendy Dog is a classical board game, the board is where most of the actions happen.
+The Board class is therefore responsible to keep track of the state of the game, provide information tho outside classes or helper classes and finally operate on the board state.
+Given how many responsibilities the class has, there exist a multitude of other classes supporting it in its actions, which can be found in the same package.
+This package is pretty much dominated by the algorithm behind moves and move validation.
+
 ## Environment Variables
 If you want to run with voice chat enabled you must have the api and app id set as environment variables
 ```bash
@@ -87,7 +113,7 @@ To set these variables in IntelliJ
 
 
 
-### Roadmap
+## Roadmap
 There are many things that could be implemented to develop the project further. But we decided on these three
 
 In the front-end, the marble class would have to be reformatted as it has too many responsibilities and is too big. 
