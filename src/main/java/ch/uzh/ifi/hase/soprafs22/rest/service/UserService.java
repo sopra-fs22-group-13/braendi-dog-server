@@ -76,6 +76,9 @@ public class UserService implements IUserService {
         User userAlreadyRegister = userRepository.findByUsername(user.getUsername());
         log.debug("Check Information for User: {}", user);
         userAlreadyRegister.setStatus(UserStatus.OFFLINE); //this looks counterproductive, but we only set you to online if we receive a heartbeat
+        userAlreadyRegister.setToken(UUID.randomUUID().toString()); //a new random token for each login (so no 2 can be logged in at the same time)
+        userAlreadyRegister = userRepository.save(userAlreadyRegister);
+        userRepository.flush();
         return userAlreadyRegister;
     }
 

@@ -29,6 +29,7 @@ public class UserManager {
 
 
     private Hashtable<Long, Player> _userIdToPlayer = new Hashtable<Long, Player>();
+    private Hashtable<String, Player> _userTokenToPlayer = new Hashtable<String, Player>();
     private Hashtable<Player, User> _playerToUser = new Hashtable<Player, User>();
 
     public UserManager(ArrayList<Player> players, ArrayList<User> users){
@@ -37,6 +38,7 @@ public class UserManager {
 
         for (int i = 0; i<4; i++) {
             _userIdToPlayer.put(_correspondingUsers.get(i).getId(), _players.get(i));
+            _userTokenToPlayer.put(_correspondingUsers.get(i).getToken(), _players.get(i));
             _playerToUser.put(_players.get(i), _correspondingUsers.get(i));
         }
     }
@@ -54,8 +56,7 @@ public class UserManager {
     }
 
     public Player getPlayerFromUserToken(String usertoken){
-        Long id = userRepository.findByToken(usertoken).getId();
-        Player player = _userIdToPlayer.get(id);
+        Player player = _userTokenToPlayer.get(usertoken);
         return player;
     }
 

@@ -61,12 +61,18 @@ public class HeartBeatManager {
 
 
     public void updateOnlineStatus(String token, Boolean online) {
-        User user = userService.getUserByToken(token);
-        if(online){
-            userService.setUserOnline(user);
-        }else{
-            userService.setUserOffline(user);
+        try{
+            User user = userService.getUserByToken(token);
+            if(online){
+                userService.setUserOnline(user);
+            }else{
+                userService.setUserOffline(user);
+            }
+        }catch (Exception e)
+        {
+            //this user probably does not have this token anymore, so he is online anyways
         }
+
     }
 
     private boolean isAllFalse(Map<HeartBeatType, Boolean> map) {
