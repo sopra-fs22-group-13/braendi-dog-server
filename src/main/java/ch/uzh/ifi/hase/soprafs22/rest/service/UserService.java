@@ -111,6 +111,9 @@ public class UserService implements IUserService {
         if (userByUsername != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(baseErrorMessage, "username", "is"));
         }
+        if (userToBeCreated.getUsername().length()>10 || userToBeCreated.getUsername().length()<2){
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, String.format(baseErrorMessage, "username", "is"));
+        }
     }
 
     public void addWins(User user) {
@@ -196,9 +199,17 @@ public class UserService implements IUserService {
 
     public void updateUser(User reqUser) {
         User storedUser = getUserById(reqUser.getId());
+        String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
+
+
 
         if (userRepository.findByUsername(reqUser.getUsername()) != null) { throw new ResponseStatusException(HttpStatus.CONFLICT, "The username you are trying to change to is already taken."); }
-        if (reqUser.getUsername() != null ) { storedUser.setUsername(reqUser.getUsername()); }
+        if (reqUser.getUsername() != null ) {
+            if (reqUser.getUsername().length()>10 || reqUser.getUsername().length()<2){
+                throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, String.format(baseErrorMessage, "username", "is"));
+            }
+            storedUser.setUsername(reqUser.getUsername());
+        }
 
         if (reqUser.getPassword() != null ) { storedUser.setPassword(reqUser.getPassword()); }
         if (reqUser.getAvatar() != null ) { storedUser.setAvatar(reqUser.getAvatar()); }
