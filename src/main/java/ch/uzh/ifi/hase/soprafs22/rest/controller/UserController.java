@@ -113,7 +113,7 @@ public class UserController {
 
                                   gameHistory.getUser1().getId() == client.getId() ? gameHistory.getUser1_goals() :
                                           gameHistory.getUser2().getId() == client.getId() ? gameHistory.getUser2_goals() :
-                                                  gameHistory.getId() == client.getId() ? gameHistory.getUser3_goals() :
+                                                  gameHistory.getUser3().getId() == client.getId() ? gameHistory.getUser3_goals() :
                                                           gameHistory.getUser4_goals()
                           );
                       }).collect(Collectors.toList());
