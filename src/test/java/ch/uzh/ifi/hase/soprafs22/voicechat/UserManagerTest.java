@@ -1,3 +1,21 @@
+/*
+    dog-server is the server component of an online web implementation of dog.
+    Copyright (C) 2022  Luca Zwahlen
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package ch.uzh.ifi.hase.soprafs22.voicechat;
 
 import ch.uzh.ifi.hase.soprafs22.voicechat.requests.RequestGenerator;
@@ -37,7 +55,9 @@ class UserManagerTest {
             lenient().doReturn(connection).when(requestGenerator).createConnection(Mockito.any());
             lenient().doReturn(expected).when(connection).getResponseCode();
             lenient().doReturn(new ByteArrayOutputStream()).when(connection).getOutputStream();
+            //Hello
             byte[] input = {0x48, 0x65, 0x6c, 0x6c , 0x6f};
+            //Error
             byte[] error = {0x45, 0x72, 0x72, 0x6f , 0x72};
 
             lenient().doReturn(new ByteArrayInputStream(input)).when(connection).getInputStream();
@@ -51,18 +71,21 @@ class UserManagerTest {
 
     @Test
     void createUser() {
+        //this just test for "Failed", as the connection is not mocked correctly, not a great test
         String res = um.createUser("Hello", "SomeID");
         assertEquals("Failed", res);
     }
 
     @Test
     void getUser() {
+        //this just test for "Failed", as the connection is not mocked correctly, not a great test
         String res = um.getUser("SOMEID");
         assertEquals("Failed", res);
     }
 
     @Test
     void deleteUser() {
+        //this just test for "Failed", as the connection is not mocked correctly, not a great test
         Boolean res = um.deleteUser("SOMEID");
         assertFalse(res);
     }

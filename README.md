@@ -126,7 +126,7 @@ With a fully functioning base version of the game, the next steps to develop the
 TO BE DONE
 
 # License
-TO BE DONE
+This Project is licensed under GNU General Public License v3.0. See [COPYING](COPYING) for more.
 
 # Acknowledgments
 TO BE DONE
