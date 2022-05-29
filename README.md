@@ -44,7 +44,6 @@ After a lobby is filled and a game is started, this game exists as an instance o
 Similar to the LobbyManager class, there also exists a GameManager class which keeps track of the existing game instances, as well as a GameController, which receives all requests concerning the game instance.
 However, the controller also performs some actions directly on the game instance, instead of exclusively communicating with the GameManager.
 An important component of the Game class is the Board class. Each game instance holds a board instance, which takes over a lot of responsibilities concerning the state of the game.
-The Game class itself is supported by a number of other classes in the same package.
 
 ## High-level components: Frontend
 
@@ -53,6 +52,9 @@ On a very basic level, the frontend has two states: Outside a game and inside a 
 When outside a game, the user will usually find themselves in the main menu. From the main menu they can directly perform most other functionalities.
 These include, but are not restricted to, visiting a profile, opening a game lobby and joining an existing lobby.
 The menu page is constructed from the Menu.js component.
+
+### [The Marbles component](https://github.com/sopra-fs22-group-13/braendi-dog-client/blob/main/src/components/views/Marbles.js)
+The Marbles component is essential for pretty much all interactions within a game. It not only displays the current marbles on the board but rather handles all attributes of marbles in a game. When selecting a marble, the marble component handles the click, highlights the marble, and waits for the next click. It also displays the calculated possible move positions after a start has been selected. Furthermore, it displays the button to end a move and is in tight coordination with the [moveManager class](https://github.com/sopra-fs22-group-13/braendi-dog-client/blob/main/src/helpers/moveManager.js), Which sends the move to the server and keeps track of the move's state in general.
 
 # Launch & Deployment
 ## IntelliJ
