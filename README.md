@@ -20,31 +20,39 @@ Various
 - **GitHub** - Version control, Deployment
 - **Heroku** - Deployment
 
-# High-level components
-The centrepieces of the server-side application are the UserService, the Lobby and the Game and Board classes. 
+## High-level components: Backend
+The centrepieces of the server-side application are the UserService, the Lobby and the Game and Board classes.
 These classes embrace the core functionalities of the application and changes in these classes are what is most easily visible on the client side.
 
-### The UserService class
-This class manages everything that interacts with the user repository. 
+The main function is embedded within the [Application.java](src/main/java/ch/uzh/ifi/hase/soprafs22/Application.java) file.
+This method doesn't have notable responsibilities besides starting up the program.
+
+### [The UserService class](src/main/java/ch/uzh/ifi/hase/soprafs22/rest/service/UserService.java)
+This class manages everything that interacts with the user repository.
 It is therefore responsible for registering, updating and retrieving users, as well as being responsible for the authentication.
 The UserService class is mostly operated by the UserController, which manages all requests from the client concerning the user repository,
 but it also communicates with other classes, which might need information about users.
 
-### The Lobby class
-Before a game is created, there needs to be a lobby where 4 users gather. These lobby exist in the backend as instances of the Lobby class.
-This class stores all information about the lobby instance and performs actions on it that do not depend on any other sources.
-The managing of the lobby instances is done by the LobbyManager class, which itself is operated by the LobbyController. 
-Similar to the UserController, the LobbyController handles all requests from the client concerning the lobby.
+### [The LobbyManager class](src/main/java/ch/uzh/ifi/hase/soprafs22/lobby/LobbyManager.java)
+Before a game is created, there needs to be a lobby where 4 users gather. These lobbies exist in the backend as instances of the Lobby class.
+The managing of the lobby instances is done by the LobbyManager class, which itself is operated by the LobbyController.
+Similar to the UserController, the LobbyController catches all requests from the client concerning the lobby.
+The LobbyManager then processes all requests received by the controller after they have been interpreted and validated by the controller.
 
-### The Game class
-After a lobby is filled and a game is started, this game exists as an instance of the Game class. Again, this class performs all actions that barely require external information.
-As with the Lobby class, the GameManager class keeps track of the game instances and communicates with the GameController, to then operate on the game instances.
+### [The Game class](src/main/java/ch/uzh/ifi/hase/soprafs22/game/gameInstance/Game.java)
+After a lobby is filled and a game is started, this game exists as an instance of the Game class.
+Similar to the LobbyManager class, there also exists a GameManager class which keeps track of the existing game instances, as well as a GameController, which receives all requests concerning the game instance.
+However, the controller also performs some actions directly on the game instance, instead of exclusively communicating with the GameManager.
+An important component of the Game class is the Board class. Each game instance holds a board instance, which takes over a lot of responsibilities concerning the state of the game.
+The Game class itself is supported by a number of other classes in the same package.
 
-### The Board class
-A component of each game instance is an instance of the Board class. Since Braendy Dog is a classical board game, the board is where most of the actions happen.
-The Board class is therefore responsible to keep track of the state of the game, provide information tho outside classes or helper classes and finally operate on the board state.
-Given how many responsibilities the class has, there exist a multitude of other classes supporting it in its actions, which can be found in the same package.
-This package is pretty much dominated by the algorithm behind moves and move validation. <br>
+## High-level components: Frontend
+
+### [The Menu](https://github.com/sopra-fs22-group-13/braendi-dog-client/blob/main/src/components/views/Menu.js)
+On a very basic level, the frontend has two states: Outside a game and inside a game.
+When outside a game, the user will usually find themselves in the main menu. From the main menu they can directly perform most other functionalities.
+These include, but are not restricted to, visiting a profile, opening a game lobby and joining an existing lobby.
+The menu page is constructed from the Menu.js component.
 
 # Launch & Deployment
 ## IntelliJ
