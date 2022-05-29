@@ -1,3 +1,21 @@
+/*
+    dog-server is the server component of an online web implementation of dog.
+    Copyright (C) 2022  Luca Zwahlen
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package ch.uzh.ifi.hase.soprafs22.rest.service;
 
 import ch.uzh.ifi.hase.soprafs22.rest.constant.UserStatus;
@@ -41,7 +59,7 @@ public class UserServiceTest {
     testUser = new User();
     testUser.setId(1L);
     testUser.setPassword("testName");
-    testUser.setUsername("testUsername");
+    testUser.setUsername("testUsern");
 
     // when -> any object is being save in the userRepository -> return the dummy
     // testUser
@@ -104,7 +122,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.findByUsername(testUser.getUsername())).thenReturn(testUser);
 
         User login_user = new User();
-        login_user.setUsername("testUsername");
+        login_user.setUsername("testUsern");
         login_user.setPassword("wrongPw");
 
         // then -> attempt to log in, this throws an error
@@ -184,12 +202,12 @@ public class UserServiceTest {
       User testUser1 = new User();
       testUser1.setId(1L);
       testUser1.setPassword("testName");
-      testUser1.setUsername("testUsername");
+      testUser1.setUsername("testUsern");
 
       User testUser2 = new User();
       testUser2.setId(2L);
       testUser2.setPassword("testName2");
-      testUser2.setUsername("testUsername2");
+      testUser2.setUsername("testUsern2");
 
       ArrayList<User> u = new ArrayList<>(Arrays.asList(testUser1, testUser2));
 
@@ -332,7 +350,7 @@ public class UserServiceTest {
        // then -> update user
        User new_user = new User();
        new_user.setId(testUser.getId());
-       new_user.setUsername("NewUsername");
+       new_user.setUsername("NewUsern");
        new_user.setDescription("Hello World");
        new_user.setPassword("newPass");
        new_user.setAvatar(2);
