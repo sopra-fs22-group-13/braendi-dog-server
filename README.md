@@ -1,7 +1,7 @@
 # SoPra FS22 Brändi Dog (Server)
 
 # Introduction
-The aim of our project was to develop an online version of the popular swiss board game "Brändi Dog". We wanted to make a more accessible version of the game that you can play from anywhere. Our version lets you play from anywhere if you have an internet connection and a modern browser (no guarantees for Internet Explorer). The game interface should be familiar to people who have already played the game and if needed be there is a small section with the rules. Our version provides some features that the physical version of the game doesn't have, most notably that it shows you where your marble can move based on the chosen card. Our external API enables the use of voice communication, so the players can talk to each other while playing (not moderated).
+The aim of our project was to develop an online version of the popular Swiss board game "Brändi Dog". We wanted to make a more accessible version of the game that you can play from anywhere. Our version lets you play from anywhere if you have an internet connection and a modern browser (no guarantees for Internet Explorer). The game interface should be familiar to people who have already played the game and if needed be there is a small section with the rules. Our version provides some features that the physical version of the game doesn't have, most notably that it shows you where your marble can move based on the chosen card. Our external API enables the use of voice communication, so the players can talk to each other while playing (not moderated).
 
 # Technologies
 Frontend
@@ -21,7 +21,7 @@ Various
 - **Heroku** - Deployment
 
 ## High-level components: Backend
-The centrepieces of the server-side application are the UserService, the Lobby and the Game and Board classes.
+The centerpieces of the server-side application are the UserService, the Lobby and the Game and Board classes.
 These classes embrace the core functionalities of the application and changes in these classes are what is most easily visible on the client side.
 
 The main function is embedded within the [Application.java](src/main/java/ch/uzh/ifi/hase/soprafs22/Application.java) file.
@@ -142,9 +142,9 @@ To set these variables in IntelliJ
 
 # Roadmap
 With a fully functioning base version of the game, the next steps to develop the application in the future would be:
-- **Game mode 'Team play'** <br> In this game mode 2 players go up against another team. This enhances strategic gameplay and would include the swap of a card with your teammate at the beginning of each round and the possibility to move each others marbles under certain conditions (see original [instructions of Brändi Dog](https://www.braendi-dog.de/braendi-dog-spielregeln-anleitungen.html)).
+- **Game mode 'Team play'** <br> In this game mode 2 players go up against another team. This enhances strategic gameplay and would include the swap of a card with your teammate at the beginning of each round and the possibility to move each other's marbles under certain conditions (see original [instructions of Brändi Dog](https://www.braendi-dog.de/braendi-dog-spielregeln-anleitungen.html)).
 - **Implementation of an AI opponent** <br> In this game mode the AI compensates for any missing players, allowing for a game of dog with less than 4 users. This increase the user experience and advance the playability of the application.
-- **Refactoring the Marbles class** <br> This step only affects the Frontend. Currently the Marbles class has too many responsibilities and collected quite some technical debt. Refactoring it would increase the evolvability and maintainability of the application.
+- **Refactoring the Marbles class** <br> This step only affects the Frontend. Currently the Marbles class has too many responsibilities and collected quite some technical debt. Refactoring it would increases the evolvability and maintainability of the application.
 
 # Authors
 [Luca Zwahlen](https://github.com/LucaZwahlen) - [Simona Borghi](https://github.com/BlackStar5044) - [Sandro Vonlanthen](https://github.com/SandroVonlanthen) - [Shitao Zeng](https://github.com/shzeng) - [Anton Crazzolara](https://github.com/Xyarlo)
