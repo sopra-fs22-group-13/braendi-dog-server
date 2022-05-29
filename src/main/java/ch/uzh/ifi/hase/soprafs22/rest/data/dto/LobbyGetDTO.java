@@ -1,6 +1,6 @@
 /*
     dog-server is the server component of an online web implementation of dog.
-    Copyright (C) 2022  Luca Zwahlen
+    Copyright (C) 2022  Luca Zwahlen, Simona Borghi, Sandro Vonlanthen, Anton Crazzolara, Shitao Zeng
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
