@@ -48,7 +48,7 @@ class CardStackTest {
         Card drawnCard = cardStack.getNextCard();
         assertEquals(55, cardStack.getDeck().size());
         for (Card card: cardStack.getDeck()) {
-            if (card.isJoker()) continue;
+            if (card.isJoker()) continue; //jokers cannot be compared reasonably, so just skip
             assertFalse(drawnCard.equalsContent(card));
         }
     }

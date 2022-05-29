@@ -71,18 +71,21 @@ class RoomManagerTest {
 
     @Test
     void createRoom() {
+        //this just test for "Failed", as the connection is not mocked correctly, not a great test
         String res = rm.createRoom();
         assertEquals("Failed", res);
     }
 
     @Test
     void getRoom() {
+        //this just test for "Failed", as the connection is not mocked correctly, not a great test
         String res = rm.getRoom("SOMEID");
         assertEquals("Failed", res);
     }
 
     @Test
     void deleteRoom() {
+        //this just test if it fails, as the connection is not mocked correctly, not a great test
         Boolean res = rm.deleteRoom("SOMEID");
         assertFalse(res);
     }
