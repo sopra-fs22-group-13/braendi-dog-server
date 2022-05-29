@@ -145,11 +145,7 @@ With a fully functioning base version of the game, the next steps to develop the
 - **Refactoring the Marbles class** <br> This step only affects the Frontend. Currently the Marbles class has too many responsibilities and collected quite some technical debt. Refactoring it would increase the evolvability and maintainability of the application.
 
 # Authors
-@LucaZwahlen
-@BlackStar5044
-@SandroVonlanthen
-@shzeng
-@Xyarlo
+[Luca Zwahlen](https://github.com/LucaZwahlen) - [Simona Borghi](https://github.com/BlackStar5044) - [Sandro Vonlanthen](https://github.com/SandroVonlanthen) - [Shitao Zeng](https://github.com/shzeng) - [Anton Crazzolara](https://github.com/Xyarlo)
 
 # License
 This Project is licensed under GNU General Public License v3.0. See [COPYING](COPYING) for more.
